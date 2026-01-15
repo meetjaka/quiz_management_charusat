@@ -61,6 +61,9 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+// Handle favicon requests to prevent 404/403 errors
+app.get("/favicon.ico", (req, res) => res.status(204).end());
+
 // Auth routes
 app.use("/api/auth", require("./routes/authRoutes"));
 // Admin routes

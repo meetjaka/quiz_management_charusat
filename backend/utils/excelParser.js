@@ -64,12 +64,12 @@ const parseQuizExcel = (filePath) => {
       }
 
       return {
-        questionText: row.question.trim(),
+        questionText: row.question.toString().trim(),
         options: {
-          A: row.optionA.trim(),
-          B: row.optionB.trim(),
-          C: row.optionC.trim(),
-          D: row.optionD.trim(),
+          A: row.optionA.toString().trim(),
+          B: row.optionB.toString().trim(),
+          C: row.optionC.toString().trim(),
+          D: row.optionD.toString().trim(),
         },
         correctAnswer,
         marks: parseInt(row.marks),

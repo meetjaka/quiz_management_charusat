@@ -24,6 +24,9 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (loading) return; // Prevent multiple submissions
+
     setLoading(true);
     setError("");
 
@@ -46,10 +49,20 @@ const Login = () => {
         setError(result.error);
       }
     } catch (error) {
-      setError("Login failed. Please try again.");
-    }
+      const errorMessage =
+        error.response?.data?.message || "Login failed. Please try again.";
 
-    setLoading(false);
+      // Handle rate limit error specifically
+      if (error.response?.status === 429) {
+        setError(
+          "Too many login attempts. Please wait 15 minutes and try again."
+        );
+      } else {
+        setError(errorMessage);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

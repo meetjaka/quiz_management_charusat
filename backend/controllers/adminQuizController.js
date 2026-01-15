@@ -444,6 +444,50 @@ const invalidateAttempt = async (req, res) => {
   }
 };
 
+// @desc    Add question to quiz
+// @route   POST /api/admin/quizzes/add-question
+// @access  Admin
+const addQuestion = async (req, res) => {
+  try {
+    const { quizId, questionText, options, correctAnswer, marks } = req.body;
+
+    // Validate quiz exists
+    const quiz = await Quiz.findById(quizId);
+    if (!quiz) {
+      return res.status(404).json({ message: "Quiz not found" });
+    }
+
+    // Get the current max order for this quiz
+    const maxOrderQuestion = await Question.findOne({ quizId })
+      .sort({ order: -1 })
+      .limit(1);
+    const order = maxOrderQuestion ? maxOrderQuestion.order + 1 : 1;
+
+    // Create question
+    const question = await Question.create({
+      quizId,
+      questionText,
+      options,
+      correctAnswer,
+      marks: parseInt(marks),
+      order,
+    });
+
+    // Update quiz totalQuestions and totalMarks
+    quiz.totalQuestions = (quiz.totalQuestions || 0) + 1;
+    quiz.totalMarks = (quiz.totalMarks || 0) + parseInt(marks);
+    await quiz.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Question added successfully",
+      data: question,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getQuizzes,
   getQuizById,
@@ -455,4 +499,5 @@ module.exports = {
   toggleQuizActive,
   toggleQuizPublish,
   invalidateAttempt,
+  addQuestion,
 };

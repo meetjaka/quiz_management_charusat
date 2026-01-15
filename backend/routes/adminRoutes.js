@@ -27,6 +27,7 @@ const {
   toggleQuizActive,
   toggleQuizPublish,
   invalidateAttempt,
+  addQuestion,
 } = require("../controllers/adminQuizController");
 
 // Analytics controllers
@@ -87,6 +88,9 @@ router.post(
   auditMiddleware("UPLOAD_EXCEL", "Quiz"),
   createQuizFromExcel
 );
+
+// Add question to quiz
+router.post("/quizzes/add-question", addQuestion);
 
 // Update quiz
 router.put("/quizzes/:id", auditMiddleware("UPDATE_QUIZ", "Quiz"), updateQuiz);

@@ -12,13 +12,11 @@ const apiLimiter = rateLimit({
 // Strict rate limiter for auth routes
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // limit each IP to 5 login attempts per windowMs
+  max: process.env.NODE_ENV === "production" ? 5 : 100, // 5 in production, 100 in development
   message: "Too many login attempts, please try again after 15 minutes.",
   standardHeaders: true,
   legacyHeaders: false,
   skipSuccessfulRequests: true,
-  // Disable strict auth limiting in non-production to avoid blocking dev login attempts
-  skip: () => process.env.NODE_ENV !== "production",
 });
 
 // Quiz attempt rate limiter

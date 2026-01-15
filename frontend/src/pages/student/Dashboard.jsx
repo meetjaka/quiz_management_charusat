@@ -12,10 +12,21 @@ const StudentDashboard = () => {
   });
   const [recentResults, setRecentResults] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [userProfile, setUserProfile] = useState(null);
 
   useEffect(() => {
     fetchDashboardData();
+    fetchUserProfile();
   }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      const response = await api.get("/auth/me");
+      setUserProfile(response.data.data || response.data);
+    } catch (error) {
+      console.error("Failed to fetch user profile:", error);
+    }
+  };
 
   const fetchDashboardData = async () => {
     try {
@@ -64,6 +75,63 @@ const StudentDashboard = () => {
 
   return (
     <Layout title="Student Dashboard">
+      {/* Profile Info Card - Only show if quizzes are 0 */}
+      {stats.availableQuizzes === 0 && userProfile && (
+        <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div className="flex items-start">
+            <div className="flex-shrink-0">
+              <svg
+                className="h-6 w-6 text-yellow-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <div className="ml-3 flex-1">
+              <h3 className="text-sm font-medium text-yellow-800">
+                No Quizzes Available
+              </h3>
+              <div className="mt-2 text-sm text-yellow-700">
+                <p className="mb-2">
+                  Quizzes are matched based on your profile details. Make sure
+                  your information is correct:
+                </p>
+                <div className="bg-white bg-opacity-50 rounded p-3 space-y-1">
+                  <p>
+                    <strong>Department:</strong>{" "}
+                    {userProfile.department || "Not set"}
+                  </p>
+                  <p>
+                    <strong>Semester:</strong>{" "}
+                    {userProfile.semester || "Not set"}
+                  </p>
+                  <p>
+                    <strong>Batch:</strong> {userProfile.batch || "Not set"}
+                  </p>
+                  <p>
+                    <strong>Enrollment:</strong>{" "}
+                    {userProfile.enrollmentNumber || "Not set"}
+                  </p>
+                </div>
+                <p className="mt-2 text-xs">
+                  <strong>Note:</strong> Your profile details must{" "}
+                  <strong>exactly match</strong> the quiz settings set by admin.
+                  If you still don't see quizzes, contact your admin to verify
+                  the quiz settings match your profile.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Stats Cards */}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
         <div className="bg-white overflow-hidden shadow rounded-lg">
