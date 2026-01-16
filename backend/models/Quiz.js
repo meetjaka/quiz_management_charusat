@@ -1,45 +1,75 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const quizSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: [true, "Please provide a quiz title"],
+    required: true,
+    trim: true
   },
   description: {
     type: String,
-    required: [true, "Please provide a quiz description"],
+    trim: true
   },
-  createdBy: {
+  coordinatorId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
+    required: true
+  },
+  totalMarks: {
+    type: Number,
     required: true,
+    min: 0
   },
-  questions: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Question",
-    },
-  ],
-  totalQuestions: {
+  passingMarks: {
     type: Number,
-    default: 0,
+    required: true,
+    min: 0
   },
-  isPublished: {
+  durationMinutes: {
+    type: Number,
+    required: true,
+    min: 1
+  },
+  startTime: {
+    type: Date,
+    required: true
+  },
+  endTime: {
+    type: Date,
+    required: true
+  },
+  shuffleQuestions: {
     type: Boolean,
-    default: false,
+    default: false
   },
-  timeLimit: {
+  shuffleOptions: {
+    type: Boolean,
+    default: false
+  },
+  maxAttempts: {
     type: Number,
-    default: 60, // in minutes
+    default: 1,
+    min: 1
+  },
+  showAnswersAfterSubmit: {
+    type: Boolean,
+    default: false
+  },
+  status: {
+    type: String,
+    enum: ['draft', 'published', 'closed'],
+    default: 'draft'
   },
   createdAt: {
     type: Date,
-    default: Date.now,
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
+}, {
+  timestamps: true
 });
 
-module.exports = mongoose.model("Quiz", quizSchema);
+// Index for faster queries
+quizSchema.index({ coordinatorId: 1, status: 1 });
+quizSchema.index({ startTime: 1, endTime: 1 });
+
+module.exports = mongoose.model('Quiz', quizSchema);

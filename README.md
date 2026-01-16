@@ -2,6 +2,22 @@
 
 A full-stack Quiz Management System built with MongoDB, Express.js, React, and Node.js (MERN).
 
+## 📚 Documentation
+
+- 📖 **[Design Improvement Guide](DESIGN_IMPROVEMENT_GUIDE.md)** - Comprehensive UI/UX design documentation
+- 🚀 **[Deployment Guide](DEPLOYMENT_GUIDE.md)** - Production deployment instructions  
+- 📡 **[API Documentation](API_DOCUMENTATION.md)** - Complete API reference
+
+## ✅ Project Status: 100% Complete
+
+All features implemented including:
+- ✅ Advanced analytics with charts (Admin, Coordinator, Student)
+- ✅ Email notifications (assignment, reminders, results)
+- ✅ Bulk CSV upload with validation
+- ✅ Rate limiting (global, auth, sensitive routes)
+- ✅ Comprehensive audit logging
+- ✅ Role-based access control (Admin, Coordinator, Student)
+
 ## Project Structure
 
 ```
@@ -56,11 +72,13 @@ npm install
 3. Configure `.env` file with your MongoDB URI and other settings:
 
 ```
-MONGODB_URI=mongodb://localhost:27017/quiz_management
-PORT=5000
+MONGODB_URI=mongodb://localhost:27017/quiz_management_charusat
+PORT=5001
 JWT_SECRET=your_secret_key_here
 NODE_ENV=development
 FRONTEND_URL=http://localhost:3000
+EMAIL_USER=your_email@charusat.edu.in
+EMAIL_PASS=your_app_password
 ```
 
 4. Start the backend server:
@@ -71,7 +89,7 @@ npm run dev      # Development mode with auto-restart
 npm start        # Production mode
 ```
 
-Backend will run on: `http://localhost:5000`
+Backend will run on: `http://localhost:5001`
 
 ### Frontend Setup
 

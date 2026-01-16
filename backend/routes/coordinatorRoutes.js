@@ -1,43 +1,60 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const {
-  protect,
-  isCoordinatorOrAdmin,
-} = require("../middleware/authMiddleware");
+const coordinatorController = require('../controllers/coordinatorController');
+const { protect, authorize } = require('../middleware/auth');
+const { checkQuizOwnership } = require('../middleware/quizOwnership');
+const { upload } = require('../utils/bulkUpload');
 
-const {
-  getAssignedQuizzes,
-  getQuizDetails,
-  updateQuizMetadata,
-  getQuizResults,
-  getQuizAttempts,
-  exportQuizResults,
-  getQuizAnalytics,
-} = require("../controllers/coordinatorController");
-
-// Apply authentication and authorization to all routes
+// All routes require coordinator authentication
 router.use(protect);
-router.use(isCoordinatorOrAdmin);
+router.use(authorize('coordinator'));
 
-// Get assigned quizzes
-router.get("/quizzes", getAssignedQuizzes);
+// ============================================
+// QUIZ MANAGEMENT (Own Quizzes Only)
+// ============================================
+router.get('/quizzes', coordinatorController.getMyQuizzes);
+router.post('/quizzes', coordinatorController.createQuiz);
 
-// Get quiz details
-router.get("/quizzes/:id", getQuizDetails);
+// Routes that require quiz ownership validation
+router.get('/quizzes/:id', checkQuizOwnership, coordinatorController.getMyQuizById);
+router.put('/quizzes/:id', checkQuizOwnership, coordinatorController.updateQuiz);
+router.delete('/quizzes/:id', checkQuizOwnership, coordinatorController.deleteQuiz);
 
-// Update quiz metadata (time, duration only)
-router.put("/quizzes/:id/metadata", updateQuizMetadata);
+// ============================================
+// QUESTION MANAGEMENT
+// ============================================
+router.post('/quizzes/:id/questions', checkQuizOwnership, coordinatorController.addQuestion);
+router.put('/quizzes/:id/questions/:questionId', checkQuizOwnership, coordinatorController.updateQuestion);
+router.delete('/quizzes/:id/questions/:questionId', checkQuizOwnership, coordinatorController.deleteQuestion);
 
-// Get quiz results
-router.get("/quizzes/:id/results", getQuizResults);
+// Bulk upload questions
+router.post('/questions/bulk-upload', upload.single('file'), coordinatorController.bulkUploadQuestions);
+router.get('/questions/download-template', coordinatorController.downloadQuestionTemplate);
 
-// Get quiz attempts
-router.get("/quizzes/:id/attempts", getQuizAttempts);
+// ============================================
+// QUIZ ASSIGNMENT
+// ============================================
+router.post('/quizzes/:id/assign', checkQuizOwnership, coordinatorController.assignQuizToStudents);
+router.get('/quizzes/:id/assigned-students', checkQuizOwnership, coordinatorController.getAssignedStudents);
+router.delete('/quizzes/:id/assigned-students/:studentId', checkQuizOwnership, coordinatorController.removeStudentAssignment);
 
-// Export quiz results to Excel
-router.get("/quizzes/:id/export", exportQuizResults);
+// ============================================
+// RESULTS & ANALYTICS (Own Quizzes Only)
+// ============================================
+router.get('/quizzes/:id/results', checkQuizOwnership, coordinatorController.getQuizResults);
+router.get('/quizzes/:id/analytics', checkQuizOwnership, coordinatorController.getQuizAnalytics);
+router.get('/analytics', coordinatorController.getMyAnalytics);
 
-// Get quiz analytics
-router.get("/quizzes/:id/analytics", getQuizAnalytics);
+// ============================================
+// QUESTION BANK
+// ============================================
+router.get('/question-bank', coordinatorController.getQuestionBank);
+router.post('/question-bank', coordinatorController.addToQuestionBank);
+router.delete('/question-bank/:questionId', coordinatorController.deleteFromQuestionBank);
+
+// ============================================
+// STUDENT LIST
+// ============================================
+router.get('/students', coordinatorController.getAllStudents);
 
 module.exports = router;

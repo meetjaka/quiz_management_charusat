@@ -4,7 +4,7 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const { errorHandler, notFound } = require("./middleware/errorHandler");
 const { apiLimiter } = require("./middleware/rateLimiter");
-const User = require("./models/UserNew");
+const User = require("./models/User");
 
 // Load environment variables
 dotenv.config();
@@ -33,22 +33,24 @@ app.use("/api/", apiLimiter);
     const adminCount = await User.countDocuments({ role: "admin" });
     if (adminCount === 0) {
       const defaultAdminEmail =
-        process.env.DEFAULT_ADMIN_EMAIL || "admin@university.edu";
+        process.env.DEFAULT_ADMIN_EMAIL || "admin@charusat.edu.in";
       const defaultAdminPassword =
-        process.env.DEFAULT_ADMIN_PASSWORD || "admin123";
+        process.env.DEFAULT_ADMIN_PASSWORD || "Admin@123";
       const adminExists = await User.findOne({ email: defaultAdminEmail });
       if (!adminExists) {
         await User.create({
-          name: "Default Admin",
+          fullName: "System Administrator",
           email: defaultAdminEmail,
           password: defaultAdminPassword,
           role: "admin",
+          isActive: true
         });
-        console.log(`Seeded admin user: ${defaultAdminEmail}`);
+        console.log(`✅ Seeded admin user: ${defaultAdminEmail}`);
+        console.log(`   Password: ${defaultAdminPassword}`);
       }
     }
   } catch (err) {
-    console.error("Admin seeding error:", err.message);
+    console.error("❌ Admin seeding error:", err.message);
   }
 })();
 

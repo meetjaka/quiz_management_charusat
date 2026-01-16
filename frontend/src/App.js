@@ -5,6 +5,8 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 
@@ -22,12 +24,16 @@ import AdminAnalytics from "./pages/admin/Analytics";
 // Coordinator Pages
 import CoordinatorDashboard from "./pages/coordinator/Dashboard";
 import CoordinatorQuizzes from "./pages/coordinator/Quizzes";
+import CoordinatorAnalytics from "./pages/coordinator/Analytics";
+import CreateQuiz from "./pages/coordinator/CreateQuiz";
+import QuestionBank from "./pages/coordinator/QuestionBank";
 
 // Student Pages
 import StudentDashboard from "./pages/student/Dashboard";
 import StudentQuizzes from "./pages/student/Quizzes";
 import QuizAttempt from "./pages/student/QuizAttempt";
 import StudentResults from "./pages/student/Results";
+import StudentAnalytics from "./pages/student/Analytics";
 
 function App() {
   return (
@@ -77,7 +83,7 @@ function App() {
           <Route
             path="/coordinator/dashboard"
             element={
-              <PrivateRoute allowedRoles={["coordinator", "admin"]}>
+              <PrivateRoute allowedRoles={["coordinator"]}>
                 <CoordinatorDashboard />
               </PrivateRoute>
             }
@@ -85,8 +91,32 @@ function App() {
           <Route
             path="/coordinator/quizzes"
             element={
-              <PrivateRoute allowedRoles={["coordinator", "admin"]}>
+              <PrivateRoute allowedRoles={["coordinator"]}>
                 <CoordinatorQuizzes />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/coordinator/analytics"
+            element={
+              <PrivateRoute allowedRoles={["coordinator"]}>
+                <CoordinatorAnalytics />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/coordinator/quizzes/create"
+            element={
+              <PrivateRoute allowedRoles={["coordinator"]}>
+                <CreateQuiz />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/coordinator/question-bank"
+            element={
+              <PrivateRoute allowedRoles={["coordinator"]}>
+                <QuestionBank />
               </PrivateRoute>
             }
           />
@@ -105,6 +135,14 @@ function App() {
             element={
               <PrivateRoute allowedRoles={["student"]}>
                 <StudentQuizzes />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/student/analytics"
+            element={
+              <PrivateRoute allowedRoles={["student"]}>
+                <StudentAnalytics />
               </PrivateRoute>
             }
           />
@@ -129,6 +167,7 @@ function App() {
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
+        <ToastContainer />
       </AuthProvider>
     </Router>
   );

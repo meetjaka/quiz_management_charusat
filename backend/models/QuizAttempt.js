@@ -1,107 +1,69 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const quizAttemptSchema = new mongoose.Schema(
-  {
-    quizId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Quiz",
-      required: true,
-      index: true,
-    },
-    studentId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-      index: true,
-    },
-
-    // Attempt Details
-    startedAt: {
-      type: Date,
-      required: true,
-      default: Date.now,
-    },
-    submittedAt: {
-      type: Date,
-    },
-    timeTaken: {
-      type: Number, // in seconds
-    },
-
-    // Answers
-    answers: [
-      {
-        questionId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Question",
-          required: true,
-        },
-        selectedAnswer: {
-          type: String,
-          enum: ["A", "B", "C", "D", null],
-        },
-        isCorrect: {
-          type: Boolean,
-        },
-        marksAwarded: {
-          type: Number,
-          default: 0,
-        },
-      },
-    ],
-
-    // Results
-    totalScore: {
-      type: Number,
-      default: 0,
-    },
-    percentage: {
-      type: Number,
-      default: 0,
-    },
-    isPassed: {
-      type: Boolean,
-      default: false,
-    },
-
-    // Status
-    status: {
-      type: String,
-      enum: ["in-progress", "submitted", "auto-submitted", "invalidated"],
-      default: "in-progress",
-    },
-
-    // Proctoring flags
-    tabSwitchCount: {
-      type: Number,
-      default: 0,
-    },
-    warnings: [
-      {
-        type: String,
-        timestamp: Date,
-      },
-    ],
-
-    // IP and device info
-    ipAddress: String,
-    userAgent: String,
+const answerSchema = new mongoose.Schema({
+  questionId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Question',
+    required: true
   },
-  {
-    timestamps: true,
+  selectedOptionId: {
+    type: mongoose.Schema.Types.ObjectId
+  },
+  textAnswer: {
+    type: String,
+    trim: true
+  },
+  isCorrect: {
+    type: Boolean
+  },
+  marksObtained: {
+    type: Number,
+    default: 0
   }
-);
-
-// Compound index to prevent multiple attempts
-quizAttemptSchema.index({ quizId: 1, studentId: 1 }, { unique: true });
-quizAttemptSchema.index({ status: 1 });
-
-// Calculate time taken on submission
-quizAttemptSchema.pre("save", function (next) {
-  if (this.submittedAt && this.startedAt) {
-    this.timeTaken = Math.floor((this.submittedAt - this.startedAt) / 1000);
-  }
-  next();
 });
 
-module.exports = mongoose.model("QuizAttempt", quizAttemptSchema);
+const quizAttemptSchema = new mongoose.Schema({
+  quizId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Quiz',
+    required: true
+  },
+  studentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  startedAt: {
+    type: Date,
+    default: Date.now
+  },
+  submittedAt: {
+    type: Date
+  },
+  totalScore: {
+    type: Number,
+    default: 0
+  },
+  percentage: {
+    type: Number,
+    default: 0
+  },
+  status: {
+    type: String,
+    enum: ['in_progress', 'submitted', 'evaluated'],
+    default: 'in_progress'
+  },
+  attemptNumber: {
+    type: Number,
+    default: 1
+  },
+  answers: [answerSchema]
+}, {
+  timestamps: true
+});
+
+// Index for queries
+quizAttemptSchema.index({ quizId: 1, studentId: 1 });
+quizAttemptSchema.index({ status: 1 });
+
+module.exports = mongoose.model('QuizAttempt', quizAttemptSchema);

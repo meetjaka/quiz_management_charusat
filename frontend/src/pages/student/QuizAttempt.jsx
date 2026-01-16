@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "../../components/Layout";
+import Timer from "../../components/Timer";
+import ConfirmDialog from "../../components/ConfirmDialog";
+import { showToast } from "../../utils/toast";
 import apiClient from "../../api";
 
 const QuizAttempt = () => {
@@ -12,32 +15,18 @@ const QuizAttempt = () => {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState({});
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [timeRemaining, setTimeRemaining] = useState(0);
+  const [startTime, setStartTime] = useState(null);
+  const [durationMinutes, setDurationMinutes] = useState(0);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [showSubmitDialog, setShowSubmitDialog] = useState(false);
+  const [tabSwitchCount, setTabSwitchCount] = useState(0);
 
   // Start quiz attempt
   useEffect(() => {
     startAttempt();
   }, [quizId]);
-
-  // Timer countdown
-  useEffect(() => {
-    if (timeRemaining <= 0) return;
-
-    const timer = setInterval(() => {
-      setTimeRemaining((prev) => {
-        if (prev <= 1) {
-          handleSubmit(true); // Auto-submit when time runs out
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [timeRemaining]);
 
   // Track tab switches
   useEffect(() => {
@@ -47,11 +36,21 @@ const QuizAttempt = () => {
       }
     };
 
+    const handleBeforeUnload = (e) => {
+      if (attemptId && !submitting) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+
     document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [attemptId]);
+  }, [attemptId, submitting]);
 
   const startAttempt = async () => {
     try {
@@ -63,11 +62,12 @@ const QuizAttempt = () => {
       setAttemptId(attemptId);
       setQuiz(quiz);
       setQuestions(questions);
-      setTimeRemaining(timeLimit);
+      setStartTime(new Date());
+      setDurationMinutes(quiz.durationMinutes || 60);
       setError(null);
+      showToast.success('Quiz started! Good luck!');
     } catch (err) {
-      const errorMessage =
-        err.response?.data?.message || "Failed to start quiz";
+      const errorMessage = err.response?.data?.message || "Failed to start quiz";
 
       // Check if it's a duplicate attempt error
       if (
@@ -81,8 +81,7 @@ const QuizAttempt = () => {
       } else {
         setError(errorMessage);
       }
-
-      console.error("Error starting quiz:", err);
+      showToast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -91,6 +90,8 @@ const QuizAttempt = () => {
   const reportTabSwitch = async () => {
     try {
       await apiClient.post(`/student/attempts/${attemptId}/tab-switch`);
+      setTabSwitchCount(prev => prev + 1);
+      showToast.warning('Tab switching detected! This has been logged.');
     } catch (err) {
       console.error("Error reporting tab switch:", err);
     }
@@ -106,28 +107,36 @@ const QuizAttempt = () => {
         answer,
       });
     } catch (err) {
+      showToast.error('Failed to save answer. Please try again.');
       console.error("Error saving answer:", err);
     }
   };
 
+  const handleTimeUp = useCallback(() => {
+    showToast.warning('Time is up! Submitting quiz automatically...');
+    handleSubmit(true);
+  }, [attemptId]);
+
   const handleSubmit = async (autoSubmit = false) => {
     if (submitting) return;
 
-    if (!autoSubmit) {
-      const confirmed = window.confirm(
-        "Are you sure you want to submit? You cannot change answers after submission."
-      );
-      if (!confirmed) return;
+    if (!autoSubmit && !showSubmitDialog) {
+      setShowSubmitDialog(true);
+      return;
     }
 
     try {
       setSubmitting(true);
       await apiClient.post(`/student/attempts/${attemptId}/submit`);
+      showToast.success('Quiz submitted successfully!');
       navigate("/student/results", {
         state: { message: "Quiz submitted successfully!" },
       });
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to submit quiz");
+      const errorMsg = err.response?.data?.message || "Failed to submit quiz";
+      setError(errorMsg);
+      showToast.error(errorMsg);
+    } finally {
       setSubmitting(false);
     }
   };
@@ -139,7 +148,7 @@ const QuizAttempt = () => {
   };
 
   const getAnsweredCount = () => {
-    return Object.keys(answers).filter((k) => answers[k] !== null).length;
+    return Object.keys(answers).filter((k) => answers[k] !== null && answers[k] !== undefined).length;
   };
 
   if (loading) {
@@ -174,11 +183,42 @@ const QuizAttempt = () => {
     );
   }
 
+  if (!quiz || !questions.length) {
+    return (
+      <Layout title="Quiz Attempt">
+        <div className="text-center py-12">
+          <p className="text-gray-600">No questions available</p>
+        </div>
+      </Layout>
+    );
+  }
+
   const currentQ = questions[currentQuestion];
   const isLastQuestion = currentQuestion === questions.length - 1;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <Layout title={quiz?.title || "Quiz Attempt"}>
+      {/* Timer Component */}
+      {startTime && durationMinutes && (
+        <Timer 
+          durationMinutes={durationMinutes} 
+          onTimeUp={handleTimeUp}
+          startTime={startTime}
+        />
+      )}
+
+      {/* Confirm Submit Dialog */}
+      <ConfirmDialog
+        isOpen={showSubmitDialog}
+        onClose={() => setShowSubmitDialog(false)}
+        onConfirm={() => handleSubmit(false)}
+        title="Submit Quiz?"
+        message={`You have answered ${getAnsweredCount()} out of ${questions.length} questions. Are you sure you want to submit? You cannot change answers after submission.`}
+        confirmText="Submit Quiz"
+        cancelText="Continue Quiz"
+        type="warning"
+      />
+
       {/* Fixed Header */}
       <div className="bg-white shadow-md border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -190,16 +230,14 @@ const QuizAttempt = () => {
               </p>
             </div>
             <div className="flex items-center space-x-6">
-              <div className="text-right">
-                <p className="text-sm text-gray-600">Time Remaining</p>
-                <p
-                  className={`text-2xl font-bold ${
-                    timeRemaining < 300 ? "text-red-600" : "text-blue-600"
-                  }`}
-                >
-                  {formatTime(timeRemaining)}
-                </p>
-              </div>
+              {tabSwitchCount > 0 && (
+                <div className="text-right">
+                  <p className="text-sm text-red-600">Tab Switches</p>
+                  <p className="text-2xl font-bold text-red-600">
+                    {tabSwitchCount}
+                  </p>
+                </div>
+              )}
               <div className="text-right">
                 <p className="text-sm text-gray-600">Answered</p>
                 <p className="text-2xl font-bold text-green-600">
@@ -338,7 +376,7 @@ const QuizAttempt = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 

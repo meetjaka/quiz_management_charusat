@@ -1,45 +1,56 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const questionSchema = new mongoose.Schema(
-  {
-    quizId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Quiz",
-      required: true,
-      index: true,
-    },
-    questionText: {
-      type: String,
-      required: [true, "Question text is required"],
-      trim: true,
-    },
-    options: {
-      A: { type: String, required: true, trim: true },
-      B: { type: String, required: true, trim: true },
-      C: { type: String, required: true, trim: true },
-      D: { type: String, required: true, trim: true },
-    },
-    correctAnswer: {
-      type: String,
-      enum: ["A", "B", "C", "D"],
-      required: [true, "Correct answer is required"],
-    },
-    marks: {
-      type: Number,
-      required: [true, "Marks are required"],
-      min: [1, "Marks must be at least 1"],
-    },
-    order: {
-      type: Number,
-      default: 0,
-    },
+const optionSchema = new mongoose.Schema({
+  text: {
+    type: String,
+    required: true
   },
-  {
-    timestamps: true,
+  isCorrect: {
+    type: Boolean,
+    default: false
   }
-);
+}, { _id: true });
 
-// Index for efficient querying
-questionSchema.index({ quizId: 1, order: 1 });
+const questionSchema = new mongoose.Schema({
+  quizId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Quiz',
+    required: true
+  },
+  questionText: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  questionType: {
+    type: String,
+    enum: ['mcq', 'true_false', 'short_answer'],
+    required: true
+  },
+  marks: {
+    type: Number,
+    required: true,
+    default: 1,
+    min: 0
+  },
+  orderNumber: {
+    type: Number,
+    required: true
+  },
+  options: [optionSchema], // For MCQ and True/False
+  correctAnswer: {
+    type: String, // For short answer questions
+    trim: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+}, {
+  timestamps: true
+});
 
-module.exports = mongoose.model("Question", questionSchema);
+// Index for faster retrieval
+questionSchema.index({ quizId: 1, orderNumber: 1 });
+
+module.exports = mongoose.model('Question', questionSchema);

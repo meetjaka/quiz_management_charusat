@@ -1,11 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  LayoutDashboard,
+  Users,
+  FileText,
+  BarChart3,
+  LogOut,
+  Menu,
+  X,
+  ChevronRight,
+  GraduationCap,
+  Award
+} from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 const Layout = ({ children, title }) => {
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = async () => {
     await logout();
@@ -18,57 +32,23 @@ const Layout = ({ children, title }) => {
     switch (user.role) {
       case "admin":
         return [
-          {
-            path: "/admin/dashboard",
-            label: "Dashboard",
-            icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6",
-          },
-          {
-            path: "/admin/users",
-            label: "Users",
-            icon: "M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z",
-          },
-          {
-            path: "/admin/quizzes",
-            label: "Quizzes",
-            icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z",
-          },
-          {
-            path: "/admin/analytics",
-            label: "Analytics",
-            icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
-          },
+          { path: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
+          { path: "/admin/users", label: "Users", icon: Users },
+          { path: "/admin/quizzes", label: "Quizzes", icon: FileText },
+          { path: "/admin/analytics", label: "Analytics", icon: BarChart3 },
         ];
       case "coordinator":
         return [
-          {
-            path: "/coordinator/dashboard",
-            label: "Dashboard",
-            icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6",
-          },
-          {
-            path: "/coordinator/quizzes",
-            label: "My Quizzes",
-            icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z",
-          },
+          { path: "/coordinator/dashboard", label: "Dashboard", icon: LayoutDashboard },
+          { path: "/coordinator/quizzes", label: "My Quizzes", icon: FileText },
+          { path: "/coordinator/analytics", label: "Analytics", icon: BarChart3 },
         ];
       case "student":
         return [
-          {
-            path: "/student/dashboard",
-            label: "Dashboard",
-            icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6",
-          },
-          {
-            path: "/student/quizzes",
-            label: "Available Quizzes",
-            icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z",
-          },
-          {
-            path: "/student/results",
-            label: "My Results",
-            icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
-          },
+          { path: "/student/dashboard", label: "Dashboard", icon: LayoutDashboard },
+          { path: "/student/quizzes", label: "Available Quizzes", icon: FileText },
+          { path: "/student/analytics", label: "My Performance", icon: BarChart3 },
+          { path: "/student/results", label: "My Results", icon: Award },
         ];
       default:
         return [];
@@ -77,139 +57,184 @@ const Layout = ({ children, title }) => {
   
   const navLinks = getNavLinks();
 
+  const getRoleBadgeColor = () => {
+    switch (user?.role) {
+      case "admin": return "bg-purple-100 text-purple-700 border-purple-200";
+      case "coordinator": return "bg-blue-100 text-blue-700 border-blue-200";
+      case "student": return "bg-green-100 text-green-700 border-green-200";
+      default: return "bg-gray-100 text-gray-700 border-gray-200";
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Top Navigation */}
-      <nav className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <div className="flex-shrink-0 flex items-center">
-                <div className="bg-blue-600 rounded-lg p-2">
-                  <svg
-                    className="w-6 h-6 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                    />
-                  </svg>
+      {/* Modern Header */}
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-40 backdrop-blur-lg bg-white/95">
+        <div className="px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Left: Logo & Mobile Menu */}
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="lg:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+              >
+                {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
+              
+              <Link to={`/${user?.role}/dashboard`} className="flex items-center gap-3 group">
+                <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl p-2 shadow-lg shadow-blue-200 group-hover:shadow-xl group-hover:shadow-blue-300 transition-all">
+                  <GraduationCap className="w-6 h-6 text-white" />
                 </div>
-                <span className="ml-2 text-xl font-bold text-gray-900">
-                  Quiz System
-                </span>
-              </div>
+                <div className="hidden sm:block">
+                  <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                    Quiz System
+                  </span>
+                  <p className="text-xs text-gray-500 -mt-0.5">CHARUSAT</p>
+                </div>
+              </Link>
             </div>
 
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center">
-                <div className="flex flex-col items-end mr-4">
-                  <span className="text-sm font-medium text-gray-900">
-                    {user?.name}
-                  </span>
-                  <span className="text-xs text-gray-500 capitalize">
-                    {user?.role}
-                  </span>
-                </div>
-                <div className="bg-blue-100 rounded-full p-2">
-                  <svg
-                    className="w-6 h-6 text-blue-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
-                </div>
+            {/* Right: User Info & Logout */}
+            <div className="flex items-center gap-3">
+              <div className="hidden md:flex flex-col items-end">
+                <span className="text-sm font-semibold text-gray-900">{user?.name}</span>
+                <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${getRoleBadgeColor()}`}>
+                  {user?.role}
+                </span>
               </div>
-              <button
+              
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold shadow-lg">
+                {user?.name?.charAt(0).toUpperCase()}
+              </div>
+
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={handleLogout}
-                className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-gray-200 hover:border-red-200"
               >
-                <svg
-                  className="w-4 h-4 mr-1"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                  />
-                </svg>
-                Logout
-              </button>
+                <LogOut className="w-4 h-4" />
+                <span className="hidden sm:inline">Logout</span>
+              </motion.button>
             </div>
           </div>
         </div>
-      </nav>
+      </header>
 
-      <div className="flex">
-        {/* Sidebar */}
-        <aside className="w-64 bg-white min-h-screen shadow-sm">
-          <nav className="mt-5 px-2">
-            <div className="space-y-1">
+      <div className="flex min-h-screen pt-16">
+        {/* Desktop Sidebar */}
+        <aside className="hidden lg:block lg:w-64 lg:flex-shrink-0">
+          <div className="flex flex-col w-64 border-r border-gray-200 bg-white h-full fixed left-0 top-16">
+            <nav className="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
               {navLinks.map((link) => {
                 const isActive = location.pathname === link.path;
+                const Icon = link.icon;
+                
                 return (
                   <Link
                     key={link.path}
                     to={link.path}
-                    className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                    className={`group flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-lg transition-all ${
                       isActive
-                        ? "bg-blue-50 text-blue-600"
-                        : "text-gray-700 hover:bg-gray-50"
+                        ? "bg-blue-50 text-blue-700 shadow-sm"
+                        : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
                     }`}
                   >
-                    <svg
-                      className={`mr-3 flex-shrink-0 h-6 w-6 ${
-                        isActive
-                          ? "text-blue-600"
-                          : "text-gray-400 group-hover:text-gray-500"
-                      }`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d={link.icon}
-                      />
-                    </svg>
-                    {link.label}
+                    <div className="flex items-center gap-3">
+                      <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? "text-blue-600" : "text-gray-400 group-hover:text-gray-600"}`} />
+                      <span className="truncate">{link.label}</span>
+                    </div>
+                    {isActive && <ChevronRight className="w-4 h-4 text-blue-600 flex-shrink-0" />}
                   </Link>
                 );
               })}
-            </div>
-          </nav>
-        </aside>
+            </nav>
 
-        {/* Main Content */}
-        <main className="flex-1">
-          <div className="py-6">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              {title && (
-                <h1 className="text-2xl font-semibold text-gray-900 mb-6">
-                  {title}
-                </h1>
-              )}
-              {children}
+            {/* Sidebar Footer */}
+            <div className="p-4 border-t border-gray-200 flex-shrink-0">
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center flex-shrink-0">
+                    <GraduationCap className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold text-blue-900 truncate">Need Help?</p>
+                    <p className="text-xs text-blue-700 truncate">Contact Support</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+        </aside>
+
+        {/* Mobile Sidebar */}
+        <AnimatePresence>
+          {sidebarOpen && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30 lg:hidden"
+                onClick={() => setSidebarOpen(false)}
+              />
+              <motion.aside
+                initial={{ x: -280 }}
+                animate={{ x: 0 }}
+                exit={{ x: -280 }}
+                transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                className="fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 lg:hidden"
+              >
+                <div className="flex flex-col h-full">
+                  <div className="flex items-center justify-between p-4 border-b border-gray-200">
+                    <div className="flex items-center gap-2">
+                      <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg p-2">
+                        <GraduationCap className="w-5 h-5 text-white" />
+                      </div>
+                      <span className="font-bold text-gray-900">Quiz System</span>
+                    </div>
+                    <button
+                      onClick={() => setSidebarOpen(false)}
+                      className="p-2 rounded-lg text-gray-500 hover:bg-gray-100"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <nav className="flex-1 px-3 py-6 space-y-1">
+                    {navLinks.map((link) => {
+                      const isActive = location.pathname === link.path;
+                      const Icon = link.icon;
+                      
+                      return (
+                        <Link
+                          key={link.path}
+                          to={link.path}
+                          onClick={() => setSidebarOpen(false)}
+                          className={`group flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-lg transition-all ${
+                            isActive
+                              ? "bg-blue-50 text-blue-700 shadow-sm"
+                              : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <Icon className={`w-5 h-5 ${isActive ? "text-blue-600" : "text-gray-400 group-hover:text-gray-600"}`} />
+                            <span>{link.label}</span>
+                          </div>
+                          {isActive && <ChevronRight className="w-4 h-4 text-blue-600" />}
+                        </Link>
+                      );
+                    })}
+                  </nav>
+                </div>
+              </motion.aside>
+            </>
+          )}
+        </AnimatePresence>
+
+        {/* Main Content */}
+        <main className="flex-1 w-full overflow-x-hidden p-6 lg:p-8">
+          {children}
         </main>
       </div>
     </div>

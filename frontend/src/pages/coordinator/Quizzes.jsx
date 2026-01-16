@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Layout from "../../components/Layout";
 import apiClient from "../../api";
 
 const CoordinatorQuizzes = () => {
+  const navigate = useNavigate();
   const [quizzes, setQuizzes] = useState([]);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [results, setResults] = useState([]);
@@ -79,11 +81,25 @@ const CoordinatorQuizzes = () => {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
-              Assigned Quizzes
+              My Quizzes
             </h1>
             <p className="text-gray-600 mt-1">
-              Manage and monitor your assigned quizzes
+              Manage and monitor your quizzes
             </p>
+          </div>
+          <div className="flex space-x-3">
+            <button
+              onClick={() => navigate('/coordinator/question-bank')}
+              className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Question Bank
+            </button>
+            <button
+              onClick={() => navigate('/coordinator/quizzes/create')}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Create New Quiz
+            </button>
           </div>
         </div>
 

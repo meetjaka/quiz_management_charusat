@@ -1,49 +1,38 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { protect, isStudent } = require("../middleware/authMiddleware");
-const { quizLimiter } = require("../middleware/rateLimiter");
+const studentController = require('../controllers/studentController');
+const { protect, authorize } = require('../middleware/auth');
+const { checkQuizAssignment } = require('../middleware/quizAssignment');
 
-const {
-  getAvailableQuizzes,
-  getQuizDetails,
-  startQuizAttempt,
-  submitAnswer,
-  submitQuizAttempt,
-  reportTabSwitch,
-  getMyAttempts,
-  getMyResults,
-  getResultById,
-} = require("../controllers/studentController");
-
-// Apply authentication and authorization to all routes
+// All routes require student authentication
 router.use(protect);
-router.use(isStudent);
+router.use(authorize('student'));
 
-// Get available quizzes for student
-router.get("/quizzes/available", getAvailableQuizzes);
+// ============================================
+// ASSIGNED QUIZZES
+// ============================================
+router.get('/quizzes', studentController.getMyAssignedQuizzes);
 
-// Get quiz details before starting
-router.get("/quizzes/:id/details", getQuizDetails);
+// Routes that require quiz assignment validation
+router.get('/quizzes/:id', checkQuizAssignment, studentController.getQuizDetails);
 
-// Start quiz attempt
-router.post("/quizzes/:id/start", quizLimiter, startQuizAttempt);
+// ============================================
+// QUIZ ATTEMPTS
+// ============================================
+router.post('/quizzes/:id/start', checkQuizAssignment, studentController.startQuizAttempt);
+router.put('/attempts/:attemptId/answer', studentController.saveAnswer);
+router.post('/attempts/:attemptId/submit', studentController.submitQuizAttempt);
 
-// Submit answer for a question
-router.put("/attempts/:attemptId/answer", submitAnswer);
+// ============================================
+// RESULTS
+// ============================================
+router.get('/results', studentController.getAllMyResults);
+router.get('/quizzes/:quizId/results', studentController.getMyQuizResults);
+router.get('/attempts/:attemptId/details', studentController.getAttemptDetails);
 
-// Submit quiz attempt
-router.post("/attempts/:attemptId/submit", submitQuizAttempt);
-
-// Report tab switch during quiz
-router.post("/attempts/:attemptId/tab-switch", reportTabSwitch);
-
-// Get my quiz attempts
-router.get("/attempts", getMyAttempts);
-
-// Get my results
-router.get("/results", getMyResults);
-
-// Get specific result details
-router.get("/results/:id", getResultById);
+// ============================================
+// PERFORMANCE ANALYTICS
+// ============================================
+router.get('/analytics', studentController.getMyAnalytics);
 
 module.exports = router;

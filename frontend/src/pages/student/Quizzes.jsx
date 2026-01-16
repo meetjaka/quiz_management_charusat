@@ -26,7 +26,7 @@ const StudentQuizzes = () => {
   const fetchAvailableQuizzes = async () => {
     try {
       setLoading(true);
-      const response = await api.get("/student/quizzes/available");
+      const response = await api.get("/student/quizzes");
       setQuizzes(response.data.data || []);
       setError("");
     } catch (err) {

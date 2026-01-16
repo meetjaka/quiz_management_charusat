@@ -1,19 +1,16 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const {
-  register,
-  login,
-  getMe,
-  logout,
-  changePassword,
-} = require("../controllers/authController");
-const { protect } = require("../middleware/authMiddleware");
-const { authLimiter } = require("../middleware/rateLimiter");
+const authController = require('../controllers/authController');
+const { protect } = require('../middleware/auth');
+const { authLimiter } = require('../middleware/rateLimiter');
 
-router.post("/register", register);
-router.post("/login", authLimiter, login);
-router.get("/me", protect, getMe);
-router.post("/logout", protect, logout);
-router.put("/change-password", protect, changePassword);
+// Public routes with strict rate limiting
+router.post('/register', authLimiter, authController.register);
+router.post('/login', authLimiter, authController.login);
+
+// Protected routes
+router.get('/me', protect, authController.getMe);
+router.post('/logout', protect, authController.logout);
+router.put('/update-password', protect, authController.updatePassword);
 
 module.exports = router;

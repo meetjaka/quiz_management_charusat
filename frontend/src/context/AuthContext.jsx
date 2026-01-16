@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
       if (token) {
         try {
           const response = await api.get("/auth/me");
-          setUser(response.data);
+          setUser(response.data.data);
         } catch (err) {
           console.error("Failed to load user:", err);
           localStorage.removeItem("token");
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const response = await api.post("/auth/login", { email, password });
-      const { token, ...userData } = response.data;
+      const { token, user: userData } = response.data;
 
       localStorage.setItem("token", token);
       setUser(userData);
@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const response = await api.post("/auth/register", userData);
-      const { token, ...user } = response.data;
+      const { token, user } = response.data;
 
       localStorage.setItem("token", token);
       setUser(user);
@@ -80,7 +80,7 @@ export const AuthProvider = ({ children }) => {
   const changePassword = async (currentPassword, newPassword) => {
     try {
       setError(null);
-      await api.put("/auth/change-password", { currentPassword, newPassword });
+      await api.put("/auth/update-password", { currentPassword, newPassword });
       return { success: true };
     } catch (err) {
       const message = err.response?.data?.message || "Password change failed";
