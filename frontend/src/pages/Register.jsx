@@ -66,59 +66,69 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-3xl w-full">
-        
-        <div className="bg-white/95 backdrop-blur-sm p-8 rounded-2xl shadow-2xl border border-white/20">
-          {/* Header */}
-          <div className="text-center mb-6">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: "spring" }}
-              className="flex justify-center mb-4">
-              <div className="bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-4 shadow-lg">
-                <UserPlus className="w-8 h-8 text-white" />
-              </div>
-            </motion.div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h2>
-            <p className="text-gray-600">Register as a student to access quizzes</p>
-          </div>
+        transition={{ duration: 0.4 }}
+        className="w-full max-w-3xl space-y-8"
+      >
+        {/* Header Section */}
+        <div className="text-center">
+          <motion.div
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
+            className="mx-auto h-12 w-12 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20 mb-4"
+          >
+            <UserPlus className="h-6 w-6 text-white" />
+          </motion.div>
+          <h2 className="text-3xl font-bold tracking-tight text-gray-900">
+            Create your account
+          </h2>
+          <p className="mt-2 text-sm text-gray-600">
+            Register as a student to access the Quiz Management System
+          </p>
+        </div>
 
+        {/* Card */}
+        <div className="bg-white py-8 px-4 shadow-xl shadow-gray-200/50 border border-gray-100 rounded-2xl sm:px-10">
+          
           {/* Error Message */}
           {error && (
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
-              <div className="flex items-center">
-                <AlertCircle className="w-5 h-5 text-red-500 mr-3" />
-                <span className="text-sm text-red-800">{error}</span>
-              </div>
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              className="mb-6 rounded-lg bg-red-50 p-4 border border-red-100 flex items-start gap-3"
+            >
+              <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-red-700 font-medium">{error}</p>
             </motion.div>
           )}
 
           {/* Registration Form */}
-          <form className="space-y-5" onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {/* Name */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Full Name *
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Full Name
                 </label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <User className="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                  </div>
                   <input
+                    id="name"
                     name="name"
                     type="text"
                     required
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all"
                     placeholder="John Doe"
                   />
                 </div>
@@ -126,37 +136,51 @@ const Register = () => {
 
               {/* Email */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Email Address *
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Email Address
                 </label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Mail className="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                  </div>
                   <input
+                    id="email"
                     name="email"
                     type="email"
+                    autoComplete="email"
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    placeholder="john@charusat.edu.in"
+                    className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all"
+                    placeholder="name@charusat.edu.in"
                   />
                 </div>
               </div>
 
               {/* Password */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Password *
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Password
                 </label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Lock className="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                  </div>
                   <input
+                    id="password"
                     name="password"
                     type="password"
+                    autoComplete="new-password"
                     required
                     value={formData.password}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all"
                     placeholder="Min. 6 characters"
                   />
                 </div>
@@ -164,18 +188,25 @@ const Register = () => {
 
               {/* Confirm Password */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Confirm Password *
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Confirm Password
                 </label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Lock className="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                  </div>
                   <input
+                    id="confirmPassword"
                     name="confirmPassword"
                     type="password"
+                    autoComplete="new-password"
                     required
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all"
                     placeholder="Repeat password"
                   />
                 </div>
@@ -183,18 +214,24 @@ const Register = () => {
 
               {/* Enrollment Number */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Enrollment Number *
+                <label
+                  htmlFor="enrollmentNumber"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Enrollment Number
                 </label>
-                <div className="relative">
-                  <BookOpen className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <BookOpen className="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                  </div>
                   <input
+                    id="enrollmentNumber"
                     name="enrollmentNumber"
                     type="text"
                     required
                     value={formData.enrollmentNumber}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all"
                     placeholder="EN001"
                   />
                 </div>
@@ -202,17 +239,24 @@ const Register = () => {
 
               {/* Department */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Department *
+                <label
+                  htmlFor="department"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Department
                 </label>
-                <div className="relative">
-                  <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Building className="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                  </div>
                   <select
+                    id="department"
                     name="department"
                     required
                     value={formData.department}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors appearance-none">
+                    className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg leading-5 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all appearance-none"
+                  >
                     <option value="">Select Department</option>
                     <option value="Computer Science">Computer Science</option>
                     <option value="Information Technology">Information Technology</option>
@@ -226,17 +270,24 @@ const Register = () => {
 
               {/* Semester */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Semester *
+                <label
+                  htmlFor="semester"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Semester
                 </label>
-                <div className="relative">
-                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Calendar className="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                  </div>
                   <select
+                    id="semester"
                     name="semester"
                     required
                     value={formData.semester}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors appearance-none">
+                    className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg leading-5 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all appearance-none"
+                  >
                     <option value="">Select Semester</option>
                     {[1, 2, 3, 4, 5, 6, 7, 8].map((sem) => (
                       <option key={sem} value={sem.toString()}>{sem}</option>
@@ -247,15 +298,20 @@ const Register = () => {
 
               {/* Batch */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Batch *
+                <label
+                  htmlFor="batch"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Batch
                 </label>
                 <select
+                  id="batch"
                   name="batch"
                   required
                   value={formData.batch}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                  className="block w-full px-3 py-2.5 border border-gray-300 rounded-lg leading-5 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all"
+                >
                   <option value="">Select Batch</option>
                   {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i).map((year) => (
                     <option key={year} value={year.toString()}>{year}</option>
@@ -267,30 +323,45 @@ const Register = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg active:scale-95">
+              className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-70 disabled:cursor-not-allowed transition-all"
+            >
               {loading ? (
-                <>
-                  <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   <span>Creating account...</span>
-                </>
+                </div>
               ) : (
-                <>
-                  <UserPlus className="w-5 h-5" />
-                  <span>Register</span>
-                </>
+                <div className="flex items-center gap-2">
+                  <UserPlus className="h-4 w-4" />
+                  <span>Create Account</span>
+                </div>
               )}
             </button>
 
-            <div className="text-center text-sm pt-2">
-              <span className="text-gray-600">Already have an account? </span>
-              <Link to="/login" className="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
-                Sign in
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">
+                  Already have an account?
+                </span>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <Link
+                to="/login"
+                className="font-medium text-blue-600 hover:text-blue-500 transition-colors hover:underline"
+              >
+                Sign in instead
               </Link>
             </div>
           </form>
-        </div>
 
-        <p className="text-center text-sm text-white/90 mt-6">
+        </div>
+        
+        <p className="text-center text-xs text-gray-400">
           © 2026 CHARUSAT University. All rights reserved.
         </p>
       </motion.div>
