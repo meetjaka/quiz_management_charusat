@@ -187,7 +187,8 @@ exports.updateQuiz = async (req, res) => {
       shuffleQuestions,
       shuffleOptions,
       maxAttempts,
-      status
+      status,
+      isActive
     } = req.body;
     
     // Don't allow editing if quiz is closed
@@ -210,6 +211,7 @@ exports.updateQuiz = async (req, res) => {
     if (shuffleOptions !== undefined) quiz.shuffleOptions = shuffleOptions;
     if (maxAttempts) quiz.maxAttempts = maxAttempts;
     if (status) quiz.status = status;
+    if (isActive !== undefined) quiz.isActive = isActive;
     
     await quiz.save();
     
@@ -264,6 +266,25 @@ exports.deleteQuiz = async (req, res) => {
 // QUESTION MANAGEMENT
 // ============================================
 
+// Get questions for a quiz
+exports.getQuestions = async (req, res) => {
+  try {
+    const quiz = req.quiz;
+    const questions = await Question.find({ quizId: quiz._id }).sort({ orderNumber: 1 });
+    
+    res.status(200).json({
+      success: true,
+      data: questions
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching questions',
+      error: error.message
+    });
+  }
+};
+
 // Add question to quiz
 exports.addQuestion = async (req, res) => {
   try {
@@ -303,6 +324,58 @@ exports.addQuestion = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error adding question',
+      error: error.message
+    });
+  }
+};
+
+// Bulk add questions
+exports.addBulkQuestions = async (req, res) => {
+  try {
+    const quiz = req.quiz;
+    const { questions } = req.body;
+    
+    // Validate required fields
+    if (!questions || !Array.isArray(questions) || questions.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide an array of questions'
+      });
+    }
+    
+    // Validate each question
+    for (let i = 0; i < questions.length; i++) {
+      const q = questions[i];
+      if (!q.questionText || !q.questionType || !q.marks) {
+        return res.status(400).json({
+          success: false,
+          message: `Question ${i + 1}: questionText, questionType, and marks are required`
+        });
+      }
+    }
+    
+    // Create all questions
+    const createdQuestions = await Question.insertMany(
+      questions.map((q, index) => ({
+        quizId: quiz._id,
+        questionText: q.questionText,
+        questionType: q.questionType,
+        marks: q.marks,
+        orderNumber: q.orderNumber || (index + 1),
+        options: q.options || [],
+        correctAnswer: q.correctAnswer
+      }))
+    );
+    
+    res.status(201).json({
+      success: true,
+      message: `${createdQuestions.length} questions added successfully`,
+      data: createdQuestions
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error adding bulk questions',
       error: error.message
     });
   }

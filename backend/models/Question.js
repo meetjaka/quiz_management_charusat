@@ -24,7 +24,7 @@ const questionSchema = new mongoose.Schema({
   },
   questionType: {
     type: String,
-    enum: ['mcq', 'true_false', 'short_answer'],
+    enum: ['mcq', 'mcq_multiple', 'true_false', 'short_answer'],
     required: true
   },
   marks: {

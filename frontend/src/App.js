@@ -26,7 +26,10 @@ import CoordinatorDashboard from "./pages/coordinator/Dashboard";
 import CoordinatorQuizzes from "./pages/coordinator/Quizzes";
 import CoordinatorAnalytics from "./pages/coordinator/Analytics";
 import CreateQuiz from "./pages/coordinator/CreateQuiz";
+import EditQuiz from "./pages/coordinator/EditQuiz";
 import QuestionBank from "./pages/coordinator/QuestionBank";
+import QuizFormatGuide from "./pages/coordinator/QuizFormatGuide";
+import JSONQuizGenerator from "./pages/coordinator/JSONQuizGenerator";
 
 // Student Pages
 import StudentDashboard from "./pages/student/Dashboard";
@@ -113,10 +116,34 @@ function App() {
             }
           />
           <Route
+            path="/coordinator/quizzes/edit/:id"
+            element={
+              <PrivateRoute allowedRoles={["coordinator"]}>
+                <EditQuiz />
+              </PrivateRoute>
+            }
+          />
+          <Route
             path="/coordinator/question-bank"
             element={
               <PrivateRoute allowedRoles={["coordinator"]}>
                 <QuestionBank />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/coordinator/quiz-format-guide"
+            element={
+              <PrivateRoute allowedRoles={["coordinator"]}>
+                <QuizFormatGuide />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/coordinator/json-generator"
+            element={
+              <PrivateRoute allowedRoles={["coordinator"]}>
+                <JSONQuizGenerator />
               </PrivateRoute>
             }
           />

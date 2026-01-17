@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ClipboardList, Plus, BookOpen, Eye, BarChart3, FileText } from "lucide-react";
+import { ClipboardList, Plus, BookOpen, Eye, BarChart3, FileText, Edit2, Trash2 } from "lucide-react";
 import Layout from "../../components/Layout";
 import apiClient from "../../api";
 
@@ -12,10 +12,36 @@ const CoordinatorQuizzes = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showResults, setShowResults] = useState(false);
+  const [expandedQuizId, setExpandedQuizId] = useState(null);
+  const [editingQuizData, setEditingQuizData] = useState({});
+  const [isUpdating, setIsUpdating] = useState(false); // Prevent refetch during updates
 
   useEffect(() => {
     fetchQuizzes();
   }, []);
+
+  // Refetch quizzes when page becomes visible again (user navigates back)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && !isUpdating) {
+        fetchQuizzes();
+      }
+    };
+
+    const handleFocus = () => {
+      if (!isUpdating) {
+        fetchQuizzes();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [isUpdating]);
 
   const fetchQuizzes = async () => {
     try {
@@ -45,6 +71,68 @@ const CoordinatorQuizzes = () => {
       console.error("Error fetching results:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteQuiz = async (quizId, quizTitle) => {
+    if (!window.confirm(`Are you sure you want to delete "${quizTitle}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      await apiClient.delete(`/coordinator/quizzes/${quizId}`);
+      setQuizzes(quizzes.filter(q => q._id !== quizId));
+      alert('Quiz deleted successfully!');
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to delete quiz");
+      console.error("Error deleting quiz:", err);
+      alert('Failed to delete quiz');
+    }
+  };
+
+  const toggleQuizExpand = (quizId) => {
+    setExpandedQuizId(expandedQuizId === quizId ? null : quizId);
+  };
+
+  const handleQuickActivate = async (quiz) => {
+    setIsUpdating(true);
+    try {
+      const updatedQuiz = { ...quiz, isActive: !quiz.isActive };
+      console.log('Activating quiz:', quiz._id, 'new status:', updatedQuiz.isActive);
+      
+      const response = await apiClient.put(`/coordinator/quizzes/${quiz._id}`, updatedQuiz);
+      console.log('Activate response:', response.data);
+      
+      // Update local state
+      setQuizzes(quizzes.map(q => q._id === quiz._id ? updatedQuiz : q));
+      alert(`Quiz ${updatedQuiz.isActive ? 'activated' : 'deactivated'} successfully!`);
+      
+      // Wait a bit before allowing refetch
+      setTimeout(() => setIsUpdating(false), 1000);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to update quiz");
+      console.error("Error updating quiz:", err);
+      alert('Failed to update quiz status');
+      setIsUpdating(false);
+    }
+  };
+
+  const handleQuickUpdate = async (quizId, field, value) => {
+    setIsUpdating(true);
+    try {
+      const quiz = quizzes.find(q => q._id === quizId);
+      const updatedQuiz = { ...quiz, [field]: value };
+      await apiClient.put(`/coordinator/quizzes/${quizId}`, updatedQuiz);
+      setQuizzes(quizzes.map(q => q._id === quizId ? updatedQuiz : q));
+      setEditingQuizData({ ...editingQuizData, [quizId]: updatedQuiz });
+      
+      // Wait a bit before allowing refetch
+      setTimeout(() => setIsUpdating(false), 500);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to update quiz");
+      console.error("Error updating quiz:", err);
+      alert('Failed to update quiz');
+      setIsUpdating(false);
     }
   };
 
@@ -248,52 +336,146 @@ const CoordinatorQuizzes = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {quizzes.map((quiz) => {
                     const status = getQuizStatus(quiz);
+                    const isExpanded = expandedQuizId === quiz._id;
                     return (
-                      <tr key={quiz._id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4">
-                          <div className="text-sm font-medium text-gray-900">
-                            {quiz.title}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            {quiz.department} - {quiz.semester} - {quiz.subject}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">
-                            {new Date(quiz.startTime).toLocaleString()}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            to {new Date(quiz.endTime).toLocaleString()}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">
-                            {quiz.totalQuestions} questions
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            {quiz.totalAttempts || 0} attempts
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`px-2 py-1 text-xs rounded-full ${status.color}`}
-                          >
-                            {status.label}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <button
-                            onClick={() => {
-                              setSelectedQuiz(quiz);
-                              fetchResults(quiz._id);
-                            }}
-                            className="text-blue-600 hover:text-blue-900 flex items-center gap-1"
-                          >
-                            <BarChart3 className="w-4 h-4" />
-                            View Results
-                          </button>
-                        </td>
-                      </tr>
+                      <React.Fragment key={quiz._id}>
+                        <tr className="hover:bg-gray-50 cursor-pointer" onClick={() => toggleQuizExpand(quiz._id)}>
+                          <td className="px-6 py-4">
+                            <div className="text-sm font-medium text-gray-900">
+                              {quiz.title}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {quiz.department} - {quiz.semester} - {quiz.subject}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-900">
+                              {new Date(quiz.startTime).toLocaleString()}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              to {new Date(quiz.endTime).toLocaleString()}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-900">
+                              {quiz.totalQuestions} questions
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {quiz.totalAttempts || 0} attempts
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span
+                              className={`px-2 py-1 text-xs rounded-full ${status.color}`}
+                            >
+                              {status.label}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium" onClick={(e) => e.stopPropagation()}>
+                            <div className="flex gap-3">
+                              <button
+                                onClick={() => {
+                                  setSelectedQuiz(quiz);
+                                  fetchResults(quiz._id);
+                                }}
+                                className="text-green-600 hover:text-green-900 flex items-center gap-1"
+                              >
+                                <BarChart3 className="w-4 h-4" />
+                                Results
+                              </button>
+                              <button
+                                onClick={() => handleDeleteQuiz(quiz._id, quiz.title)}
+                                className="text-red-600 hover:text-red-900 flex items-center gap-1"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                                Delete
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                        {isExpanded && (
+                          <tr>
+                            <td colSpan="5" className="px-6 py-4 bg-gray-50">
+                              <div className="border-l-4 border-blue-500 pl-4">
+                                <h4 className="font-semibold text-gray-900 mb-3">Quick Actions</h4>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                  <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                    <div className="flex justify-between items-center">
+                                      <div>
+                                        <p className="text-sm text-gray-600 mb-1">Status</p>
+                                        <p className="font-medium text-gray-900">{quiz.isActive ? 'Active' : 'Inactive'}</p>
+                                      </div>
+                                      <button
+                                        onClick={(e) => { e.stopPropagation(); handleQuickActivate(quiz); }}
+                                        className={`px-3 py-1 rounded text-sm font-medium ${
+                                          quiz.isActive
+                                            ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                                            : 'bg-green-100 text-green-700 hover:bg-green-200'
+                                        }`}
+                                      >
+                                        {quiz.isActive ? 'Deactivate' : 'Activate'}
+                                      </button>
+                                    </div>
+                                  </div>
+                                  <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                    <p className="text-sm text-gray-600 mb-2">Start Time</p>
+                                    <input
+                                      type="datetime-local"
+                                      value={quiz.startTime ? new Date(new Date(quiz.startTime).getTime() - new Date(quiz.startTime).getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''}
+                                      onChange={(e) => {
+                                        e.stopPropagation();
+                                        handleQuickUpdate(quiz._id, 'startTime', new Date(e.target.value).toISOString());
+                                      }}
+                                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                                      onClick={(e) => e.stopPropagation()}
+                                    />
+                                  </div>
+                                  <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                    <p className="text-sm text-gray-600 mb-2">End Time</p>
+                                    <input
+                                      type="datetime-local"
+                                      value={quiz.endTime ? new Date(new Date(quiz.endTime).getTime() - new Date(quiz.endTime).getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''}
+                                      onChange={(e) => {
+                                        e.stopPropagation();
+                                        handleQuickUpdate(quiz._id, 'endTime', new Date(e.target.value).toISOString());
+                                      }}
+                                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                                      onClick={(e) => e.stopPropagation()}
+                                    />
+                                  </div>
+                                  <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                    <p className="text-sm text-gray-600 mb-2">Duration (minutes)</p>
+                                    <input
+                                      type="number"
+                                      value={quiz.durationMinutes || ''}
+                                      onChange={(e) => {
+                                        e.stopPropagation();
+                                        handleQuickUpdate(quiz._id, 'durationMinutes', parseInt(e.target.value) || 0);
+                                      }}
+                                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                                      onClick={(e) => e.stopPropagation()}
+                                      min="1"
+                                    />
+                                  </div>
+                                  <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                    <p className="text-sm text-gray-600 mb-1">Total Marks</p>
+                                    <p className="font-medium text-gray-900">{quiz.totalMarks}</p>
+                                  </div>
+                                  <div className="bg-white p-4 rounded-lg border border-gray-200 flex items-center justify-center">
+                                    <button
+                                      onClick={(e) => { e.stopPropagation(); navigate(`/coordinator/quizzes/edit/${quiz._id}`); }}
+                                      className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                                    >
+                                      <Edit2 className="w-4 h-4" />
+                                      Edit Quiz
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
                     );
                   })}
                 </tbody>

@@ -60,6 +60,10 @@ const quizSchema = new mongoose.Schema({
     enum: ['draft', 'published', 'closed'],
     default: 'draft'
   },
+  isActive: {
+    type: Boolean,
+    default: true
+  },
   createdAt: {
     type: Date,
     default: Date.now

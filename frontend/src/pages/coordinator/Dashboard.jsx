@@ -12,7 +12,9 @@ import {
   ArrowRight,
   AlertCircle,
   Plus,
-  Activity
+  Activity,
+  Sparkles,
+  BookOpen
 } from "lucide-react";
 import Layout from "../../components/Layout";
 import apiClient from "../../api";
@@ -131,6 +133,38 @@ const CoordinatorDashboard = () => {
         {/* Quick Actions */}
         <motion.div variants={itemVariants}>
           <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Quick Actions</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <QuickActionCard
+              title="Create New Quiz"
+              description="Manually create a quiz"
+              icon={Plus}
+              link="/coordinator/quizzes/create"
+              color="text-blue-600"
+              bg="bg-blue-50"
+            />
+            <QuickActionCard
+              title="Generate from ChatGPT"
+              description="Fast quiz generation with AI"
+              icon={Sparkles}
+              link="/coordinator/json-generator"
+              color="text-green-600"
+              bg="bg-green-50"
+              badge="NEW"
+            />
+            <QuickActionCard
+              title="Question Bank"
+              description="Manage reusable questions"
+              icon={BookOpen}
+              link="/coordinator/question-bank"
+              color="text-purple-600"
+              bg="bg-purple-50"
+            />
+          </div>
+        </motion.div>
+
+        {/* More Actions */}
+        <motion.div variants={itemVariants}>
+          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Overview</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <QuickActionCard
               title="View All Quizzes"
@@ -145,8 +179,8 @@ const CoordinatorDashboard = () => {
               description="Check quiz results and analytics"
               icon={BarChart3}
               link="/coordinator/analytics"
-              color="text-purple-600"
-              bg="bg-purple-50"
+              color="text-orange-600"
+              bg="bg-orange-50"
             />
           </div>
         </motion.div>
@@ -236,13 +270,18 @@ const StatCard = ({ title, value, icon: Icon, color, bg }) => (
   </motion.div>
 );
 
-const QuickActionCard = ({ title, description, icon: Icon, link, color, bg }) => (
+const QuickActionCard = ({ title, description, icon: Icon, link, color, bg, badge }) => (
   <Link to={link}>
     <motion.div
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      className="flex items-center p-5 bg-white border border-gray-200 rounded-xl transition-all hover:shadow-sm group"
+      className="flex items-center p-5 bg-white border border-gray-200 rounded-xl transition-all hover:shadow-sm group relative"
     >
+      {badge && (
+        <span className="absolute top-2 right-2 text-xs font-bold text-green-600 bg-green-100 px-2 py-0.5 rounded-full">
+          {badge}
+        </span>
+      )}
       <div className={`p-3 rounded-full ${bg}`}>
         <Icon className={`w-6 h-6 ${color}`} />
       </div>

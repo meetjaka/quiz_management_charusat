@@ -23,7 +23,9 @@ router.delete('/quizzes/:id', checkQuizOwnership, coordinatorController.deleteQu
 // ============================================
 // QUESTION MANAGEMENT
 // ============================================
+router.get('/quizzes/:id/questions', checkQuizOwnership, coordinatorController.getQuestions);
 router.post('/quizzes/:id/questions', checkQuizOwnership, coordinatorController.addQuestion);
+router.post('/quizzes/:id/questions/bulk', checkQuizOwnership, coordinatorController.addBulkQuestions);
 router.put('/quizzes/:id/questions/:questionId', checkQuizOwnership, coordinatorController.updateQuestion);
 router.delete('/quizzes/:id/questions/:questionId', checkQuizOwnership, coordinatorController.deleteQuestion);
 
