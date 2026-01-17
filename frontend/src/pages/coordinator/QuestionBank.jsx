@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { FiBook, FiPlus, FiTrash2, FiSearch, FiFilter } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
+import { FiBook, FiPlus, FiTrash2, FiSearch, FiFilter, FiArrowLeft } from 'react-icons/fi';
 import { showToast } from '../../utils/toast';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import apiClient from '../../api';
 
 const QuestionBank = () => {
+  const navigate = useNavigate();
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddDialog, setShowAddDialog] = useState(false);
@@ -97,6 +99,13 @@ const QuestionBank = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-6">
           <div>
+            <button
+              onClick={() => navigate(-1)}
+              className="flex items-center text-gray-600 hover:text-gray-900 mb-4 transition-colors"
+            >
+              <FiArrowLeft className="mr-2" />
+              Back
+            </button>
             <h1 className="text-3xl font-bold text-gray-900 flex items-center">
               <FiBook className="mr-3 text-blue-600" />
               Question Bank

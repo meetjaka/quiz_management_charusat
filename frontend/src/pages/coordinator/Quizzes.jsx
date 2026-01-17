@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { ClipboardList, Plus, BookOpen, Eye, BarChart3, FileText } from "lucide-react";
 import Layout from "../../components/Layout";
 import apiClient from "../../api";
 
@@ -80,7 +81,8 @@ const CoordinatorQuizzes = () => {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+              <ClipboardList className="w-7 h-7 text-blue-600" />
               My Quizzes
             </h1>
             <p className="text-gray-600 mt-1">
@@ -90,14 +92,16 @@ const CoordinatorQuizzes = () => {
           <div className="flex space-x-3">
             <button
               onClick={() => navigate('/coordinator/question-bank')}
-              className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
             >
+              <BookOpen className="w-4 h-4" />
               Question Bank
             </button>
             <button
               onClick={() => navigate('/coordinator/quizzes/create')}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
             >
+              <Plus className="w-4 h-4" />
               Create New Quiz
             </button>
           </div>
@@ -215,8 +219,9 @@ const CoordinatorQuizzes = () => {
         <div className="bg-white rounded-lg shadow">
           {quizzes.length === 0 ? (
             <div className="p-12 text-center">
-              <span className="text-6xl">📝</span>
-              <p className="mt-4 text-gray-600">No quizzes assigned yet</p>
+              <ClipboardList className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <p className="mt-4 text-gray-600 font-medium">No quizzes created yet</p>
+              <p className="text-sm text-gray-500 mt-2">Create your first quiz to get started</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -282,8 +287,9 @@ const CoordinatorQuizzes = () => {
                               setSelectedQuiz(quiz);
                               fetchResults(quiz._id);
                             }}
-                            className="text-blue-600 hover:text-blue-900 mr-3"
+                            className="text-blue-600 hover:text-blue-900 flex items-center gap-1"
                           >
+                            <BarChart3 className="w-4 h-4" />
                             View Results
                           </button>
                         </td>
