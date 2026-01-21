@@ -1,3 +1,10 @@
+# Ignore frontend - it has separate deployment
+frontend/
+
+# Ignore backend source - we use /api for serverless
+backend/
+
+# Standard ignores
 node_modules
 .git
 .env
@@ -10,17 +17,17 @@ yarn-error.log*
 .vscode
 .idea
 coverage
-backend/uploads/*
-!backend/uploads/.gitkeep
 *.tmp
 *.temp
 .cache
-README.md
-DEPLOY.md
-VERCEL_DEPLOYMENT.md
-API_DOCUMENTATION.md
-DEPLOYMENT_GUIDE.md
-DESIGN_IMPROVEMENT_GUIDE.md
+
+# Documentation
+*.md
+!README.md
+
+# Scripts
+*.sh
+*.ps1
 deploy-to-vercel.ps1
 .vercel
 .git
