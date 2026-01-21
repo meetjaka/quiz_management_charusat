@@ -5,7 +5,6 @@
       "destination": "/api"
     }
   ],
-  "buildCommand": "cd frontend && npm ci && npm run build",
-  "outputDirectory": "frontend/build",
-  "installCommand": "npm install --prefix api"
+  "buildCommand": "npm --prefix frontend install && npm --prefix frontend run build",
+  "outputDirectory": "frontend/build"
 }
