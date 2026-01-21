@@ -72,3 +72,4 @@ backend/uploads/*.png
 .npm/
 .eslintcache
 .stylelintcache
+.env*.local
