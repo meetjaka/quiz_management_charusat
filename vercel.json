@@ -1,1 +1,3 @@
-{}
+{
+  "installCommand": "npm install --prefix api && npm install --prefix backend"
+}
