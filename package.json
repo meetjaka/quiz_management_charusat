@@ -1,0 +1,26 @@
+{
+  "name": "quiz-management-system",
+  "version": "1.0.0",
+  "description": "Full-stack Quiz Management System with React frontend and Node.js backend",
+  "private": true,
+  "scripts": {
+    "install:backend": "cd backend && npm install",
+    "install:frontend": "cd frontend && npm install",
+    "install:all": "npm run install:backend && npm run install:frontend",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm start",
+    "build:frontend": "cd frontend && npm run build",
+    "vercel-build": "cd frontend && npm install && npm run build"
+  },
+  "keywords": [
+    "quiz",
+    "management",
+    "education",
+    "react",
+    "nodejs",
+    "express",
+    "mongodb"
+  ],
+  "author": "Quiz Management System",
+  "license": "ISC"
+}
