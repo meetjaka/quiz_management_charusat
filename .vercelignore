@@ -1,9 +1,6 @@
 # Ignore frontend - it has separate deployment
 frontend/
 
-# Ignore backend source - we use /api for serverless
-backend/
-
 # Standard ignores
 node_modules
 .git
