@@ -1,7 +1,11 @@
 import axios from "axios";
 
+// Use relative path in production, localhost in development
 const API_BASE_URL =
-  process.env.REACT_APP_API_URL || "http://localhost:5001/api";
+  process.env.REACT_APP_API_URL ||
+  (process.env.NODE_ENV === "production"
+    ? "/api"
+    : "http://localhost:5001/api");
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
