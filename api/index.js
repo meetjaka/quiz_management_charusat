@@ -1,12 +1,9 @@
 const express = require("express");
 const serverless = require("serverless-http");
 const cors = require("cors");
-const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 
-// Load environment variables
-dotenv.config({ path: "../backend/.env" });
-
+// Initialize app first
 const app = express();
 
 // Middleware
