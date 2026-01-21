@@ -32,4 +32,3 @@ deploy-to-vercel.ps1
 .vercel
 .git
 .gitignore
-*/
