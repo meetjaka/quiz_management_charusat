@@ -1,10 +1,10 @@
 import axios from "axios";
 
-// Use relative path in production, localhost in development
+// Use the main project URL for API, separate frontend deployment
 const API_BASE_URL =
   process.env.REACT_APP_API_URL ||
   (process.env.NODE_ENV === "production"
-    ? "/api"
+    ? "https://quiz-managment-system-six.vercel.app/api"
     : "http://localhost:5001/api");
 
 const apiClient = axios.create({
