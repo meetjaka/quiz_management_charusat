@@ -5,8 +5,10 @@ const QuizAssignment = require('../models/QuizAssignment');
 const QuizAttempt = require('../models/QuizAttempt');
 const User = require('../models/User');
 const xlsx = require('xlsx');
+const fs = require('fs');
 const { sendQuizAssignmentEmail } = require('../utils/emailService');
 const { parseQuestionsCSV, generateQuestionTemplate } = require('../utils/bulkUpload');
+const { parseQuizExcel } = require('../utils/excelParser');
 
 // ============================================
 // QUIZ MANAGEMENT (Own Quizzes Only)
@@ -902,6 +904,146 @@ exports.getAllStudents = async (req, res) => {
       success: false,
       message: 'Error fetching students',
       error: error.message
+    });
+  }
+};
+
+// ============================================
+// BULK OPERATIONS
+// ============================================
+
+// Upload quiz from Excel file
+exports.uploadQuizExcel = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Please upload an Excel file",
+      });
+    }
+
+    const { title, description, startTime, endTime, duration, passingMarks, maxAttempts, shuffleQuestions, shuffleOptions } =
+      req.body;
+
+    // Validate required fields
+    if (!title || !duration || !startTime || !endTime) {
+      // Clean up uploaded file
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      return res.status(400).json({
+        success: false,
+        message:
+          "Please provide all required fields (title, duration, startTime, endTime)",
+      });
+    }
+
+    // Validate dates
+    if (new Date(startTime) >= new Date(endTime)) {
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      return res.status(400).json({
+        success: false,
+        message: "End time must be after start time",
+      });
+    }
+
+    // Parse Excel file
+    let questions;
+    try {
+      console.log("🔄 A. Starting Excel parsing...");
+      questions = parseQuizExcel(req.file.path);
+      console.log("✅ B. Parsed questions count:", questions.length);
+      if (questions.length > 0) {
+        console.log(
+          "📝 C. First question structure:",
+          JSON.stringify(questions[0], null, 2),
+        );
+      }
+    } catch (parseError) {
+      console.error("❌ Parse error:", parseError);
+      // Clean up uploaded file
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      return res.status(400).json({
+        success: false,
+        message: parseError.message,
+      });
+    }
+
+    if (!questions || questions.length === 0) {
+      console.log("⚠️ No questions found in Excel");
+      // Clean up uploaded file
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      return res.status(400).json({
+        success: false,
+        message: "No questions found in Excel file",
+      });
+    }
+
+    // Calculate total marks
+    const totalMarks = questions.reduce((sum, q) => sum + q.marks, 0);
+    const calculatedPassingMarks = passingMarks || Math.floor(totalMarks * 0.4);
+
+    // Create quiz
+    console.log("📦 D. Creating quiz document...");
+    const quiz = await Quiz.create({
+      title,
+      description: description || `Quiz imported from Excel with ${questions.length} questions`,
+      startTime,
+      endTime,
+      durationMinutes: parseInt(duration),
+      totalMarks,
+      passingMarks: parseInt(calculatedPassingMarks),
+      status: "draft",
+      coordinatorId: req.user._id,
+      maxAttempts: parseInt(maxAttempts) || 1,
+      shuffleQuestions: shuffleQuestions === 'true',
+      shuffleOptions: shuffleOptions === 'true',
+      isActive: false
+    });
+
+    console.log("✅ E. Quiz created with ID:", quiz._id);
+
+    // Add questions to quiz
+    const questionsToSave = questions.map(q => ({
+      ...q,
+      quizId: quiz._id,
+      coordinatorId: req.user._id,
+    }));
+
+    console.log("📚 F. Adding questions to quiz...");
+    const savedQuestions = await Question.insertMany(questionsToSave);
+    console.log("✅ G. Questions saved:", savedQuestions.length);
+
+    // Clean up uploaded file
+    if (fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
+
+    res.status(201).json({
+      success: true,
+      message: `Quiz created successfully with ${savedQuestions.length} questions`,
+      data: {
+        quiz,
+        questionsCount: savedQuestions.length,
+        totalMarks,
+      },
+    });
+  } catch (error) {
+    // Clean up uploaded file on error
+    if (req.file && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
+
+    console.error("Quiz Excel upload error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error creating quiz from Excel: " + error.message,
     });
   }
 };

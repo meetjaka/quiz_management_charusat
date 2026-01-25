@@ -15,6 +15,9 @@ router.use(authorize('coordinator'));
 router.get('/quizzes', coordinatorController.getMyQuizzes);
 router.post('/quizzes', coordinatorController.createQuiz);
 
+// Excel upload route for creating quiz from Excel file
+router.post('/quizzes/upload-excel', upload.single('file'), coordinatorController.uploadQuizExcel);
+
 // Routes that require quiz ownership validation
 router.get('/quizzes/:id', checkQuizOwnership, coordinatorController.getMyQuizById);
 router.put('/quizzes/:id', checkQuizOwnership, coordinatorController.updateQuiz);

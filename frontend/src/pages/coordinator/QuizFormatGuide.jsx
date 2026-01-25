@@ -11,15 +11,6 @@ const QuizFormatGuide = () => {
 Please analyze the content and create questions following this EXACT format:
 
 {
-  "quizTitle": "Chapter 5: Photosynthesis",
-  "description": "Quiz on photosynthesis concepts and processes",
-  "totalMarks": 20,
-  "passingMarks": 8,
-  "durationMinutes": 30,
-  "maxAttempts": 1,
-  "shuffleQuestions": true,
-  "shuffleOptions": true,
-  "totalQuestions": 10,
   "questions": [
     {
       "questionText": "What is photosynthesis?",
@@ -67,15 +58,6 @@ Please analyze the content and create questions following this EXACT format:
 Return ONLY valid JSON, no extra text or explanations. Generate 10-15 questions covering the entire chapter with varied question types.`;
 
   const exampleJSON = `{
-  "quizTitle": "JavaScript Basics - Chapter 1",
-  "description": "Fundamental concepts of JavaScript programming",
-  "totalMarks": 15,
-  "passingMarks": 6,
-  "durationMinutes": 20,
-  "maxAttempts": 2,
-  "shuffleQuestions": true,
-  "shuffleOptions": true,
-  "totalQuestions": 6,
   "questions": [
     {
       "questionText": "What does 'let' keyword do in JavaScript?",
@@ -192,15 +174,10 @@ Return ONLY valid JSON, no extra text or explanations. Generate 10-15 questions 
             <li className="flex gap-3">
               <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">4</span>
               <div className="flex-1">
-                <span className="font-medium text-gray-700">Paste the prompt and provide quiz details:</span>
-                <ul className="mt-2 ml-4 space-y-1 text-sm text-gray-600 list-disc">
-                  <li>Quiz Title (e.g., "Chapter 5: Photosynthesis")</li>
-                  <li>Total Marks (e.g., 20)</li>
-                  <li>Passing Marks (e.g., 8 for 40%)</li>
-                  <li>Duration in Minutes (e.g., 30)</li>
-                  <li>Max Attempts (e.g., 1 or 2)</li>
-                  <li>Enable Shuffle Questions & Options (true/false)</li>
-                </ul>
+                <span className="font-medium text-gray-700">Paste the prompt and ask ChatGPT to generate questions from your content</span>
+                <div className="mt-1 text-sm text-gray-600">
+                  Note: Quiz details (title, marks, duration) will be collected separately in the quiz creation form.
+                </div>
               </div>
             </li>
             <li className="flex gap-3">
