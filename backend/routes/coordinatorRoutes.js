@@ -62,4 +62,10 @@ router.delete('/question-bank/:questionId', coordinatorController.deleteFromQues
 // ============================================
 router.get('/students', coordinatorController.getAllStudents);
 
+// ============================================
+// PROFILE MANAGEMENT
+// ============================================
+router.get('/profile', coordinatorController.getProfile);
+router.put('/profile', coordinatorController.updateProfile);
+
 module.exports = router;

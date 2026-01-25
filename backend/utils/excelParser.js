@@ -141,8 +141,70 @@ const exportToExcel = (data, filename) => {
   return filename;
 };
 
+// Parse Excel file for bulk user creation (updated format)
+const parseBulkUsersExcel = (filePath) => {
+  try {
+    console.log("📂 1. Reading bulk users Excel file:", filePath);
+
+    const workbook = xlsx.readFile(filePath);
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+    const data = xlsx.utils.sheet_to_json(worksheet);
+
+    console.log("📝 2. Excel data rows:", data.length);
+    console.log("🔍 3. First row data:", data[0]);
+
+    // Filter out empty rows
+    const validRows = data.filter((row) => row.email);
+    console.log("✅ 4. Valid rows (non-empty):", validRows.length);
+
+    // Validate and map data
+    const users = validRows.map((row, index) => {
+      // Validate required fields
+      if (!row.email) {
+        console.error("❌ Missing email in row:", row);
+        throw new Error(
+          `Row ${index + 2}: Missing required field (email). Found columns: ${Object.keys(row).join(", ")}`,
+        );
+      }
+
+      // Generate password if not provided
+      const generatedPassword = row.password?.toString() || `temp${Math.random().toString(36).slice(-8)}`;
+
+      // Generate temporary fullName from email if not provided
+      const tempFullName = row.fullName?.toString().trim() || 
+        row.email.toString().split('@')[0].replace(/[._]/g, ' ')
+          .split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+
+      // Create basic user object - other details will be filled during first-time login
+      const mappedUser = {
+        email: row.email.toString().trim().toLowerCase(),
+        password: generatedPassword,
+        fullName: tempFullName, // Temporary name from email, will be updated on first login
+        role: 'student', // Default role, admin can change later
+        isFirstLogin: true // Mark as first-time login
+      };
+
+      console.log(`📋 5.${index + 1}. Mapped user:`, {
+        email: mappedUser.email,
+        hasPassword: !!mappedUser.password,
+        isFirstLogin: mappedUser.isFirstLogin
+      });
+
+      return mappedUser;
+    });
+
+    console.log(`✅ 6. Successfully parsed ${users.length} users from Excel`);
+    return users;
+  } catch (error) {
+    console.error("❌ Excel parsing error:", error);
+    throw new Error(`Excel parsing error: ${error.message}`);
+  }
+};
+
 module.exports = {
   parseStudentsExcel,
   parseQuizExcel,
   exportToExcel,
+  parseBulkUsersExcel,
 };

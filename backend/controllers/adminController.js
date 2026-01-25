@@ -3,8 +3,9 @@ const Quiz = require("../models/Quiz");
 const Question = require("../models/Question");
 const QuizAttempt = require("../models/QuizAttempt");
 const QuizAssignment = require("../models/QuizAssignment");
+const Group = require("../models/Group");
 const xlsx = require("xlsx");
-const { parseQuizExcel } = require("../utils/excelParser");
+const { parseQuizExcel, parseBulkUsersExcel } = require("../utils/excelParser");
 const fs = require("fs");
 
 // ============================================
@@ -42,6 +43,7 @@ exports.getAllUsers = async (req, res) => {
 
     const users = await User.find(query)
       .select("-password")
+      .populate('groups', 'name groupType description')
       .sort({ createdAt: -1 })
       .limit(parseInt(limit))
       .skip(skip);
@@ -166,6 +168,205 @@ exports.createUser = async (req, res) => {
       success: false,
       message: "Error creating user",
       error: error.message,
+    });
+  }
+};
+
+// Bulk create users from Excel
+exports.bulkCreateUsers = async (req, res) => {
+  try {
+    console.log("🚀 Starting bulk user creation...");
+    console.log("📁 Request file:", req.file);
+    console.log("👤 Request user:", req.user ? req.user.email : 'No user');
+    console.log("📋 Request body:", req.body);
+    
+    if (!req.file) {
+      console.log("❌ No file uploaded");
+      return res.status(400).json({
+        success: false,
+        message: "Please upload an Excel file",
+      });
+    }
+
+    console.log("📋 File details:", {
+      originalname: req.file.originalname,
+      mimetype: req.file.mimetype,
+      size: req.file.size,
+      path: req.file.path
+    });
+
+    // Get group ID from request body (optional)
+    const groupId = req.body.groupId;
+    let selectedGroup = null;
+
+    if (groupId) {
+      const Group = require("../models/Group");
+      selectedGroup = await Group.findById(groupId);
+      if (!selectedGroup) {
+        return res.status(400).json({
+          success: false,
+          message: "Selected group not found",
+        });
+      }
+      console.log("📊 Selected group:", selectedGroup.name);
+    }
+
+    // Parse Excel file
+    let users;
+    try {
+      console.log("🔄 A. Starting bulk users Excel parsing...");
+      users = parseBulkUsersExcel(req.file.path);
+      console.log("✅ B. Parsed users count:", users.length);
+    } catch (parseError) {
+      console.error("❌ Parse error:", parseError);
+      // Clean up uploaded file
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      return res.status(400).json({
+        success: false,
+        message: parseError.message,
+      });
+    }
+
+    if (!users || users.length === 0) {
+      console.log("⚠️ No users found in Excel");
+      // Clean up uploaded file
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      return res.status(400).json({
+        success: false,
+        message: "No users found in Excel file",
+      });
+    }
+
+    // Check for duplicate emails in the file
+    const emailsInFile = users.map(u => u.email);
+    const duplicateEmails = emailsInFile.filter((email, index) => emailsInFile.indexOf(email) !== index);
+    if (duplicateEmails.length > 0) {
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      return res.status(400).json({
+        success: false,
+        message: `Duplicate emails found in file: ${duplicateEmails.join(', ')}`,
+      });
+    }
+
+    // Check for existing users in database
+    const existingUsers = await User.find({
+      $or: [
+        { email: { $in: emailsInFile } },
+        { studentId: { $in: users.filter(u => u.studentId).map(u => u.studentId) } }
+      ]
+    }).select('email studentId');
+
+    if (existingUsers.length > 0) {
+      const existingEmails = existingUsers.map(u => u.email);
+      const existingStudentIds = existingUsers.filter(u => u.studentId).map(u => u.studentId);
+      
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      
+      return res.status(400).json({
+        success: false,
+        message: `Users already exist with emails: ${existingEmails.join(', ')}${existingStudentIds.length ? ` or student IDs: ${existingStudentIds.join(', ')}` : ''}`,
+      });
+    }
+
+    // Add creator reference and group assignment
+    const usersToCreate = users.map(user => ({
+      ...user,
+      createdBy: req.user._id,
+      groups: selectedGroup ? [selectedGroup._id] : [],
+      primaryGroup: selectedGroup ? selectedGroup._id : null
+    }));
+
+    // Create users in bulk
+    console.log("📦 C. Creating users in database...");
+    const createdUsers = await User.insertMany(usersToCreate);
+    console.log("✅ D. Users created:", createdUsers.length);
+
+    // Add users to the selected group
+    if (selectedGroup) {
+      console.log("👥 E. Adding users to group:", selectedGroup.name);
+      for (const user of createdUsers) {
+        selectedGroup.addMember(user._id, req.user._id);
+      }
+      await selectedGroup.save();
+      console.log("✅ F. Users added to group successfully");
+    }
+
+    // Clean up uploaded file
+    if (fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
+
+    // Prepare response data (without passwords)
+    const responseUsers = createdUsers.map(user => {
+      const userObj = user.toObject();
+      delete userObj.password;
+      return userObj;
+    });
+
+    res.status(201).json({
+      success: true,
+      message: `Successfully created ${createdUsers.length} users`,
+      data: {
+        totalCreated: createdUsers.length,
+        users: responseUsers,
+        summary: {
+          students: createdUsers.filter(u => u.role === 'student').length,
+          coordinators: createdUsers.filter(u => u.role === 'coordinator').length,
+        }
+      },
+    });
+  } catch (error) {
+    // Clean up uploaded file on error
+    if (req.file && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
+
+    console.error("Bulk user creation error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error creating users in bulk: " + error.message,
+    });
+  }
+};
+
+// Generate sample Excel template for bulk user creation
+exports.downloadUserTemplate = async (req, res) => {
+  try {
+    console.log('📋 Download template request received');
+
+    const sampleData = [
+      { email: "john.doe@charusat.edu.in", password: "temp123456" },
+      { email: "jane.smith@charusat.edu.in", password: "coord123456" },
+      { email: "mike.wilson@charusat.edu.in", password: "student123" }
+    ];
+
+    // Create Excel file
+    const worksheet = xlsx.utils.json_to_sheet(sampleData);
+    const workbook = xlsx.utils.book_new();
+    xlsx.utils.book_append_sheet(workbook, worksheet, "Users");
+
+    // Generate buffer
+    const buffer = xlsx.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+
+    // Set response headers
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename=bulk_users_template.xlsx');
+
+    console.log('✅ Sending Excel template');
+    res.send(buffer);
+  } catch (error) {
+    console.error('❌ Template download error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error generating template: ' + error.message
     });
   }
 };
@@ -999,6 +1200,87 @@ exports.deleteQuiz = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error deleting quiz",
+      error: error.message,
+    });
+  }
+};
+
+// ============================================
+// SYSTEM FIXES (Temporary)
+// ============================================
+
+// Fix admin users who have isFirstLogin set to true
+exports.fixAdminFirstLogin = async (req, res) => {
+  try {
+    const result = await User.updateMany(
+      { role: 'admin', isFirstLogin: true },
+      { $set: { isFirstLogin: false } }
+    );
+
+    res.json({
+      success: true,
+      message: `Fixed ${result.modifiedCount} admin users`,
+      modifiedCount: result.modifiedCount
+    });
+  } catch (error) {
+    console.error('Error fixing admin first login:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fixing admin first login',
+      error: error.message
+    });
+  }
+};
+
+// Bulk delete users
+exports.bulkDeleteUsers = async (req, res) => {
+  try {
+    const { userIds } = req.body;
+
+    if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'User IDs are required and should be an array',
+      });
+    }
+
+    // Prevent deletion of admin users including the current user
+    const adminUsers = await User.find({
+      _id: { $in: userIds },
+      role: 'admin'
+    });
+
+    if (adminUsers.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Cannot delete admin users',
+      });
+    }
+
+    // Prevent self-deletion
+    if (userIds.includes(req.user.id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Cannot delete your own account',
+      });
+    }
+
+    // Delete users
+    const result = await User.deleteMany({
+      _id: { $in: userIds },
+      role: { $ne: 'admin' } // Extra protection
+    });
+
+    res.json({
+      success: true,
+      message: `Successfully deleted ${result.deletedCount} users`,
+      deletedCount: result.deletedCount,
+    });
+  } catch (error) {
+    console.error('Error deleting users:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error deleting users',
       error: error.message,
     });
   }

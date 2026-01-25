@@ -35,9 +35,56 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  semester: {
+    type: String,
+    trim: true
+  },
+  batch: {
+    type: String,
+    trim: true
+  },
+  enrollmentNumber: {
+    type: String,
+    trim: true,
+    sparse: true // Only for students
+  },
+  phoneNumber: {
+    type: String,
+    trim: true
+  },
+  profileImage: {
+    type: String,
+    default: null
+  },
   isActive: {
     type: Boolean,
     default: true
+  },
+  isFirstLogin: {
+    type: Boolean,
+    default: true // First-time login requires password change
+  },
+  lastLogin: {
+    type: Date,
+    default: null
+  },
+  passwordChangedAt: {
+    type: Date,
+    default: Date.now
+  },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User', // References the admin who created this account
+    default: null
+  },
+  groups: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Group'
+  }],
+  primaryGroup: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Group',
+    default: null
   },
   createdAt: {
     type: Date,

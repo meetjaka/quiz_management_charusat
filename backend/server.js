@@ -43,7 +43,8 @@ app.use("/api/", apiLimiter);
           email: defaultAdminEmail,
           password: defaultAdminPassword,
           role: "admin",
-          isActive: true
+          isActive: true,
+          isFirstLogin: false // Admin users don't need first-time login flow
         });
         console.log(`✅ Seeded admin user: ${defaultAdminEmail}`);
         console.log(`   Password: ${defaultAdminPassword}`);
@@ -70,6 +71,8 @@ app.get("/favicon.ico", (req, res) => res.status(204).end());
 app.use("/api/auth", require("./routes/authRoutes"));
 // Admin routes
 app.use("/api/admin", require("./routes/adminRoutes"));
+// Group routes
+app.use("/api/groups", require("./routes/groupRoutes"));
 // Coordinator routes
 app.use("/api/coordinator", require("./routes/coordinatorRoutes"));
 // Student routes

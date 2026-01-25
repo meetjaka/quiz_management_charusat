@@ -1114,4 +1114,73 @@ exports.downloadQuestionTemplate = async (req, res) => {
   }
 };
 
+// ============================================
+// PROFILE MANAGEMENT
+// ============================================
+
+// Get coordinator profile
+exports.getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select('-password');
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: user
+    });
+  } catch (error) {
+    console.error('Get profile error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching profile: ' + error.message
+    });
+  }
+};
+
+// Update coordinator profile
+exports.updateProfile = async (req, res) => {
+  try {
+    const allowedUpdates = ['fullName', 'phone', 'department', 'designation', 'bio'];
+    const updates = {};
+    
+    // Only allow certain fields to be updated
+    Object.keys(req.body).forEach(key => {
+      if (allowedUpdates.includes(key)) {
+        updates[key] = req.body[key];
+      }
+    });
+
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      updates,
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Profile updated successfully',
+      data: user
+    });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(400).json({
+      success: false,
+      message: 'Error updating profile: ' + error.message
+    });
+  }
+};
+
 module.exports = exports;

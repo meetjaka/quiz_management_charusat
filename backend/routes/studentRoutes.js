@@ -35,4 +35,10 @@ router.get('/attempts/:attemptId/details', studentController.getAttemptDetails);
 // ============================================
 router.get('/analytics', studentController.getMyAnalytics);
 
+// ============================================
+// PROFILE MANAGEMENT
+// ============================================
+router.get('/profile', studentController.getProfile);
+router.put('/profile', studentController.updateProfile);
+
 module.exports = router;
