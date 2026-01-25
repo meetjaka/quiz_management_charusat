@@ -81,6 +81,7 @@ async function seedAdmin() {
           password: defaultAdminPassword,
           role: "admin",
           isActive: true,
+          isFirstLogin: false // Admin users don't need first-time login flow
         });
         console.log(`✅ Admin seeded: ${defaultAdminEmail}`);
       }

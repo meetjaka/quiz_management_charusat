@@ -38,11 +38,30 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const response = await api.post("/auth/login", { email, password });
-      const { token, user: userData } = response.data;
+      const { token, user, isFirstLogin } = response.data;
+
+      // Check if it's first-time login
+      if (isFirstLogin) {
+        // For admin users, skip first-time login flow
+        if (user?.role === 'admin') {
+          localStorage.setItem("token", token);
+          setUser(user);
+          return { success: true, user };
+        }
+        
+        // For non-admin users, handle first-time login
+        return { 
+          success: true, 
+          isFirstLogin: true, 
+          user,
+          email,
+          message: response.data.message 
+        };
+      }
 
       localStorage.setItem("token", token);
-      setUser(userData);
-      return { success: true, user: userData };
+      setUser(user);
+      return { success: true, user };
     } catch (err) {
       const message = err.response?.data?.message || "Login failed";
       setError(message);

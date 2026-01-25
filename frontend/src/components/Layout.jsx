@@ -11,7 +11,8 @@ import {
   X,
   ChevronRight,
   GraduationCap,
-  Award
+  Award,
+  Settings
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
@@ -42,6 +43,7 @@ const Layout = ({ children, title }) => {
           { path: "/coordinator/dashboard", label: "Dashboard", icon: LayoutDashboard },
           { path: "/coordinator/quizzes", label: "My Quizzes", icon: FileText },
           { path: "/coordinator/analytics", label: "Analytics", icon: BarChart3 },
+          { path: "/coordinator/settings", label: "Settings", icon: Settings },
         ];
       case "student":
         return [
@@ -49,6 +51,7 @@ const Layout = ({ children, title }) => {
           { path: "/student/quizzes", label: "Available Quizzes", icon: FileText },
           { path: "/student/analytics", label: "My Performance", icon: BarChart3 },
           { path: "/student/results", label: "My Results", icon: Award },
+          { path: "/student/settings", label: "Settings", icon: Settings },
         ];
       default:
         return [];

@@ -12,10 +12,17 @@ import {
   Trash2,
   AlertCircle,
   Check,
-  X
+  X,
+  UserX,
+  ArrowRight,
+  CheckSquare,
+  Square,
+  UserPlus
 } from "lucide-react";
 import Layout from "../../components/Layout";
 import apiClient from "../../api";
+import { showToast } from "../../utils/toast";
+import ConfirmDialog from "../../components/ConfirmDialog";
 
 const AdminUsers = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -26,6 +33,15 @@ const AdminUsers = () => {
   const [roleFilter, setRoleFilter] = useState(searchParams.get("role") || "all");
   const [stats, setStats] = useState({ students: 0, coordinators: 0, admins: 0 });
   const [showAddForm, setShowAddForm] = useState(false);
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [showBulkActions, setShowBulkActions] = useState(false);
+  const [groups, setGroups] = useState([]);
+  const [showMoveToGroupModal, setShowMoveToGroupModal] = useState(false);
+  const [selectedGroupForMove, setSelectedGroupForMove] = useState('');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showGroupDropdown, setShowGroupDropdown] = useState(null);
+  const [expandedGroups, setExpandedGroups] = useState({});
+  const [groupedUsers, setGroupedUsers] = useState({});
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -41,7 +57,32 @@ const AdminUsers = () => {
   useEffect(() => {
     fetchUsers();
     fetchStats();
+    fetchGroups();
   }, [roleFilter]);
+
+  useEffect(() => {
+    setShowBulkActions(selectedUsers.length > 0);
+  }, [selectedUsers]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showGroupDropdown && !event.target.closest('.relative')) {
+        setShowGroupDropdown(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showGroupDropdown]);
+
+  const fetchGroups = async () => {
+    try {
+      const response = await apiClient.get('/groups');
+      setGroups(response.data.data || []);
+    } catch (error) {
+      console.error('Failed to fetch groups:', error);
+    }
+  };
 
   useEffect(() => {
     if (error || success) {
@@ -57,9 +98,65 @@ const AdminUsers = () => {
     try {
       setLoading(true);
       const response = await apiClient.get("/admin/users", {
-        params: { role: roleFilter !== "all" ? roleFilter : undefined }
+        params: { 
+          role: roleFilter !== "all" ? roleFilter : undefined,
+          populate: 'groups' 
+        }
       });
-      setUsers(response.data.data || []);
+      const fetchedUsers = response.data.data || [];
+      setUsers(fetchedUsers);
+      
+      console.log('=== FETCH USERS DEBUG ===');
+      console.log('Total users fetched:', fetchedUsers.length);
+      const sampleUserWithGroup = fetchedUsers.find(u => u.groups?.length > 0);
+      console.log('Sample user with groups:', sampleUserWithGroup);
+      if (sampleUserWithGroup?.groups?.[0]) {
+        console.log('First group structure:', JSON.stringify(sampleUserWithGroup.groups[0], null, 2));
+      }
+      
+      // Group users by their groups
+      const grouped = {};
+      fetchedUsers.forEach(user => {
+        if (user.groups && user.groups.length > 0) {
+          user.groups.forEach(group => {
+            if (!grouped[group._id]) {
+              console.log('Creating new group entry:', {
+                groupId: group._id,
+                groupName: group.name,
+                groupType: group.groupType,
+                fullGroupObject: group
+              });
+              grouped[group._id] = {
+                groupInfo: group,
+                users: []
+              };
+            }
+            grouped[group._id].users.push(user);
+          });
+        } else {
+          // Users without groups
+          if (!grouped['no-group']) {
+            grouped['no-group'] = {
+              groupInfo: { _id: 'no-group', name: 'No Group', groupType: 'none' },
+              users: []
+            };
+          }
+          grouped['no-group'].users.push(user);
+        }
+      });
+      
+      console.log('=== FINAL GROUPED STRUCTURE ===');
+      console.log('Number of groups:', Object.keys(grouped).length);
+      Object.entries(grouped).forEach(([groupId, data]) => {
+        console.log(`Group ${groupId}:`, {
+          name: data.groupInfo?.name,
+          type: data.groupInfo?.groupType,
+          userCount: data.users.length,
+          fullGroupInfo: JSON.stringify(data.groupInfo)
+        });
+      });
+      
+      setGroupedUsers(grouped);
       setError(null);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to fetch users");
@@ -122,11 +219,154 @@ const AdminUsers = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const filteredUsers = users.filter(user =>
-    user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.enrollmentNumber?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Multi-select handlers
+  const toggleUserSelection = (userId) => {
+    setSelectedUsers(prev =>
+      prev.includes(userId)
+        ? prev.filter(id => id !== userId)
+        : [...prev, userId]
+    );
+  };
+
+  const selectAllUsers = () => {
+    const allUserIds = filteredUsers.map(user => user._id);
+    setSelectedUsers(allUserIds);
+  };
+
+  const clearSelection = () => {
+    setSelectedUsers([]);
+  };
+
+  // Bulk operations
+  const handleBulkDelete = async () => {
+    try {
+      await apiClient.delete('/admin/users/bulk', {
+        data: { userIds: selectedUsers }
+      });
+      showToast.success(`Successfully deleted ${selectedUsers.length} users`);
+      setSelectedUsers([]);
+      fetchUsers();
+      fetchStats();
+      setShowDeleteConfirm(false);
+    } catch (error) {
+      showToast.error(error.response?.data?.message || 'Failed to delete users');
+    }
+  };
+
+  const handleMoveToGroup = async () => {
+    if (!selectedGroupForMove) {
+      showToast.error('Please select a group');
+      return;
+    }
+
+    try {
+      await apiClient.post(`/groups/${selectedGroupForMove}/members/bulk`, {
+        userIds: selectedUsers
+      });
+      const selectedGroup = groups.find(g => g._id === selectedGroupForMove);
+      showToast.success(`Successfully moved ${selectedUsers.length} users to ${selectedGroup.name}`);
+      setSelectedUsers([]);
+      setShowMoveToGroupModal(false);
+      setSelectedGroupForMove('');
+    } catch (error) {
+      showToast.error(error.response?.data?.message || 'Failed to move users');
+    }
+  };
+
+  // Group dropdown handlers
+  const toggleGroupDropdown = (userId) => {
+    setShowGroupDropdown(showGroupDropdown === userId ? null : userId);
+  };
+
+  const handleRemoveFromGroup = async (userId, groupId) => {
+    try {
+      await apiClient.delete(`/groups/${groupId}/members`, {
+        data: { userId }
+      });
+      showToast.success('User removed from group');
+      fetchUsers();
+      setShowGroupDropdown(null);
+    } catch (error) {
+      showToast.error(error.response?.data?.message || 'Failed to remove user from group');
+    }
+  };
+
+  const handleChangeGroup = async (userId, newGroupId) => {
+    try {
+      // First remove from current group if exists
+      const user = users.find(u => u._id === userId);
+      if (user.groups && user.groups.length > 0) {
+        await apiClient.delete(`/groups/${user.groups[0]._id}/members`, {
+          data: { userId }
+        });
+      }
+      
+      // Then add to new group
+      if (newGroupId) {
+        await apiClient.post(`/groups/${newGroupId}/members/bulk`, {
+          userIds: [userId]
+        });
+      }
+      
+      showToast.success('Group changed successfully');
+      fetchUsers();
+      setShowGroupDropdown(null);
+    } catch (error) {
+      showToast.error(error.response?.data?.message || 'Failed to change group');
+    }
+  };
+
+  // Edit and delete handlers
+  const handleEditUser = (user) => {
+    // For now, we'll just show a toast. You can add edit modal later
+    showToast.info(`Edit functionality for ${user.name} - Coming soon!`);
+  };
+
+  const handleDeleteUser = async (userId, userName) => {
+    if (!window.confirm(`Are you sure you want to delete ${userName}?`)) {
+      return;
+    }
+
+    try {
+      await apiClient.delete(`/admin/users/bulk`, {
+        data: { userIds: [userId] }
+      });
+      showToast.success('User deleted successfully');
+      fetchUsers();
+    } catch (error) {
+      showToast.error(error.response?.data?.message || 'Failed to delete user');
+    }
+  };
+
+  // Group expansion handlers
+  const toggleGroupExpansion = (groupId) => {
+    setExpandedGroups(prev => ({
+      ...prev,
+      [groupId]: !prev[groupId]
+    }));
+  };
+
+  const expandAllGroups = () => {
+    const allExpanded = {};
+    Object.keys(groupedUsers).forEach(groupId => {
+      allExpanded[groupId] = true;
+    });
+    setExpandedGroups(allExpanded);
+  };
+
+  const collapseAllGroups = () => {
+    setExpandedGroups({});
+  };
+
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.enrollmentNumber?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesRole = roleFilter === 'all' || user.role === roleFilter;
+    
+    return matchesSearch && matchesRole;
+  });
 
   if (loading && users.length === 0) {
     return (
@@ -154,26 +394,51 @@ const AdminUsers = () => {
             <h1 className="text-2xl font-bold text-gray-900 tracking-tight">User Management</h1>
             <p className="text-gray-500 mt-1">Manage students, coordinators, and administrators</p>
           </div>
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => setShowAddForm(!showAddForm)}
-            className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm ${
-              showAddForm 
-                ? "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50" 
-                : "bg-blue-600 text-white hover:bg-blue-700 shadow-blue-200"
-            }`}
-          >
-            {showAddForm ? (
-              <>
-                <X className="w-4 h-4" /> Cancel
-              </>
-            ) : (
-              <>
-                <Plus className="w-4 h-4" /> Add New User
-              </>
-            )}
-          </motion.button>
+          <div className="flex items-center gap-3">
+            <Link
+              to="/admin/bulk-users"
+              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm bg-green-600 text-white hover:bg-green-700 shadow-green-200"
+            >
+              <Users className="w-4 h-4" /> Bulk Create Users
+            </Link>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setShowAddForm(!showAddForm)}
+              className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm ${
+                showAddForm 
+                  ? "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50" 
+                  : "bg-blue-600 text-white hover:bg-blue-700 shadow-blue-200"
+              }`}
+            >
+              {showAddForm ? (
+                <>
+                  <X className="w-4 h-4" /> Cancel
+                </>
+              ) : (
+                <>
+                  <Plus className="w-4 h-4" /> Add Single User
+                </>
+              )}
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => {
+                fetchUsers();
+                fetchGroups();
+                fetchStats();
+                showToast.success('Data refreshed');
+              }}
+              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+              title="Refresh data"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Refresh
+            </motion.button>
+          </div>
         </div>
 
         {/* Notifications */}
@@ -411,66 +676,251 @@ const AdminUsers = () => {
           </div>
         </div>
 
-        {/* Users Table */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead className="text-xs text-gray-500 uppercase bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-4 font-medium">Name</th>
-                  <th className="px-6 py-4 font-medium">Email</th>
-                  <th className="px-6 py-4 font-medium">Role</th>
-                  <th className="px-6 py-4 font-medium">Department</th>
-                  <th className="px-6 py-4 font-medium">Status</th>
-                  <th className="px-6 py-4 font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {filteredUsers.length > 0 ? (
-                  filteredUsers.map((user) => (
-                    <tr key={user._id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4">
-                        <div>
-                          <div className="font-medium text-gray-900">{user.name}</div>
-                          {user.enrollmentNumber && (
-                            <div className="text-xs text-gray-500">{user.enrollmentNumber}</div>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-gray-600">{user.email}</td>
-                      <td className="px-6 py-4">
-                        <RoleBadge role={user.role} />
-                      </td>
-                      <td className="px-6 py-4 text-gray-600">
-                        {user.department || "-"}
-                        {user.semester && ` (Sem ${user.semester})`}
-                      </td>
-                      <td className="px-6 py-4">
-                        <StatusBadge active={user.isActive} />
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <button className="p-1.5 hover:bg-blue-50 rounded-lg transition-colors group">
-                            <Edit className="w-4 h-4 text-gray-400 group-hover:text-blue-600" />
-                          </button>
-                          <button className="p-1.5 hover:bg-red-50 rounded-lg transition-colors group">
-                            <Trash2 className="w-4 h-4 text-gray-400 group-hover:text-red-600" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="6" className="px-6 py-12 text-center text-gray-400">
-                      {searchTerm ? "No users found matching your search" : "No users found"}
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+        {/* Bulk Actions Bar */}
+        {showBulkActions && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-center justify-between"
+          >
+            <div className="flex items-center space-x-4">
+              <span className="text-blue-800 font-medium">
+                {selectedUsers.length} user{selectedUsers.length !== 1 ? 's' : ''} selected
+              </span>
+              <button
+                onClick={clearSelection}
+                className="text-blue-600 hover:text-blue-800 text-sm"
+              >
+                Clear selection
+              </button>
+            </div>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => setShowMoveToGroupModal(true)}
+                className="inline-flex items-center px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              >
+                <ArrowRight className="w-4 h-4 mr-1" />
+                Move to Group
+              </button>
+              <button
+                onClick={() => setShowDeleteConfirm(true)}
+                className="inline-flex items-center px-3 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700"
+              >
+                <UserX className="w-4 h-4 mr-1" />
+                Delete Users
+              </button>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Expand/Collapse All */}
+        <div className="flex justify-end space-x-2">
+          <button
+            onClick={expandAllGroups}
+            className="text-sm text-blue-600 hover:text-blue-800"
+          >
+            Expand All
+          </button>
+          <button
+            onClick={collapseAllGroups}
+            className="text-sm text-gray-600 hover:text-gray-800"
+          >
+            Collapse All
+          </button>
         </div>
+
+        {/* Groups List */}
+        <div className="space-y-4">
+          {Object.entries(groupedUsers).map(([groupId, { groupInfo, users: groupUsers }]) => (
+            <div key={groupId} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              {/* Group Header */}
+              <button
+                onClick={() => toggleGroupExpansion(groupId)}
+                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+              >
+                <div className="flex items-center space-x-3">
+                  <div className={`p-2 rounded-lg ${groupId === 'no-group' ? 'bg-gray-100' : 'bg-blue-100'}`}>
+                    <Users className={`w-5 h-5 ${groupId === 'no-group' ? 'text-gray-600' : 'text-blue-600'}`} />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-lg font-semibold text-gray-900">{groupInfo?.name || 'Unknown Group'}</h3>
+                    <p className="text-sm text-gray-600">
+                      {groupUsers.length} {groupUsers.length === 1 ? 'user' : 'users'}
+                      {groupInfo?.groupType && groupInfo.groupType !== 'none' && ` • ${groupInfo.groupType}`}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  {expandedGroups[groupId] ? (
+                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                    </svg>
+                  ) : (
+                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  )}
+                </div>
+              </button>
+
+              {/* Group Users - Expanded View */}
+              {expandedGroups[groupId] && (
+                <div className="border-t border-gray-200">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead className="bg-gray-50 border-b border-gray-200">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            <input
+                              type="checkbox"
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setSelectedUsers(prev => [...new Set([...prev, ...groupUsers.map(u => u._id)])]);
+                                } else {
+                                  setSelectedUsers(prev => prev.filter(id => !groupUsers.some(u => u._id === id)));
+                                }
+                              }}
+                              checked={groupUsers.every(u => selectedUsers.includes(u._id))}
+                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Role</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Department</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100">
+                        {groupUsers.map((user) => (
+                          <tr key={user._id} className="hover:bg-gray-50 transition-colors">
+                            <td className="px-6 py-4">
+                              <input
+                                type="checkbox"
+                                checked={selectedUsers.includes(user._id)}
+                                onChange={() => toggleUserSelection(user._id)}
+                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                              />
+                            </td>
+                            <td className="px-6 py-4">
+                              <div>
+                                <div className="font-medium text-gray-900">{user.name}</div>
+                                {user.enrollmentNumber && (
+                                  <div className="text-xs text-gray-500">{user.enrollmentNumber}</div>
+                                )}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 text-gray-600">{user.email}</td>
+                            <td className="px-6 py-4">
+                              <RoleBadge role={user.role} />
+                            </td>
+                            <td className="px-6 py-4 text-gray-600">
+                              {user.department || "-"}
+                              {user.semester && ` (Sem ${user.semester})`}
+                            </td>
+                            <td className="px-6 py-4">
+                              <StatusBadge active={user.isActive} />
+                            </td>
+                            <td className="px-6 py-4">
+                              <div className="flex items-center gap-2">
+                                <button 
+                                  onClick={() => handleEditUser(user)}
+                                  className="p-1 text-blue-600 hover:text-blue-800 transition-colors"
+                                  title="Edit user"
+                                >
+                                  <Edit className="w-4 h-4" />
+                                </button>
+                                <button 
+                                  onClick={() => handleDeleteUser(user._id, user.name)}
+                                  className="p-1 text-red-600 hover:text-red-800 transition-colors"
+                                  title="Delete user"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+
+          {Object.keys(groupedUsers).length === 0 && (
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
+              <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No users found</h3>
+              <p className="text-gray-600">Try adjusting your search or filters</p>
+            </div>
+          )}
+        </div>
+
+        {/* Move to Group Modal */}
+        {showMoveToGroupModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+              <div className="flex items-center justify-between p-6 border-b">
+                <h3 className="text-lg font-medium text-gray-900">Move Users to Group</h3>
+                <button
+                  onClick={() => setShowMoveToGroupModal(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="p-6">
+                <p className="text-gray-600 mb-4">
+                  Move {selectedUsers.length} selected user{selectedUsers.length !== 1 ? 's' : ''} to a group:
+                </p>
+                
+                <select
+                  value={selectedGroupForMove}
+                  onChange={(e) => setSelectedGroupForMove(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-6"
+                >
+                  <option value="">Select a group</option>
+                  {groups.map((group) => (
+                    <option key={group._id} value={group._id}>
+                      {group.name} ({group.groupType})
+                    </option>
+                  ))}
+                </select>
+
+                <div className="flex items-center justify-end space-x-3">
+                  <button
+                    onClick={() => setShowMoveToGroupModal(false)}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleMoveToGroup}
+                    disabled={!selectedGroupForMove}
+                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Move Users
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Delete Confirmation Dialog */}
+        <ConfirmDialog
+          isOpen={showDeleteConfirm}
+          onClose={() => setShowDeleteConfirm(false)}
+          onConfirm={handleBulkDelete}
+          title="Delete Users"
+          message={`Are you sure you want to delete ${selectedUsers.length} user${selectedUsers.length !== 1 ? 's' : ''}? This action cannot be undone.`}
+          confirmText="Delete Users"
+          confirmButtonClass="bg-red-600 hover:bg-red-700"
+        />
       </motion.div>
     </Layout>
   );

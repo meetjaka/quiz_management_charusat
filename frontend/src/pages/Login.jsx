@@ -36,6 +36,14 @@ const Login = () => {
       const result = await login(formData.email, formData.password);
 
       if (result.success) {
+        // Handle first-time login for non-admin users
+        if (result.isFirstLogin) {
+          navigate("/first-time-login", { 
+            state: { email: result.email }
+          });
+          return;
+        }
+
         const userRole = result.user?.role;
         if (userRole === "admin") {
           navigate("/admin/dashboard");
