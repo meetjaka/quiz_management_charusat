@@ -1,40 +1,49 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FiUsers, FiUpload, FiDownload, FiUserPlus, FiEye, FiEyeOff, FiArrowLeft, FiPlus } from 'react-icons/fi';
-import { showToast } from '../../utils/toast';
-import apiClient from '../../api';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  FiUsers,
+  FiUpload,
+  FiDownload,
+  FiUserPlus,
+  FiEye,
+  FiEyeOff,
+  FiArrowLeft,
+  FiPlus,
+} from "react-icons/fi";
+import { showToast } from "../../utils/toast";
+import apiClient from "../../api";
 
 const BulkUserCreation = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('excel');
+  const [activeTab, setActiveTab] = useState("excel");
   const [excelFile, setExcelFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [uploadResult, setUploadResult] = useState(null);
 
   // Manual form states
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    role: 'student',
-    department: '',
-    semester: '',
-    batch: '',
-    enrollmentNumber: '',
-    phoneNumber: '',
-    password: '',
+    fullName: "",
+    email: "",
+    role: "student",
+    department: "",
+    semester: "",
+    batch: "",
+    enrollmentNumber: "",
+    phoneNumber: "",
+    password: "",
     generatePassword: true,
-    groupId: ''
+    groupId: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [creating, setCreating] = useState(false);
   const [groups, setGroups] = useState([]);
-  const [selectedGroupId, setSelectedGroupId] = useState('');
+  const [selectedGroupId, setSelectedGroupId] = useState("");
   const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
   const [createGroupWithBulk, setCreateGroupWithBulk] = useState(false);
   const [newGroupData, setNewGroupData] = useState({
-    name: '',
-    description: '',
-    groupType: 'batch'
+    name: "",
+    description: "",
+    groupType: "batch",
   });
 
   useEffect(() => {
@@ -44,10 +53,10 @@ const BulkUserCreation = () => {
   // Fetch groups
   const fetchGroups = async () => {
     try {
-      const response = await apiClient.get('/groups');
+      const response = await apiClient.get("/groups");
       setGroups(response.data.data || []);
     } catch (error) {
-      console.error('Failed to fetch groups:', error);
+      console.error("Failed to fetch groups:", error);
     }
   };
 
@@ -56,11 +65,11 @@ const BulkUserCreation = () => {
     const file = e.target.files[0];
     if (file) {
       const allowedTypes = [
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        'application/vnd.ms-excel'
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/vnd.ms-excel",
       ];
       if (!allowedTypes.includes(file.type)) {
-        showToast.error('Please upload a valid Excel file (.xlsx or .xls)');
+        showToast.error("Please upload a valid Excel file (.xlsx or .xls)");
         return;
       }
       setExcelFile(file);
@@ -71,49 +80,56 @@ const BulkUserCreation = () => {
   // Handle Excel upload
   const handleExcelUpload = async () => {
     if (!excelFile) {
-      showToast.error('Please select an Excel file');
+      showToast.error("Please select an Excel file");
       return;
     }
 
     setUploading(true);
     try {
       let groupIdToUse = selectedGroupId;
-      
+
       // Create new group if requested
       if (createGroupWithBulk && newGroupData.name.trim()) {
-        const groupResponse = await apiClient.post('/groups', newGroupData);
+        const groupResponse = await apiClient.post("/groups", newGroupData);
         groupIdToUse = groupResponse.data.data._id;
-        setGroups(prev => [...prev, groupResponse.data.data]);
+        setGroups((prev) => [...prev, groupResponse.data.data]);
         showToast.success(`Group "${newGroupData.name}" created successfully!`);
       }
 
       const formDataUpload = new FormData();
-      formDataUpload.append('file', excelFile);
+      formDataUpload.append("file", excelFile);
       if (groupIdToUse) {
-        formDataUpload.append('groupId', groupIdToUse);
+        formDataUpload.append("groupId", groupIdToUse);
       }
 
-      const response = await apiClient.post('/admin/users/bulk-create', formDataUpload, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
+      const response = await apiClient.post(
+        "/admin/users/bulk-create",
+        formDataUpload,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         },
-      });
+      );
 
       setUploadResult(response.data);
       setExcelFile(null);
-      setSelectedGroupId('');
+      setSelectedGroupId("");
       setCreateGroupWithBulk(false);
-      setNewGroupData({ name: '', description: '', groupType: 'batch' });
-      
+      setNewGroupData({ name: "", description: "", groupType: "batch" });
+
       // Reset file input
-      const fileInput = document.getElementById('excel-upload');
-      if (fileInput) fileInput.value = '';
-      
-      showToast.success(`Successfully created ${response.data.data.totalCreated} users!`);
+      const fileInput = document.getElementById("excel-upload");
+      if (fileInput) fileInput.value = "";
+
+      showToast.success(
+        `Successfully created ${response.data.data.totalCreated} users!`,
+      );
     } catch (error) {
-      const errorMsg = error.response?.data?.message || 'Failed to create users';
+      const errorMsg =
+        error.response?.data?.message || "Failed to create users";
       showToast.error(errorMsg);
-      console.error('Error creating users:', error);
+      console.error("Error creating users:", error);
     } finally {
       setUploading(false);
     }
@@ -122,33 +138,34 @@ const BulkUserCreation = () => {
   // Download template
   const handleDownloadTemplate = async () => {
     try {
-      const response = await apiClient.get('/admin/users/download-template', {
-        responseType: 'blob',
+      const response = await apiClient.get("/admin/users/download-template", {
+        responseType: "blob",
       });
-      
-      const blob = new Blob([response.data], { 
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+
+      const blob = new Blob([response.data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
       const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
-      link.setAttribute('download', 'bulk_users_template.xlsx');
+      link.setAttribute("download", "bulk_users_template.xlsx");
       document.body.appendChild(link);
       link.click();
       link.remove();
       window.URL.revokeObjectURL(url);
-      
-      showToast.success('Template downloaded successfully!');
+
+      showToast.success("Template downloaded successfully!");
     } catch (error) {
-      showToast.error('Failed to download template');
-      console.error('Error downloading template:', error);
+      showToast.error("Failed to download template");
+      console.error("Error downloading template:", error);
     }
   };
 
   // Generate random password
   const generateRandomPassword = () => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let password = '';
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let password = "";
     for (let i = 0; i < 10; i++) {
       password += chars.charAt(Math.floor(Math.random() * chars.length));
     }
@@ -158,16 +175,16 @@ const BulkUserCreation = () => {
   // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
 
     // Auto-generate password when generatePassword is checked
-    if (name === 'generatePassword' && checked) {
-      setFormData(prev => ({
+    if (name === "generatePassword" && checked) {
+      setFormData((prev) => ({
         ...prev,
-        password: generateRandomPassword()
+        password: generateRandomPassword(),
       }));
     }
   };
@@ -179,7 +196,7 @@ const BulkUserCreation = () => {
 
     try {
       const userData = { ...formData };
-      
+
       // Generate password if needed
       if (userData.generatePassword && !userData.password) {
         userData.password = generateRandomPassword();
@@ -189,33 +206,32 @@ const BulkUserCreation = () => {
       delete userData.generatePassword;
 
       // Remove empty fields
-      Object.keys(userData).forEach(key => {
+      Object.keys(userData).forEach((key) => {
         if (!userData[key]) delete userData[key];
       });
 
-      const response = await apiClient.post('/admin/users', userData);
-      
-      showToast.success('User created successfully!');
-      
+      const response = await apiClient.post("/admin/users", userData);
+
+      showToast.success("User created successfully!");
+
       // Reset form
       setFormData({
-        fullName: '',
-        email: '',
-        role: 'student',
-        department: '',
-        semester: '',
-        batch: '',
-        enrollmentNumber: '',
-        phoneNumber: '',
-        password: '',
+        fullName: "",
+        email: "",
+        role: "student",
+        department: "",
+        semester: "",
+        batch: "",
+        enrollmentNumber: "",
+        phoneNumber: "",
+        password: "",
         generatePassword: true,
-        groupId: ''
+        groupId: "",
       });
-      
     } catch (error) {
-      const errorMsg = error.response?.data?.message || 'Failed to create user';
+      const errorMsg = error.response?.data?.message || "Failed to create user";
       showToast.error(errorMsg);
-      console.error('Error creating user:', error);
+      console.error("Error creating user:", error);
     } finally {
       setCreating(false);
     }
@@ -232,10 +248,12 @@ const BulkUserCreation = () => {
                 <FiUsers className="text-blue-600" />
                 User Management
               </h1>
-              <p className="text-gray-600 mt-2">Create student and coordinator accounts</p>
+              <p className="text-gray-600 mt-2">
+                Create student and coordinator accounts
+              </p>
             </div>
             <button
-              onClick={() => navigate('/admin/users')}
+              onClick={() => navigate("/admin/users")}
               className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
             >
               <FiArrowLeft className="mr-2 h-4 w-4" />
@@ -249,22 +267,22 @@ const BulkUserCreation = () => {
           <div className="border-b border-gray-200">
             <nav className="-mb-px flex space-x-8">
               <button
-                onClick={() => setActiveTab('excel')}
+                onClick={() => setActiveTab("excel")}
                 className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === 'excel'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  activeTab === "excel"
+                    ? "border-blue-500 text-blue-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
                 <FiUpload className="inline mr-2" />
                 Bulk Upload (Excel)
               </button>
               <button
-                onClick={() => setActiveTab('manual')}
+                onClick={() => setActiveTab("manual")}
                 className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === 'manual'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  activeTab === "manual"
+                    ? "border-blue-500 text-blue-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
                 <FiUserPlus className="inline mr-2" />
@@ -275,27 +293,55 @@ const BulkUserCreation = () => {
         </div>
 
         {/* Excel Upload Tab */}
-        {activeTab === 'excel' && (
+        {activeTab === "excel" && (
           <div className="space-y-6">
             {/* Instructions */}
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-blue-900 mb-3">Excel Upload Instructions</h3>
+              <h3 className="text-lg font-semibold text-blue-900 mb-3">
+                Excel Upload Instructions
+              </h3>
               <div className="text-sm text-blue-800 space-y-2">
                 <p>Follow these steps to bulk create user accounts:</p>
                 <ol className="list-decimal ml-5 space-y-1">
                   <li>Download the Excel template using the button below</li>
-                  <li>Fill in the required columns: <strong>email</strong> and <strong>password</strong></li>
-                  <li>Email format: Must be valid (e.g., john.doe@charusat.edu.in)</li>
-                  <li>Password: Temporary password for first login</li>
-                  <li>Users will complete their profile during first-time login</li>
+                  <li>
+                    Fill in the required columns: <strong>email</strong> and{" "}
+                    <strong>password</strong> (optional)
+                  </li>
+                  <li>
+                    Email format: Must be valid (e.g., john.doe@charusat.edu.in)
+                  </li>
+                  <li>
+                    <strong>Password:</strong> If left blank, default password{" "}
+                    <code className="bg-blue-100 px-2 py-1 rounded text-blue-900 font-mono">
+                      Password@123
+                    </code>{" "}
+                    will be used
+                  </li>
+                  <li>
+                    Users will be prompted to update password and complete
+                    profile on first login
+                  </li>
                   <li>Upload the completed file and click "Create Users"</li>
                 </ol>
+                <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded">
+                  <p className="text-yellow-800 text-xs">
+                    <strong>💡 Tip:</strong> Inform students about the default
+                    password{" "}
+                    <code className="bg-yellow-100 px-1 rounded">
+                      Password@123
+                    </code>{" "}
+                    if you leave the password column empty.
+                  </p>
+                </div>
               </div>
             </div>
 
             {/* Template Download */}
             <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Step 1: Download Template</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Step 1: Download Template
+              </h3>
               <button
                 onClick={handleDownloadTemplate}
                 className="flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors"
@@ -307,8 +353,10 @@ const BulkUserCreation = () => {
 
             {/* File Upload */}
             <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Step 2: Upload Completed File</h3>
-              
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Step 2: Upload Completed File
+              </h3>
+
               <div className="mb-4">
                 <input
                   type="file"
@@ -328,7 +376,9 @@ const BulkUserCreation = () => {
 
               {excelFile && (
                 <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                  <p className="text-sm text-gray-600">Selected: {excelFile.name}</p>
+                  <p className="text-sm text-gray-600">
+                    Selected: {excelFile.name}
+                  </p>
                 </div>
               )}
 
@@ -337,7 +387,7 @@ const BulkUserCreation = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Group Assignment
                 </label>
-                
+
                 {/* Option to create new group */}
                 <div className="mb-3">
                   <label className="flex items-center">
@@ -347,12 +397,14 @@ const BulkUserCreation = () => {
                       onChange={(e) => {
                         setCreateGroupWithBulk(e.target.checked);
                         if (e.target.checked) {
-                          setSelectedGroupId('');
+                          setSelectedGroupId("");
                         }
                       }}
                       className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mr-2"
                     />
-                    <span className="text-sm text-gray-700">Create new group for these users</span>
+                    <span className="text-sm text-gray-700">
+                      Create new group for these users
+                    </span>
                   </label>
                 </div>
 
@@ -363,7 +415,12 @@ const BulkUserCreation = () => {
                         type="text"
                         placeholder="Group Name *"
                         value={newGroupData.name}
-                        onChange={(e) => setNewGroupData(prev => ({ ...prev, name: e.target.value }))}
+                        onChange={(e) =>
+                          setNewGroupData((prev) => ({
+                            ...prev,
+                            name: e.target.value,
+                          }))
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
@@ -371,7 +428,12 @@ const BulkUserCreation = () => {
                       <textarea
                         placeholder="Group Description (optional)"
                         value={newGroupData.description}
-                        onChange={(e) => setNewGroupData(prev => ({ ...prev, description: e.target.value }))}
+                        onChange={(e) =>
+                          setNewGroupData((prev) => ({
+                            ...prev,
+                            description: e.target.value,
+                          }))
+                        }
                         rows={2}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
@@ -379,7 +441,12 @@ const BulkUserCreation = () => {
                     <div>
                       <select
                         value={newGroupData.groupType}
-                        onChange={(e) => setNewGroupData(prev => ({ ...prev, groupType: e.target.value }))}
+                        onChange={(e) =>
+                          setNewGroupData((prev) => ({
+                            ...prev,
+                            groupType: e.target.value,
+                          }))
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       >
                         <option value="batch">Batch</option>
@@ -413,12 +480,11 @@ const BulkUserCreation = () => {
                     </button>
                   </div>
                 )}
-                
+
                 <p className="text-xs text-gray-500 mt-1">
-                  {createGroupWithBulk 
+                  {createGroupWithBulk
                     ? "A new group will be created and all users will be added to it"
-                    : "All users from the Excel file will be added to the selected group"
-                  }
+                    : "All users from the Excel file will be added to the selected group"}
                 </p>
               </div>
 
@@ -428,22 +494,45 @@ const BulkUserCreation = () => {
                 className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <FiUsers className="w-4 h-4" />
-                {uploading ? 'Creating Users...' : 'Create Users'}
+                {uploading ? "Creating Users..." : "Create Users"}
               </button>
             </div>
 
             {/* Upload Result */}
             {uploadResult && (
               <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-lg font-semibold text-green-900 mb-4">✅ Upload Successful!</h3>
+                <h3 className="text-lg font-semibold text-green-900 mb-4">
+                  ✅ Upload Successful!
+                </h3>
+
+                {/* Important Info about default password */}
+                {uploadResult.info && (
+                  <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p className="text-sm text-yellow-800">
+                      <strong>📌 Important:</strong> {uploadResult.info}
+                    </p>
+                    <p className="text-xs text-yellow-700 mt-2">
+                      Students can use this password to login for the first
+                      time, then they will be prompted to update their password
+                      and complete their profile.
+                    </p>
+                  </div>
+                )}
+
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="bg-green-50 p-3 rounded-lg">
                     <p className="text-green-800 font-medium">Total Created</p>
-                    <p className="text-2xl font-bold text-green-900">{uploadResult.data.totalCreated}</p>
+                    <p className="text-2xl font-bold text-green-900">
+                      {uploadResult.data.totalCreated}
+                    </p>
                   </div>
                   <div className="bg-blue-50 p-3 rounded-lg">
-                    <p className="text-blue-800 font-medium">Students: {uploadResult.data.summary.students}</p>
-                    <p className="text-blue-800 font-medium">Coordinators: {uploadResult.data.summary.coordinators}</p>
+                    <p className="text-blue-800 font-medium">
+                      Students: {uploadResult.data.summary.students}
+                    </p>
+                    <p className="text-blue-800 font-medium">
+                      Coordinators: {uploadResult.data.summary.coordinators}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -452,10 +541,12 @@ const BulkUserCreation = () => {
         )}
 
         {/* Manual Creation Tab */}
-        {activeTab === 'manual' && (
+        {activeTab === "manual" && (
           <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">Create Single User Account</h3>
-            
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">
+              Create Single User Account
+            </h3>
+
             <form onSubmit={handleManualCreate} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Full Name */}
@@ -523,7 +614,7 @@ const BulkUserCreation = () => {
                 </div>
 
                 {/* Student specific fields */}
-                {formData.role === 'student' && (
+                {formData.role === "student" && (
                   <>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -617,8 +708,10 @@ const BulkUserCreation = () => {
 
               {/* Password Section */}
               <div className="border-t pt-6">
-                <h4 className="text-lg font-medium text-gray-900 mb-4">Password Settings</h4>
-                
+                <h4 className="text-lg font-medium text-gray-900 mb-4">
+                  Password Settings
+                </h4>
+
                 <div className="mb-4">
                   <label className="flex items-center">
                     <input
@@ -628,7 +721,9 @@ const BulkUserCreation = () => {
                       onChange={handleInputChange}
                       className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                     />
-                    <span className="ml-2 text-sm text-gray-700">Auto-generate password</span>
+                    <span className="ml-2 text-sm text-gray-700">
+                      Auto-generate password
+                    </span>
                   </label>
                 </div>
 
@@ -638,7 +733,7 @@ const BulkUserCreation = () => {
                       Password *
                     </label>
                     <input
-                      type={showPassword ? 'text' : 'password'}
+                      type={showPassword ? "text" : "password"}
                       name="password"
                       value={formData.password}
                       onChange={handleInputChange}
@@ -663,7 +758,9 @@ const BulkUserCreation = () => {
 
                 {formData.generatePassword && formData.password && (
                   <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                    <p className="text-sm text-yellow-800 mb-2">Generated Password:</p>
+                    <p className="text-sm text-yellow-800 mb-2">
+                      Generated Password:
+                    </p>
                     <code className="bg-yellow-100 px-2 py-1 rounded text-sm font-mono">
                       {formData.password}
                     </code>
@@ -679,7 +776,7 @@ const BulkUserCreation = () => {
                   className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <FiUserPlus className="w-4 h-4" />
-                  {creating ? 'Creating User...' : 'Create User'}
+                  {creating ? "Creating User..." : "Create User"}
                 </button>
               </div>
             </form>
@@ -692,9 +789,9 @@ const BulkUserCreation = () => {
         <CreateGroupModal
           onClose={() => setShowCreateGroupModal(false)}
           onSuccess={(newGroup) => {
-            setGroups(prev => [...prev, newGroup]);
+            setGroups((prev) => [...prev, newGroup]);
             setSelectedGroupId(newGroup._id);
-            setFormData(prev => ({ ...prev, groupId: newGroup._id }));
+            setFormData((prev) => ({ ...prev, groupId: newGroup._id }));
             setShowCreateGroupModal(false);
           }}
         />
@@ -706,26 +803,28 @@ const BulkUserCreation = () => {
 // Simple Create Group Modal Component
 const CreateGroupModal = ({ onClose, onSuccess }) => {
   const [groupData, setGroupData] = useState({
-    name: '',
-    groupType: 'batch',
-    description: ''
+    name: "",
+    groupType: "batch",
+    description: "",
   });
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!groupData.name.trim()) {
-      showToast.error('Group name is required');
+      showToast.error("Group name is required");
       return;
     }
 
     setLoading(true);
     try {
-      const response = await apiClient.post('/groups', groupData);
-      showToast.success('Group created successfully!');
+      const response = await apiClient.post("/groups", groupData);
+      showToast.success("Group created successfully!");
       onSuccess(response.data.data);
     } catch (error) {
-      showToast.error(error.response?.data?.message || 'Failed to create group');
+      showToast.error(
+        error.response?.data?.message || "Failed to create group",
+      );
     } finally {
       setLoading(false);
     }
@@ -735,7 +834,9 @@ const CreateGroupModal = ({ onClose, onSuccess }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
         <div className="flex items-center justify-between p-6 border-b">
-          <h3 className="text-lg font-medium text-gray-900">Create New Group</h3>
+          <h3 className="text-lg font-medium text-gray-900">
+            Create New Group
+          </h3>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -743,7 +844,7 @@ const CreateGroupModal = ({ onClose, onSuccess }) => {
             ×
           </button>
         </div>
-        
+
         <form onSubmit={handleSubmit} className="p-6">
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -752,7 +853,9 @@ const CreateGroupModal = ({ onClose, onSuccess }) => {
             <input
               type="text"
               value={groupData.name}
-              onChange={(e) => setGroupData(prev => ({ ...prev, name: e.target.value }))}
+              onChange={(e) =>
+                setGroupData((prev) => ({ ...prev, name: e.target.value }))
+              }
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="e.g., 2024 CE Batch"
               required
@@ -765,7 +868,9 @@ const CreateGroupModal = ({ onClose, onSuccess }) => {
             </label>
             <select
               value={groupData.groupType}
-              onChange={(e) => setGroupData(prev => ({ ...prev, groupType: e.target.value }))}
+              onChange={(e) =>
+                setGroupData((prev) => ({ ...prev, groupType: e.target.value }))
+              }
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="batch">Batch</option>
@@ -781,7 +886,12 @@ const CreateGroupModal = ({ onClose, onSuccess }) => {
             </label>
             <textarea
               value={groupData.description}
-              onChange={(e) => setGroupData(prev => ({ ...prev, description: e.target.value }))}
+              onChange={(e) =>
+                setGroupData((prev) => ({
+                  ...prev,
+                  description: e.target.value,
+                }))
+              }
               rows={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Brief description of the group..."
@@ -801,7 +911,7 @@ const CreateGroupModal = ({ onClose, onSuccess }) => {
               disabled={loading}
               className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Creating...' : 'Create Group'}
+              {loading ? "Creating..." : "Create Group"}
             </button>
           </div>
         </form>

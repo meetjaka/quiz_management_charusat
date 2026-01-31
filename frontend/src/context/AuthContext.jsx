@@ -43,19 +43,22 @@ export const AuthProvider = ({ children }) => {
       // Check if it's first-time login
       if (isFirstLogin) {
         // For admin users, skip first-time login flow
-        if (user?.role === 'admin') {
+        if (user?.role === "admin") {
           localStorage.setItem("token", token);
           setUser(user);
           return { success: true, user };
         }
-        
-        // For non-admin users, handle first-time login
-        return { 
-          success: true, 
-          isFirstLogin: true, 
+
+        // For non-admin users, store token and handle first-time login
+        // Store token so they can make authenticated requests during profile setup
+        localStorage.setItem("token", token);
+        setUser(user);
+        return {
+          success: true,
+          isFirstLogin: true,
           user,
           email,
-          message: response.data.message 
+          message: response.data.message,
         };
       }
 

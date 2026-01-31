@@ -1,48 +1,52 @@
-import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { 
-  FiEye, 
-  FiEyeOff, 
-  FiLock, 
-  FiUser, 
+import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
+import {
+  FiEye,
+  FiEyeOff,
+  FiLock,
+  FiUser,
   FiMail,
   FiPhone,
   FiBook,
   FiCalendar,
   FiHome,
-  FiSave
-} from 'react-icons/fi';
-import { showToast } from '../utils/toast';
-import { useAuth } from '../context/AuthContext';
-import apiClient from '../api';
+  FiSave,
+} from "react-icons/fi";
+import { showToast } from "../utils/toast";
+import { useAuth } from "../context/AuthContext";
+import apiClient from "../api";
 
 const FirstTimeLogin = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
-  
+
+  // Get user info from location state
+  const userFromState = location.state?.user;
+  const userRole = userFromState?.role || "student";
+
   const [formData, setFormData] = useState({
-    email: location.state?.email || '',
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
+    email: location.state?.email || "",
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
     // Profile fields
-    fullName: '',
-    phone: '',
-    department: '',
-    role: 'student', // Default role
+    fullName: "",
+    phone: "",
+    department: "",
+    role: userRole, // Get from authenticated user
     // Student specific fields
-    semester: '',
-    enrollmentNumber: '',
+    semester: "",
+    enrollmentNumber: "",
     // Coordinator specific fields
-    designation: ''
+    designation: "",
   });
 
   const [showPasswords, setShowPasswords] = useState({
     current: false,
     new: false,
-    confirm: false
+    confirm: false,
   });
 
   const [loading, setLoading] = useState(false);
@@ -50,36 +54,36 @@ const FirstTimeLogin = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const togglePasswordVisibility = (field) => {
-    setShowPasswords(prev => ({
+    setShowPasswords((prev) => ({
       ...prev,
-      [field]: !prev[field]
+      [field]: !prev[field],
     }));
   };
 
   const validateProfileData = () => {
     const { fullName, phone, department, role } = formData;
-    
+
     if (!fullName.trim()) {
-      showToast.error('Full name is required');
+      showToast.error("Full name is required");
       return false;
     }
     if (!department.trim()) {
-      showToast.error('Department is required');
+      showToast.error("Department is required");
       return false;
     }
-    if (role === 'student' && !formData.semester) {
-      showToast.error('Semester is required for students');
+    if (role === "student" && !formData.semester) {
+      showToast.error("Semester is required for students");
       return false;
     }
-    if (role === 'coordinator' && !formData.designation.trim()) {
-      showToast.error('Designation is required for coordinators');
+    if (role === "coordinator" && !formData.designation.trim()) {
+      showToast.error("Designation is required for coordinators");
       return false;
     }
     return true;
@@ -87,21 +91,21 @@ const FirstTimeLogin = () => {
 
   const validatePasswords = () => {
     const { currentPassword, newPassword, confirmPassword } = formData;
-    
+
     if (!currentPassword.trim()) {
-      showToast.error('Current password is required');
+      showToast.error("Current password is required");
       return false;
     }
     if (!newPassword.trim()) {
-      showToast.error('New password is required');
+      showToast.error("New password is required");
       return false;
     }
     if (newPassword.length < 6) {
-      showToast.error('New password must be at least 6 characters long');
+      showToast.error("New password must be at least 6 characters long");
       return false;
     }
     if (newPassword !== confirmPassword) {
-      showToast.error('New passwords do not match');
+      showToast.error("New passwords do not match");
       return false;
     }
     return true;
@@ -118,11 +122,17 @@ const FirstTimeLogin = () => {
 
     setLoading(true);
     try {
-      // First change password
-      await apiClient.post('/auth/change-password', {
+      // First change password using first-time-login endpoint
+      const passwordResponse = await apiClient.post("/auth/first-time-login", {
+        email: formData.email,
         currentPassword: formData.currentPassword,
-        newPassword: formData.newPassword
+        newPassword: formData.newPassword,
       });
+
+      // Update token after password change
+      if (passwordResponse.data.token) {
+        localStorage.setItem("token", passwordResponse.data.token);
+      }
 
       // Then update profile
       const profileData = {
@@ -130,31 +140,36 @@ const FirstTimeLogin = () => {
         phone: formData.phone,
         department: formData.department,
         role: formData.role,
-        ...(formData.role === 'student' && {
+        ...(formData.role === "student" && {
           semester: formData.semester,
-          enrollmentNumber: formData.enrollmentNumber
+          enrollmentNumber: formData.enrollmentNumber,
         }),
-        ...(formData.role === 'coordinator' && {
-          designation: formData.designation
-        })
+        ...(formData.role === "coordinator" && {
+          designation: formData.designation,
+        }),
       };
 
-      const endpoint = formData.role === 'student' ? '/student/profile' : '/coordinator/profile';
+      const endpoint =
+        formData.role === "student"
+          ? "/student/profile"
+          : "/coordinator/profile";
       await apiClient.put(endpoint, profileData);
 
       // Login with new credentials
       const loginResult = await login(formData.email, formData.newPassword);
-      
+
       if (loginResult.success && loginResult.user) {
-        showToast.success('Profile setup completed successfully!');
-        
+        showToast.success("Profile setup completed successfully!");
+
         // Redirect to appropriate dashboard
         const dashboardRoute = `/${loginResult.user.role}/dashboard`;
         navigate(dashboardRoute, { replace: true });
       }
     } catch (error) {
-      console.error('Setup error:', error);
-      showToast.error(error.response?.data?.message || 'Failed to complete setup');
+      console.error("Setup error:", error);
+      showToast.error(
+        error.response?.data?.message || "Failed to complete setup",
+      );
     } finally {
       setLoading(false);
     }
@@ -178,22 +193,36 @@ const FirstTimeLogin = () => {
           >
             <FiUser className="text-white text-2xl" />
           </motion.div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome to Quiz System!</h1>
-          <p className="text-gray-600">Complete your profile setup to get started</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Welcome to Quiz System!
+          </h1>
+          <p className="text-gray-600">
+            Complete your profile setup to get started
+          </p>
         </div>
 
         {/* Progress Indicator */}
         <div className="flex items-center justify-center mb-8">
           <div className="flex items-center space-x-4">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-              step >= 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'
-            }`}>
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                step >= 1
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 text-gray-500"
+              }`}
+            >
               1
             </div>
-            <div className={`w-16 h-1 ${step >= 2 ? 'bg-blue-600' : 'bg-gray-200'}`}></div>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-              step >= 2 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'
-            }`}>
+            <div
+              className={`w-16 h-1 ${step >= 2 ? "bg-blue-600" : "bg-gray-200"}`}
+            ></div>
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                step >= 2
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 text-gray-500"
+              }`}
+            >
               2
             </div>
           </div>
@@ -205,8 +234,10 @@ const FirstTimeLogin = () => {
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.3 }}
           >
-            <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">Profile Information</h2>
-            
+            <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">
+              Profile Information
+            </h2>
+
             <div className="space-y-6">
               {/* Email (readonly) */}
               <div>
@@ -262,25 +293,6 @@ const FirstTimeLogin = () => {
                 </div>
               </div>
 
-              {/* Role Selection */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Role *
-                </label>
-                <div className="relative">
-                  <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                  <select
-                    name="role"
-                    value={formData.role}
-                    onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
-                  >
-                    <option value="student">Student</option>
-                    <option value="coordinator">Coordinator</option>
-                  </select>
-                </div>
-              </div>
-
               {/* Department */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -301,7 +313,7 @@ const FirstTimeLogin = () => {
               </div>
 
               {/* Student-specific fields */}
-              {formData.role === 'student' && (
+              {formData.role === "student" && (
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -351,7 +363,7 @@ const FirstTimeLogin = () => {
               )}
 
               {/* Coordinator-specific fields */}
-              {formData.role === 'coordinator' && (
+              {formData.role === "coordinator" && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Designation *
@@ -389,8 +401,10 @@ const FirstTimeLogin = () => {
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.3 }}
           >
-            <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">Set Your Password</h2>
-            
+            <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">
+              Set Your Password
+            </h2>
+
             <div className="space-y-6">
               {/* Current Password */}
               <div>
@@ -410,7 +424,7 @@ const FirstTimeLogin = () => {
                   />
                   <button
                     type="button"
-                    onClick={() => togglePasswordVisibility('current')}
+                    onClick={() => togglePasswordVisibility("current")}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   >
                     {showPasswords.current ? <FiEyeOff /> : <FiEye />}
@@ -436,7 +450,7 @@ const FirstTimeLogin = () => {
                   />
                   <button
                     type="button"
-                    onClick={() => togglePasswordVisibility('new')}
+                    onClick={() => togglePasswordVisibility("new")}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   >
                     {showPasswords.new ? <FiEyeOff /> : <FiEye />}
@@ -462,7 +476,7 @@ const FirstTimeLogin = () => {
                   />
                   <button
                     type="button"
-                    onClick={() => togglePasswordVisibility('confirm')}
+                    onClick={() => togglePasswordVisibility("confirm")}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   >
                     {showPasswords.confirm ? <FiEyeOff /> : <FiEye />}
@@ -472,7 +486,9 @@ const FirstTimeLogin = () => {
 
               {/* Password Requirements */}
               <div className="bg-gray-50 rounded-lg p-4">
-                <h4 className="text-sm font-medium text-gray-900 mb-2">Password Requirements</h4>
+                <h4 className="text-sm font-medium text-gray-900 mb-2">
+                  Password Requirements
+                </h4>
                 <ul className="text-sm text-gray-600 space-y-1">
                   <li>• At least 6 characters long</li>
                   <li>• Mix of letters, numbers, and symbols recommended</li>
@@ -489,7 +505,7 @@ const FirstTimeLogin = () => {
                 >
                   Back
                 </motion.button>
-                
+
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}

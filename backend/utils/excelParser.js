@@ -169,26 +169,35 @@ const parseBulkUsersExcel = (filePath) => {
       }
 
       // Generate password if not provided
-      const generatedPassword = row.password?.toString() || `temp${Math.random().toString(36).slice(-8)}`;
+      // Use a consistent default password that students can use for first login
+      // If password is provided in Excel, use it; otherwise use "Password@123"
+      const generatedPassword =
+        row.password?.toString().trim() || "Password@123";
 
       // Generate temporary fullName from email if not provided
-      const tempFullName = row.fullName?.toString().trim() || 
-        row.email.toString().split('@')[0].replace(/[._]/g, ' ')
-          .split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+      const tempFullName =
+        row.fullName?.toString().trim() ||
+        row.email
+          .toString()
+          .split("@")[0]
+          .replace(/[._]/g, " ")
+          .split(" ")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ");
 
       // Create basic user object - other details will be filled during first-time login
       const mappedUser = {
         email: row.email.toString().trim().toLowerCase(),
         password: generatedPassword,
         fullName: tempFullName, // Temporary name from email, will be updated on first login
-        role: 'student', // Default role, admin can change later
-        isFirstLogin: true // Mark as first-time login
+        role: "student", // Default role, admin can change later
+        isFirstLogin: true, // Mark as first-time login
       };
 
       console.log(`📋 5.${index + 1}. Mapped user:`, {
         email: mappedUser.email,
         hasPassword: !!mappedUser.password,
-        isFirstLogin: mappedUser.isFirstLogin
+        isFirstLogin: mappedUser.isFirstLogin,
       });
 
       return mappedUser;

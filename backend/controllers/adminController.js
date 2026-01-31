@@ -43,7 +43,7 @@ exports.getAllUsers = async (req, res) => {
 
     const users = await User.find(query)
       .select("-password")
-      .populate('groups', 'name groupType description')
+      .populate("groups", "name groupType description")
       .sort({ createdAt: -1 })
       .limit(parseInt(limit))
       .skip(skip);
@@ -115,13 +115,13 @@ exports.getUserById = async (req, res) => {
 // Create new user (admin only)
 exports.createUser = async (req, res) => {
   try {
-    const { email, password, fullName, role, studentId, department } = req.body;
+    const { email, password, role } = req.body;
 
-    // Validate required fields
-    if (!email || !password || !fullName || !role) {
+    // Validate required fields (only email, password, and role)
+    if (!email || !password || !role) {
       return res.status(400).json({
         success: false,
-        message: "Please provide email, password, fullName, and role",
+        message: "Please provide email, password, and role",
       });
     }
 
@@ -134,25 +134,15 @@ exports.createUser = async (req, res) => {
       });
     }
 
-    // Check if studentId exists (for students)
-    if (role === "student" && studentId) {
-      const existingStudent = await User.findOne({ studentId });
-      if (existingStudent) {
-        return res.status(400).json({
-          success: false,
-          message: "Student ID already exists",
-        });
-      }
-    }
-
-    // Create user
+    // Create user with minimal information
+    // User will complete profile on first-time login
     const user = await User.create({
       email,
       password,
-      fullName,
       role,
-      studentId: role === "student" ? studentId : undefined,
-      department,
+      fullName: email.split("@")[0], // Temporary name from email
+      isFirstLogin: true,
+      createdBy: req.user._id,
     });
 
     // Remove password from response
@@ -177,9 +167,9 @@ exports.bulkCreateUsers = async (req, res) => {
   try {
     console.log("🚀 Starting bulk user creation...");
     console.log("📁 Request file:", req.file);
-    console.log("👤 Request user:", req.user ? req.user.email : 'No user');
+    console.log("👤 Request user:", req.user ? req.user.email : "No user");
     console.log("📋 Request body:", req.body);
-    
+
     if (!req.file) {
       console.log("❌ No file uploaded");
       return res.status(400).json({
@@ -192,7 +182,7 @@ exports.bulkCreateUsers = async (req, res) => {
       originalname: req.file.originalname,
       mimetype: req.file.mimetype,
       size: req.file.size,
-      path: req.file.path
+      path: req.file.path,
     });
 
     // Get group ID from request body (optional)
@@ -242,15 +232,17 @@ exports.bulkCreateUsers = async (req, res) => {
     }
 
     // Check for duplicate emails in the file
-    const emailsInFile = users.map(u => u.email);
-    const duplicateEmails = emailsInFile.filter((email, index) => emailsInFile.indexOf(email) !== index);
+    const emailsInFile = users.map((u) => u.email);
+    const duplicateEmails = emailsInFile.filter(
+      (email, index) => emailsInFile.indexOf(email) !== index,
+    );
     if (duplicateEmails.length > 0) {
       if (fs.existsSync(req.file.path)) {
         fs.unlinkSync(req.file.path);
       }
       return res.status(400).json({
         success: false,
-        message: `Duplicate emails found in file: ${duplicateEmails.join(', ')}`,
+        message: `Duplicate emails found in file: ${duplicateEmails.join(", ")}`,
       });
     }
 
@@ -258,35 +250,42 @@ exports.bulkCreateUsers = async (req, res) => {
     const existingUsers = await User.find({
       $or: [
         { email: { $in: emailsInFile } },
-        { studentId: { $in: users.filter(u => u.studentId).map(u => u.studentId) } }
-      ]
-    }).select('email studentId');
+        {
+          studentId: {
+            $in: users.filter((u) => u.studentId).map((u) => u.studentId),
+          },
+        },
+      ],
+    }).select("email studentId");
 
     if (existingUsers.length > 0) {
-      const existingEmails = existingUsers.map(u => u.email);
-      const existingStudentIds = existingUsers.filter(u => u.studentId).map(u => u.studentId);
-      
+      const existingEmails = existingUsers.map((u) => u.email);
+      const existingStudentIds = existingUsers
+        .filter((u) => u.studentId)
+        .map((u) => u.studentId);
+
       if (fs.existsSync(req.file.path)) {
         fs.unlinkSync(req.file.path);
       }
-      
+
       return res.status(400).json({
         success: false,
-        message: `Users already exist with emails: ${existingEmails.join(', ')}${existingStudentIds.length ? ` or student IDs: ${existingStudentIds.join(', ')}` : ''}`,
+        message: `Users already exist with emails: ${existingEmails.join(", ")}${existingStudentIds.length ? ` or student IDs: ${existingStudentIds.join(", ")}` : ""}`,
       });
     }
 
     // Add creator reference and group assignment
-    const usersToCreate = users.map(user => ({
+    const usersToCreate = users.map((user) => ({
       ...user,
       createdBy: req.user._id,
       groups: selectedGroup ? [selectedGroup._id] : [],
-      primaryGroup: selectedGroup ? selectedGroup._id : null
+      primaryGroup: selectedGroup ? selectedGroup._id : null,
     }));
 
-    // Create users in bulk
+    // Create users in bulk using User.create() to trigger pre-save hooks for password hashing
     console.log("📦 C. Creating users in database...");
-    const createdUsers = await User.insertMany(usersToCreate);
+    // Use User.create() instead of insertMany() to ensure password hashing
+    const createdUsers = await User.create(usersToCreate);
     console.log("✅ D. Users created:", createdUsers.length);
 
     // Add users to the selected group
@@ -305,7 +304,7 @@ exports.bulkCreateUsers = async (req, res) => {
     }
 
     // Prepare response data (without passwords)
-    const responseUsers = createdUsers.map(user => {
+    const responseUsers = createdUsers.map((user) => {
       const userObj = user.toObject();
       delete userObj.password;
       return userObj;
@@ -314,13 +313,15 @@ exports.bulkCreateUsers = async (req, res) => {
     res.status(201).json({
       success: true,
       message: `Successfully created ${createdUsers.length} users`,
+      info: "Users without passwords in Excel have been assigned default password: 'Password@123'",
       data: {
         totalCreated: createdUsers.length,
         users: responseUsers,
         summary: {
-          students: createdUsers.filter(u => u.role === 'student').length,
-          coordinators: createdUsers.filter(u => u.role === 'coordinator').length,
-        }
+          students: createdUsers.filter((u) => u.role === "student").length,
+          coordinators: createdUsers.filter((u) => u.role === "coordinator")
+            .length,
+        },
       },
     });
   } catch (error) {
@@ -340,12 +341,24 @@ exports.bulkCreateUsers = async (req, res) => {
 // Generate sample Excel template for bulk user creation
 exports.downloadUserTemplate = async (req, res) => {
   try {
-    console.log('📋 Download template request received');
+    console.log("📋 Download template request received");
 
     const sampleData = [
-      { email: "john.doe@charusat.edu.in", password: "temp123456" },
-      { email: "jane.smith@charusat.edu.in", password: "coord123456" },
-      { email: "mike.wilson@charusat.edu.in", password: "student123" }
+      {
+        email: "john.doe@charusat.edu.in",
+        password: "Password@123",
+        note: "If password is blank, default will be 'Password@123'",
+      },
+      {
+        email: "jane.smith@charusat.edu.in",
+        password: "CustomPass123",
+        note: "You can set custom passwords too",
+      },
+      {
+        email: "mike.wilson@charusat.edu.in",
+        password: "",
+        note: "Blank password = default 'Password@123'",
+      },
     ];
 
     // Create Excel file
@@ -354,19 +367,25 @@ exports.downloadUserTemplate = async (req, res) => {
     xlsx.utils.book_append_sheet(workbook, worksheet, "Users");
 
     // Generate buffer
-    const buffer = xlsx.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+    const buffer = xlsx.write(workbook, { type: "buffer", bookType: "xlsx" });
 
     // Set response headers
-    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.setHeader('Content-Disposition', 'attachment; filename=bulk_users_template.xlsx');
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    );
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=bulk_users_template.xlsx",
+    );
 
-    console.log('✅ Sending Excel template');
+    console.log("✅ Sending Excel template");
     res.send(buffer);
   } catch (error) {
-    console.error('❌ Template download error:', error);
+    console.error("❌ Template download error:", error);
     res.status(500).json({
       success: false,
-      message: 'Error generating template: ' + error.message
+      message: "Error generating template: " + error.message,
     });
   }
 };
@@ -1213,21 +1232,21 @@ exports.deleteQuiz = async (req, res) => {
 exports.fixAdminFirstLogin = async (req, res) => {
   try {
     const result = await User.updateMany(
-      { role: 'admin', isFirstLogin: true },
-      { $set: { isFirstLogin: false } }
+      { role: "admin", isFirstLogin: true },
+      { $set: { isFirstLogin: false } },
     );
 
     res.json({
       success: true,
       message: `Fixed ${result.modifiedCount} admin users`,
-      modifiedCount: result.modifiedCount
+      modifiedCount: result.modifiedCount,
     });
   } catch (error) {
-    console.error('Error fixing admin first login:', error);
+    console.error("Error fixing admin first login:", error);
     res.status(500).json({
       success: false,
-      message: 'Error fixing admin first login',
-      error: error.message
+      message: "Error fixing admin first login",
+      error: error.message,
     });
   }
 };
@@ -1240,20 +1259,20 @@ exports.bulkDeleteUsers = async (req, res) => {
     if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
       return res.status(400).json({
         success: false,
-        message: 'User IDs are required and should be an array',
+        message: "User IDs are required and should be an array",
       });
     }
 
     // Prevent deletion of admin users including the current user
     const adminUsers = await User.find({
       _id: { $in: userIds },
-      role: 'admin'
+      role: "admin",
     });
 
     if (adminUsers.length > 0) {
       return res.status(400).json({
         success: false,
-        message: 'Cannot delete admin users',
+        message: "Cannot delete admin users",
       });
     }
 
@@ -1261,14 +1280,14 @@ exports.bulkDeleteUsers = async (req, res) => {
     if (userIds.includes(req.user.id)) {
       return res.status(400).json({
         success: false,
-        message: 'Cannot delete your own account',
+        message: "Cannot delete your own account",
       });
     }
 
     // Delete users
     const result = await User.deleteMany({
       _id: { $in: userIds },
-      role: { $ne: 'admin' } // Extra protection
+      role: { $ne: "admin" }, // Extra protection
     });
 
     res.json({
@@ -1277,10 +1296,10 @@ exports.bulkDeleteUsers = async (req, res) => {
       deletedCount: result.deletedCount,
     });
   } catch (error) {
-    console.error('Error deleting users:', error);
+    console.error("Error deleting users:", error);
     res.status(500).json({
       success: false,
-      message: 'Error deleting users',
+      message: "Error deleting users",
       error: error.message,
     });
   }

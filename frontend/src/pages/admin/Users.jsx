@@ -17,7 +17,7 @@ import {
   ArrowRight,
   CheckSquare,
   Square,
-  UserPlus
+  UserPlus,
 } from "lucide-react";
 import Layout from "../../components/Layout";
 import apiClient from "../../api";
@@ -30,26 +30,28 @@ const AdminUsers = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [roleFilter, setRoleFilter] = useState(searchParams.get("role") || "all");
-  const [stats, setStats] = useState({ students: 0, coordinators: 0, admins: 0 });
+  const [roleFilter, setRoleFilter] = useState(
+    searchParams.get("role") || "all",
+  );
+  const [stats, setStats] = useState({
+    students: 0,
+    coordinators: 0,
+    admins: 0,
+  });
   const [showAddForm, setShowAddForm] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [showBulkActions, setShowBulkActions] = useState(false);
   const [groups, setGroups] = useState([]);
   const [showMoveToGroupModal, setShowMoveToGroupModal] = useState(false);
-  const [selectedGroupForMove, setSelectedGroupForMove] = useState('');
+  const [selectedGroupForMove, setSelectedGroupForMove] = useState("");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showGroupDropdown, setShowGroupDropdown] = useState(null);
   const [expandedGroups, setExpandedGroups] = useState({});
   const [groupedUsers, setGroupedUsers] = useState({});
   const [formData, setFormData] = useState({
-    fullName: "",
     email: "",
     password: "",
     role: "student",
-    department: "",
-    semester: "",
-    enrollmentNumber: ""
   });
   const [formLoading, setFormLoading] = useState(false);
   const [success, setSuccess] = useState("");
@@ -66,21 +68,21 @@ const AdminUsers = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (showGroupDropdown && !event.target.closest('.relative')) {
+      if (showGroupDropdown && !event.target.closest(".relative")) {
         setShowGroupDropdown(null);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showGroupDropdown]);
 
   const fetchGroups = async () => {
     try {
-      const response = await apiClient.get('/groups');
+      const response = await apiClient.get("/groups");
       setGroups(response.data.data || []);
     } catch (error) {
-      console.error('Failed to fetch groups:', error);
+      console.error("Failed to fetch groups:", error);
     }
   };
 
@@ -98,64 +100,73 @@ const AdminUsers = () => {
     try {
       setLoading(true);
       const response = await apiClient.get("/admin/users", {
-        params: { 
+        params: {
           role: roleFilter !== "all" ? roleFilter : undefined,
-          populate: 'groups' 
-        }
+          populate: "groups",
+        },
       });
       const fetchedUsers = response.data.data || [];
       setUsers(fetchedUsers);
-      
-      console.log('=== FETCH USERS DEBUG ===');
-      console.log('Total users fetched:', fetchedUsers.length);
-      const sampleUserWithGroup = fetchedUsers.find(u => u.groups?.length > 0);
-      console.log('Sample user with groups:', sampleUserWithGroup);
+
+      console.log("=== FETCH USERS DEBUG ===");
+      console.log("Total users fetched:", fetchedUsers.length);
+      const sampleUserWithGroup = fetchedUsers.find(
+        (u) => u.groups?.length > 0,
+      );
+      console.log("Sample user with groups:", sampleUserWithGroup);
       if (sampleUserWithGroup?.groups?.[0]) {
-        console.log('First group structure:', JSON.stringify(sampleUserWithGroup.groups[0], null, 2));
+        console.log(
+          "First group structure:",
+          JSON.stringify(sampleUserWithGroup.groups[0], null, 2),
+        );
       }
-      
+
       // Group users by their groups
       const grouped = {};
-      fetchedUsers.forEach(user => {
+      fetchedUsers.forEach((user) => {
         if (user.groups && user.groups.length > 0) {
-          user.groups.forEach(group => {
+          user.groups.forEach((group) => {
             if (!grouped[group._id]) {
-              console.log('Creating new group entry:', {
+              console.log("Creating new group entry:", {
                 groupId: group._id,
                 groupName: group.name,
                 groupType: group.groupType,
-                fullGroupObject: group
+                fullGroupObject: group,
               });
               grouped[group._id] = {
                 groupInfo: group,
-                users: []
+                users: [],
               };
             }
             grouped[group._id].users.push(user);
           });
         } else {
           // Users without groups
-          if (!grouped['no-group']) {
-            grouped['no-group'] = {
-              groupInfo: { _id: 'no-group', name: 'No Group', groupType: 'none' },
-              users: []
+          if (!grouped["no-group"]) {
+            grouped["no-group"] = {
+              groupInfo: {
+                _id: "no-group",
+                name: "No Group",
+                groupType: "none",
+              },
+              users: [],
             };
           }
-          grouped['no-group'].users.push(user);
+          grouped["no-group"].users.push(user);
         }
       });
-      
-      console.log('=== FINAL GROUPED STRUCTURE ===');
-      console.log('Number of groups:', Object.keys(grouped).length);
+
+      console.log("=== FINAL GROUPED STRUCTURE ===");
+      console.log("Number of groups:", Object.keys(grouped).length);
       Object.entries(grouped).forEach(([groupId, data]) => {
         console.log(`Group ${groupId}:`, {
           name: data.groupInfo?.name,
           type: data.groupInfo?.groupType,
           userCount: data.users.length,
-          fullGroupInfo: JSON.stringify(data.groupInfo)
+          fullGroupInfo: JSON.stringify(data.groupInfo),
         });
       });
-      
+
       setGroupedUsers(grouped);
       setError(null);
     } catch (err) {
@@ -172,7 +183,7 @@ const AdminUsers = () => {
       setStats({
         students: data?.totalStudents || 0,
         coordinators: data?.totalCoordinators || 0,
-        admins: data?.totalAdmins || 0
+        admins: data?.totalAdmins || 0,
       });
     } catch (err) {
       console.error("Failed to fetch stats:", err);
@@ -194,15 +205,13 @@ const AdminUsers = () => {
       setFormLoading(true);
       setError(null);
       await apiClient.post("/admin/users", formData);
-      setSuccess("User added successfully!");
+      setSuccess(
+        "User added successfully! They will complete their profile on first login.",
+      );
       setFormData({
-        fullName: "",
         email: "",
         password: "",
         role: "student",
-        department: "",
-        semester: "",
-        enrollmentNumber: ""
       });
       setShowAddForm(false);
       fetchUsers();
@@ -216,20 +225,20 @@ const AdminUsers = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   // Multi-select handlers
   const toggleUserSelection = (userId) => {
-    setSelectedUsers(prev =>
+    setSelectedUsers((prev) =>
       prev.includes(userId)
-        ? prev.filter(id => id !== userId)
-        : [...prev, userId]
+        ? prev.filter((id) => id !== userId)
+        : [...prev, userId],
     );
   };
 
   const selectAllUsers = () => {
-    const allUserIds = filteredUsers.map(user => user._id);
+    const allUserIds = filteredUsers.map((user) => user._id);
     setSelectedUsers(allUserIds);
   };
 
@@ -240,8 +249,8 @@ const AdminUsers = () => {
   // Bulk operations
   const handleBulkDelete = async () => {
     try {
-      await apiClient.delete('/admin/users/bulk', {
-        data: { userIds: selectedUsers }
+      await apiClient.delete("/admin/users/bulk", {
+        data: { userIds: selectedUsers },
       });
       showToast.success(`Successfully deleted ${selectedUsers.length} users`);
       setSelectedUsers([]);
@@ -249,27 +258,31 @@ const AdminUsers = () => {
       fetchStats();
       setShowDeleteConfirm(false);
     } catch (error) {
-      showToast.error(error.response?.data?.message || 'Failed to delete users');
+      showToast.error(
+        error.response?.data?.message || "Failed to delete users",
+      );
     }
   };
 
   const handleMoveToGroup = async () => {
     if (!selectedGroupForMove) {
-      showToast.error('Please select a group');
+      showToast.error("Please select a group");
       return;
     }
 
     try {
       await apiClient.post(`/groups/${selectedGroupForMove}/members/bulk`, {
-        userIds: selectedUsers
+        userIds: selectedUsers,
       });
-      const selectedGroup = groups.find(g => g._id === selectedGroupForMove);
-      showToast.success(`Successfully moved ${selectedUsers.length} users to ${selectedGroup.name}`);
+      const selectedGroup = groups.find((g) => g._id === selectedGroupForMove);
+      showToast.success(
+        `Successfully moved ${selectedUsers.length} users to ${selectedGroup.name}`,
+      );
       setSelectedUsers([]);
       setShowMoveToGroupModal(false);
-      setSelectedGroupForMove('');
+      setSelectedGroupForMove("");
     } catch (error) {
-      showToast.error(error.response?.data?.message || 'Failed to move users');
+      showToast.error(error.response?.data?.message || "Failed to move users");
     }
   };
 
@@ -281,38 +294,42 @@ const AdminUsers = () => {
   const handleRemoveFromGroup = async (userId, groupId) => {
     try {
       await apiClient.delete(`/groups/${groupId}/members`, {
-        data: { userId }
+        data: { userId },
       });
-      showToast.success('User removed from group');
+      showToast.success("User removed from group");
       fetchUsers();
       setShowGroupDropdown(null);
     } catch (error) {
-      showToast.error(error.response?.data?.message || 'Failed to remove user from group');
+      showToast.error(
+        error.response?.data?.message || "Failed to remove user from group",
+      );
     }
   };
 
   const handleChangeGroup = async (userId, newGroupId) => {
     try {
       // First remove from current group if exists
-      const user = users.find(u => u._id === userId);
+      const user = users.find((u) => u._id === userId);
       if (user.groups && user.groups.length > 0) {
         await apiClient.delete(`/groups/${user.groups[0]._id}/members`, {
-          data: { userId }
+          data: { userId },
         });
       }
-      
+
       // Then add to new group
       if (newGroupId) {
         await apiClient.post(`/groups/${newGroupId}/members/bulk`, {
-          userIds: [userId]
+          userIds: [userId],
         });
       }
-      
-      showToast.success('Group changed successfully');
+
+      showToast.success("Group changed successfully");
       fetchUsers();
       setShowGroupDropdown(null);
     } catch (error) {
-      showToast.error(error.response?.data?.message || 'Failed to change group');
+      showToast.error(
+        error.response?.data?.message || "Failed to change group",
+      );
     }
   };
 
@@ -329,26 +346,26 @@ const AdminUsers = () => {
 
     try {
       await apiClient.delete(`/admin/users/bulk`, {
-        data: { userIds: [userId] }
+        data: { userIds: [userId] },
       });
-      showToast.success('User deleted successfully');
+      showToast.success("User deleted successfully");
       fetchUsers();
     } catch (error) {
-      showToast.error(error.response?.data?.message || 'Failed to delete user');
+      showToast.error(error.response?.data?.message || "Failed to delete user");
     }
   };
 
   // Group expansion handlers
   const toggleGroupExpansion = (groupId) => {
-    setExpandedGroups(prev => ({
+    setExpandedGroups((prev) => ({
       ...prev,
-      [groupId]: !prev[groupId]
+      [groupId]: !prev[groupId],
     }));
   };
 
   const expandAllGroups = () => {
     const allExpanded = {};
-    Object.keys(groupedUsers).forEach(groupId => {
+    Object.keys(groupedUsers).forEach((groupId) => {
       allExpanded[groupId] = true;
     });
     setExpandedGroups(allExpanded);
@@ -358,13 +375,14 @@ const AdminUsers = () => {
     setExpandedGroups({});
   };
 
-  const filteredUsers = users.filter(user => {
-    const matchesSearch = user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  const filteredUsers = users.filter((user) => {
+    const matchesSearch =
+      user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.enrollmentNumber?.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesRole = roleFilter === 'all' || user.role === roleFilter;
-    
+
+    const matchesRole = roleFilter === "all" || user.role === roleFilter;
+
     return matchesSearch && matchesRole;
   });
 
@@ -374,7 +392,9 @@ const AdminUsers = () => {
         <div className="flex h-[80vh] items-center justify-center">
           <div className="flex flex-col items-center gap-4">
             <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
-            <p className="text-sm font-medium text-gray-500">Loading users...</p>
+            <p className="text-sm font-medium text-gray-500">
+              Loading users...
+            </p>
           </div>
         </div>
       </Layout>
@@ -386,13 +406,17 @@ const AdminUsers = () => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="space-y-6">
-        
+        className="space-y-6"
+      >
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">User Management</h1>
-            <p className="text-gray-500 mt-1">Manage students, coordinators, and administrators</p>
+            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+              User Management
+            </h1>
+            <p className="text-gray-500 mt-1">
+              Manage students, coordinators, and administrators
+            </p>
           </div>
           <div className="flex items-center gap-3">
             <Link
@@ -406,8 +430,8 @@ const AdminUsers = () => {
               whileTap={{ scale: 0.98 }}
               onClick={() => setShowAddForm(!showAddForm)}
               className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm ${
-                showAddForm 
-                  ? "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50" 
+                showAddForm
+                  ? "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
                   : "bg-blue-600 text-white hover:bg-blue-700 shadow-blue-200"
               }`}
             >
@@ -428,13 +452,23 @@ const AdminUsers = () => {
                 fetchUsers();
                 fetchGroups();
                 fetchStats();
-                showToast.success('Data refreshed');
+                showToast.success("Data refreshed");
               }}
               className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
               title="Refresh data"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
               </svg>
               Refresh
             </motion.button>
@@ -448,7 +482,9 @@ const AdminUsers = () => {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             className={`rounded-xl p-4 flex items-center gap-3 ${
-              error ? "bg-red-50 border border-red-200" : "bg-green-50 border border-green-200"
+              error
+                ? "bg-red-50 border border-red-200"
+                : "bg-green-50 border border-green-200"
             }`}
           >
             {error ? (
@@ -456,7 +492,9 @@ const AdminUsers = () => {
             ) : (
               <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
             )}
-            <span className={`text-sm font-medium ${error ? "text-red-800" : "text-green-800"}`}>
+            <span
+              className={`text-sm font-medium ${error ? "text-red-800" : "text-green-800"}`}
+            >
               {error || success}
             </span>
           </motion.div>
@@ -470,27 +508,16 @@ const AdminUsers = () => {
             exit={{ opacity: 0, y: -20 }}
             className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
           >
-            <h2 className="text-lg font-bold text-gray-900 mb-6">Add New User</h2>
+            <h2 className="text-lg font-bold text-gray-900 mb-6">
+              Add New User
+            </h2>
+            <p className="text-sm text-gray-600 mb-6">
+              Users will complete their profile details on their first login.
+            </p>
             <form onSubmit={handleAddUser} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Name */}
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Full Name <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
-                    placeholder="Enter full name"
-                  />
-                </div>
-
                 {/* Email */}
-                <div>
+                <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Email Address <span className="text-red-500">*</span>
                   </label>
@@ -508,7 +535,7 @@ const AdminUsers = () => {
                 {/* Password */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Password <span className="text-red-500">*</span>
+                    Temporary Password <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="password"
@@ -532,63 +559,13 @@ const AdminUsers = () => {
                     value={formData.role}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50">
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
+                  >
                     <option value="student">Student</option>
                     <option value="coordinator">Coordinator</option>
                     <option value="admin">Administrator</option>
                   </select>
                 </div>
-
-                {/* Enrollment Number (for students) */}
-                {formData.role === "student" && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Enrollment Number
-                    </label>
-                    <input
-                      type="text"
-                      name="enrollmentNumber"
-                      value={formData.enrollmentNumber}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
-                      placeholder="e.g., 21CE001"
-                    />
-                  </div>
-                )}
-
-                {/* Department */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Department
-                  </label>
-                  <input
-                    type="text"
-                    name="department"
-                    value={formData.department}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
-                    placeholder="e.g., Computer Engineering"
-                  />
-                </div>
-
-                {/* Semester (for students) */}
-                {formData.role === "student" && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Semester
-                    </label>
-                    <select
-                      name="semester"
-                      value={formData.semester}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50">
-                      <option value="">Select Semester</option>
-                      {[1, 2, 3, 4, 5, 6, 7, 8].map(sem => (
-                        <option key={sem} value={sem}>Semester {sem}</option>
-                      ))}
-                    </select>
-                  </div>
-                )}
               </div>
 
               {/* Action Buttons */}
@@ -596,13 +573,15 @@ const AdminUsers = () => {
                 <button
                   type="button"
                   onClick={() => setShowAddForm(false)}
-                  className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors">
+                  className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={formLoading}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
                   {formLoading ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -667,7 +646,8 @@ const AdminUsers = () => {
             <select
               value={roleFilter}
               onChange={(e) => handleRoleChange(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
               <option value="all">All Roles</option>
               <option value="student">Students</option>
               <option value="coordinator">Coordinators</option>
@@ -685,7 +665,8 @@ const AdminUsers = () => {
           >
             <div className="flex items-center space-x-4">
               <span className="text-blue-800 font-medium">
-                {selectedUsers.length} user{selectedUsers.length !== 1 ? 's' : ''} selected
+                {selectedUsers.length} user
+                {selectedUsers.length !== 1 ? "s" : ""} selected
               </span>
               <button
                 onClick={clearSelection}
@@ -731,130 +712,203 @@ const AdminUsers = () => {
 
         {/* Groups List */}
         <div className="space-y-4">
-          {Object.entries(groupedUsers).map(([groupId, { groupInfo, users: groupUsers }]) => (
-            <div key={groupId} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-              {/* Group Header */}
-              <button
-                onClick={() => toggleGroupExpansion(groupId)}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+          {Object.entries(groupedUsers).map(
+            ([groupId, { groupInfo, users: groupUsers }]) => (
+              <div
+                key={groupId}
+                className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
               >
-                <div className="flex items-center space-x-3">
-                  <div className={`p-2 rounded-lg ${groupId === 'no-group' ? 'bg-gray-100' : 'bg-blue-100'}`}>
-                    <Users className={`w-5 h-5 ${groupId === 'no-group' ? 'text-gray-600' : 'text-blue-600'}`} />
+                {/* Group Header */}
+                <button
+                  onClick={() => toggleGroupExpansion(groupId)}
+                  className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                >
+                  <div className="flex items-center space-x-3">
+                    <div
+                      className={`p-2 rounded-lg ${groupId === "no-group" ? "bg-gray-100" : "bg-blue-100"}`}
+                    >
+                      <Users
+                        className={`w-5 h-5 ${groupId === "no-group" ? "text-gray-600" : "text-blue-600"}`}
+                      />
+                    </div>
+                    <div className="text-left">
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        {groupInfo?.name || "Unknown Group"}
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        {groupUsers.length}{" "}
+                        {groupUsers.length === 1 ? "user" : "users"}
+                        {groupInfo?.groupType &&
+                          groupInfo.groupType !== "none" &&
+                          ` • ${groupInfo.groupType}`}
+                      </p>
+                    </div>
                   </div>
-                  <div className="text-left">
-                    <h3 className="text-lg font-semibold text-gray-900">{groupInfo?.name || 'Unknown Group'}</h3>
-                    <p className="text-sm text-gray-600">
-                      {groupUsers.length} {groupUsers.length === 1 ? 'user' : 'users'}
-                      {groupInfo?.groupType && groupInfo.groupType !== 'none' && ` • ${groupInfo.groupType}`}
-                    </p>
+                  <div className="flex items-center space-x-2">
+                    {expandedGroups[groupId] ? (
+                      <svg
+                        className="w-5 h-5 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 15l7-7 7 7"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        className="w-5 h-5 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    )}
                   </div>
-                </div>
-                <div className="flex items-center space-x-2">
-                  {expandedGroups[groupId] ? (
-                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  )}
-                </div>
-              </button>
+                </button>
 
-              {/* Group Users - Expanded View */}
-              {expandedGroups[groupId] && (
-                <div className="border-t border-gray-200">
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead className="bg-gray-50 border-b border-gray-200">
-                        <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                            <input
-                              type="checkbox"
-                              onChange={(e) => {
-                                if (e.target.checked) {
-                                  setSelectedUsers(prev => [...new Set([...prev, ...groupUsers.map(u => u._id)])]);
-                                } else {
-                                  setSelectedUsers(prev => prev.filter(id => !groupUsers.some(u => u._id === id)));
-                                }
-                              }}
-                              checked={groupUsers.every(u => selectedUsers.includes(u._id))}
-                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                            />
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Role</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Department</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-100">
-                        {groupUsers.map((user) => (
-                          <tr key={user._id} className="hover:bg-gray-50 transition-colors">
-                            <td className="px-6 py-4">
+                {/* Group Users - Expanded View */}
+                {expandedGroups[groupId] && (
+                  <div className="border-t border-gray-200">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead className="bg-gray-50 border-b border-gray-200">
+                          <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                               <input
                                 type="checkbox"
-                                checked={selectedUsers.includes(user._id)}
-                                onChange={() => toggleUserSelection(user._id)}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedUsers((prev) => [
+                                      ...new Set([
+                                        ...prev,
+                                        ...groupUsers.map((u) => u._id),
+                                      ]),
+                                    ]);
+                                  } else {
+                                    setSelectedUsers((prev) =>
+                                      prev.filter(
+                                        (id) =>
+                                          !groupUsers.some((u) => u._id === id),
+                                      ),
+                                    );
+                                  }
+                                }}
+                                checked={groupUsers.every((u) =>
+                                  selectedUsers.includes(u._id),
+                                )}
                                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                               />
-                            </td>
-                            <td className="px-6 py-4">
-                              <div>
-                                <div className="font-medium text-gray-900">{user.name}</div>
-                                {user.enrollmentNumber && (
-                                  <div className="text-xs text-gray-500">{user.enrollmentNumber}</div>
-                                )}
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 text-gray-600">{user.email}</td>
-                            <td className="px-6 py-4">
-                              <RoleBadge role={user.role} />
-                            </td>
-                            <td className="px-6 py-4 text-gray-600">
-                              {user.department || "-"}
-                              {user.semester && ` (Sem ${user.semester})`}
-                            </td>
-                            <td className="px-6 py-4">
-                              <StatusBadge active={user.isActive} />
-                            </td>
-                            <td className="px-6 py-4">
-                              <div className="flex items-center gap-2">
-                                <button 
-                                  onClick={() => handleEditUser(user)}
-                                  className="p-1 text-blue-600 hover:text-blue-800 transition-colors"
-                                  title="Edit user"
-                                >
-                                  <Edit className="w-4 h-4" />
-                                </button>
-                                <button 
-                                  onClick={() => handleDeleteUser(user._id, user.name)}
-                                  className="p-1 text-red-600 hover:text-red-800 transition-colors"
-                                  title="Delete user"
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                </button>
-                              </div>
-                            </td>
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                              Name
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                              Email
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                              Role
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                              Department
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                              Status
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                              Actions
+                            </th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                          {groupUsers.map((user) => (
+                            <tr
+                              key={user._id}
+                              className="hover:bg-gray-50 transition-colors"
+                            >
+                              <td className="px-6 py-4">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedUsers.includes(user._id)}
+                                  onChange={() => toggleUserSelection(user._id)}
+                                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                />
+                              </td>
+                              <td className="px-6 py-4">
+                                <div>
+                                  <div className="font-medium text-gray-900">
+                                    {user.name}
+                                  </div>
+                                  {user.enrollmentNumber && (
+                                    <div className="text-xs text-gray-500">
+                                      {user.enrollmentNumber}
+                                    </div>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 text-gray-600">
+                                {user.email}
+                              </td>
+                              <td className="px-6 py-4">
+                                <RoleBadge role={user.role} />
+                              </td>
+                              <td className="px-6 py-4 text-gray-600">
+                                {user.department || "-"}
+                                {user.semester && ` (Sem ${user.semester})`}
+                              </td>
+                              <td className="px-6 py-4">
+                                <StatusBadge active={user.isActive} />
+                              </td>
+                              <td className="px-6 py-4">
+                                <div className="flex items-center gap-2">
+                                  <button
+                                    onClick={() => handleEditUser(user)}
+                                    className="p-1 text-blue-600 hover:text-blue-800 transition-colors"
+                                    title="Edit user"
+                                  >
+                                    <Edit className="w-4 h-4" />
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      handleDeleteUser(user._id, user.name)
+                                    }
+                                    className="p-1 text-red-600 hover:text-red-800 transition-colors"
+                                    title="Delete user"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
-          ))}
+                )}
+              </div>
+            ),
+          )}
 
           {Object.keys(groupedUsers).length === 0 && (
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
               <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No users found</h3>
-              <p className="text-gray-600">Try adjusting your search or filters</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No users found
+              </h3>
+              <p className="text-gray-600">
+                Try adjusting your search or filters
+              </p>
             </div>
           )}
         </div>
@@ -864,7 +918,9 @@ const AdminUsers = () => {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
               <div className="flex items-center justify-between p-6 border-b">
-                <h3 className="text-lg font-medium text-gray-900">Move Users to Group</h3>
+                <h3 className="text-lg font-medium text-gray-900">
+                  Move Users to Group
+                </h3>
                 <button
                   onClick={() => setShowMoveToGroupModal(false)}
                   className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -872,12 +928,13 @@ const AdminUsers = () => {
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              
+
               <div className="p-6">
                 <p className="text-gray-600 mb-4">
-                  Move {selectedUsers.length} selected user{selectedUsers.length !== 1 ? 's' : ''} to a group:
+                  Move {selectedUsers.length} selected user
+                  {selectedUsers.length !== 1 ? "s" : ""} to a group:
                 </p>
-                
+
                 <select
                   value={selectedGroupForMove}
                   onChange={(e) => setSelectedGroupForMove(e.target.value)}
@@ -917,7 +974,7 @@ const AdminUsers = () => {
           onClose={() => setShowDeleteConfirm(false)}
           onConfirm={handleBulkDelete}
           title="Delete Users"
-          message={`Are you sure you want to delete ${selectedUsers.length} user${selectedUsers.length !== 1 ? 's' : ''}? This action cannot be undone.`}
+          message={`Are you sure you want to delete ${selectedUsers.length} user${selectedUsers.length !== 1 ? "s" : ""}? This action cannot be undone.`}
           confirmText="Delete Users"
           confirmButtonClass="bg-red-600 hover:bg-red-700"
         />
@@ -926,14 +983,23 @@ const AdminUsers = () => {
   );
 };
 
-const StatCard = ({ title, value, icon: Icon, color, bgColor, active, onClick }) => (
+const StatCard = ({
+  title,
+  value,
+  icon: Icon,
+  color,
+  bgColor,
+  active,
+  onClick,
+}) => (
   <motion.button
     onClick={onClick}
     whileHover={{ scale: 1.02 }}
     whileTap={{ scale: 0.98 }}
     className={`bg-white p-6 rounded-xl border-2 shadow-sm hover:shadow-md transition-all text-left w-full ${
       active ? "border-blue-500 ring-2 ring-blue-100" : "border-gray-200"
-    }`}>
+    }`}
+  >
     <div className="flex items-start justify-between">
       <div>
         <p className="text-sm font-medium text-gray-500">{title}</p>
@@ -954,20 +1020,24 @@ const RoleBadge = ({ role }) => {
     coordinator: "bg-purple-50 text-purple-700 border-purple-200",
     student: "bg-blue-50 text-blue-700 border-blue-200",
   };
-  
+
   return (
-    <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${styles[role] || "bg-gray-50 text-gray-700 border-gray-200"} capitalize`}>
+    <span
+      className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${styles[role] || "bg-gray-50 text-gray-700 border-gray-200"} capitalize`}
+    >
       {role}
     </span>
   );
 };
 
 const StatusBadge = ({ active }) => (
-  <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-    active
-      ? "bg-green-50 text-green-700 border-green-200"
-      : "bg-gray-50 text-gray-700 border-gray-200"
-  }`}>
+  <span
+    className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+      active
+        ? "bg-green-50 text-green-700 border-green-200"
+        : "bg-gray-50 text-gray-700 border-gray-200"
+    }`}
+  >
     {active ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
     {active ? "Active" : "Inactive"}
   </span>

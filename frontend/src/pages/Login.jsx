@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Mail, Lock, LogIn, BookOpen, AlertCircle, CheckCircle2 } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  LogIn,
+  BookOpen,
+  AlertCircle,
+  CheckCircle2,
+} from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import api from "../api";
 
@@ -38,8 +45,11 @@ const Login = () => {
       if (result.success) {
         // Handle first-time login for non-admin users
         if (result.isFirstLogin) {
-          navigate("/first-time-login", { 
-            state: { email: result.email }
+          navigate("/first-time-login", {
+            state: {
+              email: result.email,
+              user: result.user,
+            },
           });
           return;
         }
@@ -63,7 +73,7 @@ const Login = () => {
 
       if (error.response?.status === 429) {
         setError(
-          "Too many login attempts. Please wait 15 minutes and try again."
+          "Too many login attempts. Please wait 15 minutes and try again.",
         );
       } else {
         setError(errorMessage);
@@ -101,7 +111,6 @@ const Login = () => {
 
         {/* Card */}
         <div className="bg-white py-8 px-4 shadow-xl shadow-gray-200/50 border border-gray-100 rounded-2xl sm:px-10 relative">
-          
           {/* Error Message */}
           {error && (
             <motion.div
@@ -214,21 +223,27 @@ const Login = () => {
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs p-2 bg-white rounded border border-gray-200">
                 <span className="text-gray-600 font-medium">Admin Email:</span>
-                <code className="text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded font-mono">admin@charusat.edu.in</code>
+                <code className="text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded font-mono">
+                  admin@charusat.edu.in
+                </code>
               </div>
               <div className="flex items-center justify-between text-xs p-2 bg-white rounded border border-gray-200">
                 <span className="text-gray-600 font-medium">Password:</span>
-                <code className="text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded font-mono">Admin@123</code>
+                <code className="text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded font-mono">
+                  Admin@123
+                </code>
               </div>
             </div>
             <div className="mt-3 flex items-start gap-2 text-xs text-amber-600 bg-amber-50 p-2 rounded border border-amber-100">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
-              <span>Note: Coordinator and Student accounts must be created by Admin first.</span>
+              <span>
+                Note: Coordinator and Student accounts must be created by Admin
+                first.
+              </span>
             </div>
           </div>
-
         </div>
-        
+
         <p className="text-center text-xs text-gray-400">
           © 2026 CHARUSAT University. All rights reserved.
         </p>

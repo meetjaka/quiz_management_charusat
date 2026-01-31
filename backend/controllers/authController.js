@@ -1,10 +1,10 @@
-const User = require('../models/User');
-const jwt = require('jsonwebtoken');
+const User = require("../models/User");
+const jwt = require("jsonwebtoken");
 
 // Generate JWT token
 const generateToken = (userId) => {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET || 'your-secret-key', {
-    expiresIn: '30d'
+  return jwt.sign({ id: userId }, process.env.JWT_SECRET || "your-secret-key", {
+    expiresIn: "30d",
   });
 };
 
@@ -16,62 +16,62 @@ const generateToken = (userId) => {
 exports.register = async (req, res) => {
   try {
     const { email, password, fullName, role, studentId, department } = req.body;
-    
+
     // Validate required fields
     if (!email || !password || !fullName || !role) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide email, password, fullName, and role'
+        message: "Please provide email, password, fullName, and role",
       });
     }
-    
+
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({
         success: false,
-        message: 'Email already registered'
+        message: "Email already registered",
       });
     }
-    
+
     // Check if studentId exists (for students)
-    if (role === 'student' && studentId) {
+    if (role === "student" && studentId) {
       const existingStudent = await User.findOne({ studentId });
       if (existingStudent) {
         return res.status(400).json({
           success: false,
-          message: 'Student ID already exists'
+          message: "Student ID already exists",
         });
       }
     }
-    
+
     // Create user
     const user = await User.create({
       email,
       password,
       fullName,
       role,
-      studentId: role === 'student' ? studentId : undefined,
-      department
+      studentId: role === "student" ? studentId : undefined,
+      department,
     });
-    
+
     // Generate token
     const token = generateToken(user._id);
-    
+
     // Remove password from response
     user.password = undefined;
-    
+
     res.status(201).json({
       success: true,
-      message: 'User registered successfully',
+      message: "User registered successfully",
       token,
-      user
+      user,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Error registering user',
-      error: error.message
+      message: "Error registering user",
+      error: error.message,
     });
   }
 };
@@ -80,75 +80,75 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    
+
     // Validate input
     if (!email || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide email and password'
+        message: "Please provide email and password",
       });
     }
-    
+
     // Find user with password
-    const user = await User.findOne({ email }).select('+password');
-    
+    const user = await User.findOne({ email }).select("+password");
+
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid credentials'
+        message: "Invalid credentials",
       });
     }
-    
+
     // Check if user is active
     if (!user.isActive) {
       return res.status(401).json({
         success: false,
-        message: 'Account is deactivated. Please contact admin.'
+        message: "Account is deactivated. Please contact admin.",
       });
     }
-    
+
     // Verify password
     const isPasswordValid = await user.comparePassword(password);
-    
+
     if (!isPasswordValid) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid credentials'
+        message: "Invalid credentials",
       });
     }
-    
+
     // Generate token
     const token = generateToken(user._id);
 
     // Update last login
     user.lastLogin = new Date();
     await user.save({ validateBeforeSave: false });
-    
+
     // Remove password from response
     user.password = undefined;
-    
+
     // Check if it's first-time login
     if (user.isFirstLogin) {
       return res.status(200).json({
         success: true,
-        message: 'First-time login detected. Password change required.',
+        message: "First-time login detected. Password change required.",
         isFirstLogin: true,
         token,
-        user
+        user,
       });
     }
 
     res.status(200).json({
       success: true,
-      message: 'Login successful',
+      message: "Login successful",
       token,
-      user
+      user,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Error logging in',
-      error: error.message
+      message: "Error logging in",
+      error: error.message,
     });
   }
 };
@@ -156,17 +156,17 @@ exports.login = async (req, res) => {
 // Get current user
 exports.getMe = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select('-password');
-    
+    const user = await User.findById(req.user._id).select("-password");
+
     res.status(200).json({
       success: true,
-      data: user
+      data: user,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Error fetching user',
-      error: error.message
+      message: "Error fetching user",
+      error: error.message,
     });
   }
 };
@@ -178,13 +178,13 @@ exports.logout = async (req, res) => {
     // by removing the token from storage
     res.status(200).json({
       success: true,
-      message: 'Logout successful'
+      message: "Logout successful",
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Error logging out',
-      error: error.message
+      message: "Error logging out",
+      error: error.message,
     });
   }
 };
@@ -193,48 +193,48 @@ exports.logout = async (req, res) => {
 exports.updatePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
-    
+
     if (!currentPassword || !newPassword) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide current and new password'
+        message: "Please provide current and new password",
       });
     }
-    
+
     if (newPassword.length < 6) {
       return res.status(400).json({
         success: false,
-        message: 'New password must be at least 6 characters'
+        message: "New password must be at least 6 characters",
       });
     }
-    
+
     // Get user with password
-    const user = await User.findById(req.user._id).select('+password');
-    
+    const user = await User.findById(req.user._id).select("+password");
+
     // Verify current password
     const isPasswordValid = await user.comparePassword(currentPassword);
-    
+
     if (!isPasswordValid) {
       return res.status(401).json({
         success: false,
-        message: 'Current password is incorrect'
+        message: "Current password is incorrect",
       });
     }
-    
+
     // Update password
     user.password = newPassword;
     user.passwordChangedAt = new Date();
     await user.save();
-    
+
     res.status(200).json({
       success: true,
-      message: 'Password updated successfully'
+      message: "Password updated successfully",
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Error updating password',
-      error: error.message
+      message: "Error updating password",
+      error: error.message,
     });
   }
 };
@@ -243,74 +243,74 @@ exports.updatePassword = async (req, res) => {
 exports.firstTimeLogin = async (req, res) => {
   try {
     const { email, currentPassword, newPassword } = req.body;
-    
+
     // Validate input
     if (!email || !currentPassword || !newPassword) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide email, current password, and new password'
+        message: "Please provide email, current password, and new password",
       });
     }
-    
+
     if (newPassword.length < 6) {
       return res.status(400).json({
         success: false,
-        message: 'New password must be at least 6 characters'
+        message: "New password must be at least 6 characters",
       });
     }
-    
+
     // Find user with password
-    const user = await User.findOne({ email }).select('+password');
-    
+    const user = await User.findOne({ email }).select("+password");
+
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid credentials'
+        message: "Invalid credentials",
       });
     }
-    
+
     // Check if user is active
     if (!user.isActive) {
       return res.status(401).json({
         success: false,
-        message: 'Account is deactivated. Please contact admin.'
+        message: "Account is deactivated. Please contact admin.",
       });
     }
-    
+
     // Verify current password
     const isPasswordValid = await user.comparePassword(currentPassword);
-    
+
     if (!isPasswordValid) {
       return res.status(401).json({
         success: false,
-        message: 'Current password is incorrect'
+        message: "Current password is incorrect",
       });
     }
-    
+
     // Update password and mark as no longer first login
     user.password = newPassword;
     user.isFirstLogin = false;
     user.passwordChangedAt = new Date();
     user.lastLogin = new Date();
     await user.save();
-    
+
     // Generate token
     const token = generateToken(user._id);
-    
+
     // Remove password from response
     user.password = undefined;
-    
+
     res.status(200).json({
       success: true,
-      message: 'Password changed successfully. Welcome!',
+      message: "Password changed successfully. Welcome!",
       token,
-      user
+      user,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Error changing password',
-      error: error.message
+      message: "Error changing password",
+      error: error.message,
     });
   }
 };
@@ -319,56 +319,58 @@ exports.firstTimeLogin = async (req, res) => {
 exports.changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword, confirmPassword } = req.body;
-    
+
     // Validate input
     if (!currentPassword || !newPassword || !confirmPassword) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide current password, new password, and confirm password'
+        message:
+          "Please provide current password, new password, and confirm password",
       });
     }
-    
+
     if (newPassword !== confirmPassword) {
       return res.status(400).json({
         success: false,
-        message: 'New passwords do not match'
+        message: "New passwords do not match",
       });
     }
-    
+
     if (newPassword.length < 6) {
       return res.status(400).json({
         success: false,
-        message: 'New password must be at least 6 characters'
+        message: "New password must be at least 6 characters",
       });
     }
-    
+
     // Get user with password
-    const user = await User.findById(req.user._id).select('+password');
-    
+    const user = await User.findById(req.user._id).select("+password");
+
     // Verify current password
     const isPasswordValid = await user.comparePassword(currentPassword);
-    
+
     if (!isPasswordValid) {
       return res.status(401).json({
         success: false,
-        message: 'Current password is incorrect'
+        message: "Current password is incorrect",
       });
     }
-    
-    // Update password
+
+    // Update password and mark first login as complete
     user.password = newPassword;
     user.passwordChangedAt = new Date();
+    user.isFirstLogin = false; // Mark as completed first login
     await user.save();
-    
+
     res.status(200).json({
       success: true,
-      message: 'Password changed successfully'
+      message: "Password changed successfully",
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Error changing password',
-      error: error.message
+      message: "Error changing password",
+      error: error.message,
     });
   }
 };
