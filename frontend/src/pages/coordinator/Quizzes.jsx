@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ClipboardList, Plus, BookOpen, Eye, BarChart3, FileText, Edit2, Trash2 } from "lucide-react";
+import {
+  ClipboardList,
+  Plus,
+  BookOpen,
+  Eye,
+  BarChart3,
+  FileText,
+  Edit2,
+  Trash2,
+} from "lucide-react";
 import Layout from "../../components/Layout";
 import apiClient from "../../api";
 
@@ -23,7 +32,7 @@ const CoordinatorQuizzes = () => {
   // Refetch quizzes when page becomes visible again (user navigates back)
   useEffect(() => {
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible' && !isUpdating) {
+      if (document.visibilityState === "visible" && !isUpdating) {
         fetchQuizzes();
       }
     };
@@ -34,12 +43,12 @@ const CoordinatorQuizzes = () => {
       }
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.addEventListener('focus', handleFocus);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("focus", handleFocus);
 
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('focus', handleFocus);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("focus", handleFocus);
     };
   }, [isUpdating]);
 
@@ -61,7 +70,7 @@ const CoordinatorQuizzes = () => {
     try {
       setLoading(true);
       const response = await apiClient.get(
-        `/coordinator/quizzes/${quizId}/results`
+        `/coordinator/quizzes/${quizId}/results`,
       );
       setResults(response.data.data || []);
       setShowResults(true);
@@ -75,18 +84,22 @@ const CoordinatorQuizzes = () => {
   };
 
   const handleDeleteQuiz = async (quizId, quizTitle) => {
-    if (!window.confirm(`Are you sure you want to delete "${quizTitle}"? This action cannot be undone.`)) {
+    if (
+      !window.confirm(
+        `Are you sure you want to delete "${quizTitle}"? This action cannot be undone.`,
+      )
+    ) {
       return;
     }
 
     try {
       await apiClient.delete(`/coordinator/quizzes/${quizId}`);
-      setQuizzes(quizzes.filter(q => q._id !== quizId));
-      alert('Quiz deleted successfully!');
+      setQuizzes(quizzes.filter((q) => q._id !== quizId));
+      alert("Quiz deleted successfully!");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to delete quiz");
       console.error("Error deleting quiz:", err);
-      alert('Failed to delete quiz');
+      alert("Failed to delete quiz");
     }
   };
 
@@ -98,21 +111,64 @@ const CoordinatorQuizzes = () => {
     setIsUpdating(true);
     try {
       const updatedQuiz = { ...quiz, isActive: !quiz.isActive };
-      console.log('Activating quiz:', quiz._id, 'new status:', updatedQuiz.isActive);
-      
-      const response = await apiClient.put(`/coordinator/quizzes/${quiz._id}`, updatedQuiz);
-      console.log('Activate response:', response.data);
-      
+      console.log(
+        "Activating quiz:",
+        quiz._id,
+        "new status:",
+        updatedQuiz.isActive,
+      );
+
+      const response = await apiClient.put(
+        `/coordinator/quizzes/${quiz._id}`,
+        updatedQuiz,
+      );
+      console.log("Activate response:", response.data);
+
       // Update local state
-      setQuizzes(quizzes.map(q => q._id === quiz._id ? updatedQuiz : q));
-      alert(`Quiz ${updatedQuiz.isActive ? 'activated' : 'deactivated'} successfully!`);
-      
+      setQuizzes(
+        quizzes.map((q) =>
+          q._id === quiz._id ? { ...q, isActive: updatedQuiz.isActive } : q,
+        ),
+      );
+      alert(
+        `Quiz ${updatedQuiz.isActive ? "activated" : "deactivated"} successfully!`,
+      );
+
       // Wait a bit before allowing refetch
       setTimeout(() => setIsUpdating(false), 1000);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to update quiz");
       console.error("Error updating quiz:", err);
-      alert('Failed to update quiz status');
+      alert("Failed to update quiz status");
+      setIsUpdating(false);
+    }
+  };
+
+  const handlePublishQuiz = async (quiz) => {
+    setIsUpdating(true);
+    try {
+      const response = await apiClient.put(`/coordinator/quizzes/${quiz._id}`, {
+        status: "published",
+        isActive: true,
+      });
+      console.log("Publish response:", response.data);
+
+      // Update local state
+      setQuizzes(
+        quizzes.map((q) =>
+          q._id === quiz._id
+            ? { ...q, status: "published", isActive: true }
+            : q,
+        ),
+      );
+      alert("Quiz published successfully! Students can now attempt the quiz.");
+
+      // Wait a bit before allowing refetch
+      setTimeout(() => setIsUpdating(false), 1000);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to publish quiz");
+      console.error("Error publishing quiz:", err);
+      alert("Failed to publish quiz");
       setIsUpdating(false);
     }
   };
@@ -120,23 +176,28 @@ const CoordinatorQuizzes = () => {
   const handleQuickUpdate = async (quizId, field, value) => {
     setIsUpdating(true);
     try {
-      const quiz = quizzes.find(q => q._id === quizId);
+      const quiz = quizzes.find((q) => q._id === quizId);
       const updatedQuiz = { ...quiz, [field]: value };
       await apiClient.put(`/coordinator/quizzes/${quizId}`, updatedQuiz);
-      setQuizzes(quizzes.map(q => q._id === quizId ? updatedQuiz : q));
+      setQuizzes(quizzes.map((q) => (q._id === quizId ? updatedQuiz : q)));
       setEditingQuizData({ ...editingQuizData, [quizId]: updatedQuiz });
-      
+
       // Wait a bit before allowing refetch
       setTimeout(() => setIsUpdating(false), 500);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to update quiz");
       console.error("Error updating quiz:", err);
-      alert('Failed to update quiz');
+      alert("Failed to update quiz");
       setIsUpdating(false);
     }
   };
 
   const getQuizStatus = (quiz) => {
+    // First check if quiz is draft
+    if (quiz.status !== "published") {
+      return { label: "Draft", color: "bg-orange-100 text-orange-800" };
+    }
+
     const now = new Date();
     const start = new Date(quiz.startTime);
     const end = new Date(quiz.endTime);
@@ -179,14 +240,14 @@ const CoordinatorQuizzes = () => {
           </div>
           <div className="flex space-x-3">
             <button
-              onClick={() => navigate('/coordinator/question-bank')}
+              onClick={() => navigate("/coordinator/question-bank")}
               className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
             >
               <BookOpen className="w-4 h-4" />
               Question Bank
             </button>
             <button
-              onClick={() => navigate('/coordinator/quizzes/create')}
+              onClick={() => navigate("/coordinator/quizzes/create")}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
             >
               <Plus className="w-4 h-4" />
@@ -308,8 +369,12 @@ const CoordinatorQuizzes = () => {
           {quizzes.length === 0 ? (
             <div className="p-12 text-center">
               <ClipboardList className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <p className="mt-4 text-gray-600 font-medium">No quizzes created yet</p>
-              <p className="text-sm text-gray-500 mt-2">Create your first quiz to get started</p>
+              <p className="mt-4 text-gray-600 font-medium">
+                No quizzes created yet
+              </p>
+              <p className="text-sm text-gray-500 mt-2">
+                Create your first quiz to get started
+              </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -339,13 +404,17 @@ const CoordinatorQuizzes = () => {
                     const isExpanded = expandedQuizId === quiz._id;
                     return (
                       <React.Fragment key={quiz._id}>
-                        <tr className="hover:bg-gray-50 cursor-pointer" onClick={() => toggleQuizExpand(quiz._id)}>
+                        <tr
+                          className="hover:bg-gray-50 cursor-pointer"
+                          onClick={() => toggleQuizExpand(quiz._id)}
+                        >
                           <td className="px-6 py-4">
                             <div className="text-sm font-medium text-gray-900">
                               {quiz.title}
                             </div>
                             <div className="text-sm text-gray-500">
-                              {quiz.department} - {quiz.semester} - {quiz.subject}
+                              {quiz.department} - {quiz.semester} -{" "}
+                              {quiz.subject}
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
@@ -371,7 +440,10 @@ const CoordinatorQuizzes = () => {
                               {status.label}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium" onClick={(e) => e.stopPropagation()}>
+                          <td
+                            className="px-6 py-4 whitespace-nowrap text-sm font-medium"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <div className="flex gap-3">
                               <button
                                 onClick={() => {
@@ -384,7 +456,9 @@ const CoordinatorQuizzes = () => {
                                 Results
                               </button>
                               <button
-                                onClick={() => handleDeleteQuiz(quiz._id, quiz.title)}
+                                onClick={() =>
+                                  handleDeleteQuiz(quiz._id, quiz.title)
+                                }
                                 className="text-red-600 hover:text-red-900 flex items-center gap-1"
                               >
                                 <Trash2 className="w-4 h-4" />
@@ -397,60 +471,150 @@ const CoordinatorQuizzes = () => {
                           <tr>
                             <td colSpan="5" className="px-6 py-4 bg-gray-50">
                               <div className="border-l-4 border-blue-500 pl-4">
-                                <h4 className="font-semibold text-gray-900 mb-3">Quick Actions</h4>
+                                <h4 className="font-semibold text-gray-900 mb-3">
+                                  Quick Actions
+                                </h4>
+
+                                {/* Publish Banner for Draft Quizzes */}
+                                {quiz.status !== "published" && (
+                                  <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center justify-between">
+                                    <div>
+                                      <p className="font-medium text-yellow-800">
+                                        ⚠️ This quiz is in draft mode
+                                      </p>
+                                      <p className="text-sm text-yellow-700">
+                                        Students cannot attempt this quiz until
+                                        it is published.
+                                      </p>
+                                    </div>
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handlePublishQuiz(quiz);
+                                      }}
+                                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+                                    >
+                                      Publish Now
+                                    </button>
+                                  </div>
+                                )}
+
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                   <div className="bg-white p-4 rounded-lg border border-gray-200">
                                     <div className="flex justify-between items-center">
                                       <div>
-                                        <p className="text-sm text-gray-600 mb-1">Status</p>
-                                        <p className="font-medium text-gray-900">{quiz.isActive ? 'Active' : 'Inactive'}</p>
+                                        <p className="text-sm text-gray-600 mb-1">
+                                          Status
+                                        </p>
+                                        <p className="font-medium text-gray-900">
+                                          {quiz.status === "published"
+                                            ? quiz.isActive
+                                              ? "Published & Active"
+                                              : "Published (Inactive)"
+                                            : "Draft"}
+                                        </p>
                                       </div>
-                                      <button
-                                        onClick={(e) => { e.stopPropagation(); handleQuickActivate(quiz); }}
-                                        className={`px-3 py-1 rounded text-sm font-medium ${
-                                          quiz.isActive
-                                            ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                                            : 'bg-green-100 text-green-700 hover:bg-green-200'
-                                        }`}
-                                      >
-                                        {quiz.isActive ? 'Deactivate' : 'Activate'}
-                                      </button>
+                                      {quiz.status === "published" && (
+                                        <button
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleQuickActivate(quiz);
+                                          }}
+                                          className={`px-3 py-1 rounded text-sm font-medium ${
+                                            quiz.isActive
+                                              ? "bg-red-100 text-red-700 hover:bg-red-200"
+                                              : "bg-green-100 text-green-700 hover:bg-green-200"
+                                          }`}
+                                        >
+                                          {quiz.isActive
+                                            ? "Deactivate"
+                                            : "Activate"}
+                                        </button>
+                                      )}
                                     </div>
                                   </div>
                                   <div className="bg-white p-4 rounded-lg border border-gray-200">
-                                    <p className="text-sm text-gray-600 mb-2">Start Time</p>
+                                    <p className="text-sm text-gray-600 mb-2">
+                                      Start Time
+                                    </p>
                                     <input
                                       type="datetime-local"
-                                      value={quiz.startTime ? new Date(new Date(quiz.startTime).getTime() - new Date(quiz.startTime).getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''}
+                                      value={
+                                        quiz.startTime
+                                          ? new Date(
+                                              new Date(
+                                                quiz.startTime,
+                                              ).getTime() -
+                                                new Date(
+                                                  quiz.startTime,
+                                                ).getTimezoneOffset() *
+                                                  60000,
+                                            )
+                                              .toISOString()
+                                              .slice(0, 16)
+                                          : ""
+                                      }
                                       onChange={(e) => {
                                         e.stopPropagation();
-                                        handleQuickUpdate(quiz._id, 'startTime', new Date(e.target.value).toISOString());
+                                        handleQuickUpdate(
+                                          quiz._id,
+                                          "startTime",
+                                          new Date(
+                                            e.target.value,
+                                          ).toISOString(),
+                                        );
                                       }}
                                       className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
                                       onClick={(e) => e.stopPropagation()}
                                     />
                                   </div>
                                   <div className="bg-white p-4 rounded-lg border border-gray-200">
-                                    <p className="text-sm text-gray-600 mb-2">End Time</p>
+                                    <p className="text-sm text-gray-600 mb-2">
+                                      End Time
+                                    </p>
                                     <input
                                       type="datetime-local"
-                                      value={quiz.endTime ? new Date(new Date(quiz.endTime).getTime() - new Date(quiz.endTime).getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''}
+                                      value={
+                                        quiz.endTime
+                                          ? new Date(
+                                              new Date(quiz.endTime).getTime() -
+                                                new Date(
+                                                  quiz.endTime,
+                                                ).getTimezoneOffset() *
+                                                  60000,
+                                            )
+                                              .toISOString()
+                                              .slice(0, 16)
+                                          : ""
+                                      }
                                       onChange={(e) => {
                                         e.stopPropagation();
-                                        handleQuickUpdate(quiz._id, 'endTime', new Date(e.target.value).toISOString());
+                                        handleQuickUpdate(
+                                          quiz._id,
+                                          "endTime",
+                                          new Date(
+                                            e.target.value,
+                                          ).toISOString(),
+                                        );
                                       }}
                                       className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
                                       onClick={(e) => e.stopPropagation()}
                                     />
                                   </div>
                                   <div className="bg-white p-4 rounded-lg border border-gray-200">
-                                    <p className="text-sm text-gray-600 mb-2">Duration (minutes)</p>
+                                    <p className="text-sm text-gray-600 mb-2">
+                                      Duration (minutes)
+                                    </p>
                                     <input
                                       type="number"
-                                      value={quiz.durationMinutes || ''}
+                                      value={quiz.durationMinutes || ""}
                                       onChange={(e) => {
                                         e.stopPropagation();
-                                        handleQuickUpdate(quiz._id, 'durationMinutes', parseInt(e.target.value) || 0);
+                                        handleQuickUpdate(
+                                          quiz._id,
+                                          "durationMinutes",
+                                          parseInt(e.target.value) || 0,
+                                        );
                                       }}
                                       className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
                                       onClick={(e) => e.stopPropagation()}
@@ -458,12 +622,21 @@ const CoordinatorQuizzes = () => {
                                     />
                                   </div>
                                   <div className="bg-white p-4 rounded-lg border border-gray-200">
-                                    <p className="text-sm text-gray-600 mb-1">Total Marks</p>
-                                    <p className="font-medium text-gray-900">{quiz.totalMarks}</p>
+                                    <p className="text-sm text-gray-600 mb-1">
+                                      Total Marks
+                                    </p>
+                                    <p className="font-medium text-gray-900">
+                                      {quiz.totalMarks}
+                                    </p>
                                   </div>
                                   <div className="bg-white p-4 rounded-lg border border-gray-200 flex items-center justify-center">
                                     <button
-                                      onClick={(e) => { e.stopPropagation(); navigate(`/coordinator/quizzes/edit/${quiz._id}`); }}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        navigate(
+                                          `/coordinator/quizzes/edit/${quiz._id}`,
+                                        );
+                                      }}
                                       className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
                                     >
                                       <Edit2 className="w-4 h-4" />

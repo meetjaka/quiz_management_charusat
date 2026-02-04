@@ -39,16 +39,16 @@ const QuizAttempt = () => {
     const handleBeforeUnload = (e) => {
       if (attemptId && !submitting) {
         e.preventDefault();
-        e.returnValue = '';
+        e.returnValue = "";
       }
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [attemptId, submitting]);
 
@@ -57,26 +57,27 @@ const QuizAttempt = () => {
       setLoading(true);
       setError(null);
       const response = await apiClient.post(`/student/quizzes/${quizId}/start`);
-      const { attemptId, quiz, questions, timeLimit } = response.data.data;
+      const { attempt, quiz, questions } = response.data.data;
 
-      setAttemptId(attemptId);
+      setAttemptId(attempt._id);
       setQuiz(quiz);
       setQuestions(questions);
-      setStartTime(new Date());
+      setStartTime(new Date(attempt.startedAt));
       setDurationMinutes(quiz.durationMinutes || 60);
       setError(null);
-      showToast.success('Quiz started! Good luck!');
+      showToast.success("Quiz started! Good luck!");
     } catch (err) {
-      const errorMessage = err.response?.data?.message || "Failed to start quiz";
+      const errorMessage =
+        err.response?.data?.message || "Failed to start quiz";
 
-      // Check if it's a duplicate attempt error
+      // Check if it's a max attempts reached error
       if (
+        errorMessage.includes("Maximum attempts") ||
         errorMessage.includes("already attempted") ||
-        errorMessage.includes("duplicate key") ||
-        err.response?.status === 400
+        errorMessage.includes("duplicate key")
       ) {
         setError(
-          "You have already attempted this quiz. Please check your results page or contact your instructor if this is an error."
+          "You have reached the maximum number of attempts for this quiz. Please check your results page or contact your instructor if this is an error.",
         );
       } else {
         setError(errorMessage);
@@ -90,8 +91,8 @@ const QuizAttempt = () => {
   const reportTabSwitch = async () => {
     try {
       await apiClient.post(`/student/attempts/${attemptId}/tab-switch`);
-      setTabSwitchCount(prev => prev + 1);
-      showToast.warning('Tab switching detected! This has been logged.');
+      setTabSwitchCount((prev) => prev + 1);
+      showToast.warning("Tab switching detected! This has been logged.");
     } catch (err) {
       console.error("Error reporting tab switch:", err);
     }
@@ -107,13 +108,13 @@ const QuizAttempt = () => {
         answer,
       });
     } catch (err) {
-      showToast.error('Failed to save answer. Please try again.');
+      showToast.error("Failed to save answer. Please try again.");
       console.error("Error saving answer:", err);
     }
   };
 
   const handleTimeUp = useCallback(() => {
-    showToast.warning('Time is up! Submitting quiz automatically...');
+    showToast.warning("Time is up! Submitting quiz automatically...");
     handleSubmit(true);
   }, [attemptId]);
 
@@ -128,7 +129,7 @@ const QuizAttempt = () => {
     try {
       setSubmitting(true);
       await apiClient.post(`/student/attempts/${attemptId}/submit`);
-      showToast.success('Quiz submitted successfully!');
+      showToast.success("Quiz submitted successfully!");
       navigate("/student/results", {
         state: { message: "Quiz submitted successfully!" },
       });
@@ -148,7 +149,9 @@ const QuizAttempt = () => {
   };
 
   const getAnsweredCount = () => {
-    return Object.keys(answers).filter((k) => answers[k] !== null && answers[k] !== undefined).length;
+    return Object.keys(answers).filter(
+      (k) => answers[k] !== null && answers[k] !== undefined,
+    ).length;
   };
 
   if (loading) {
@@ -200,8 +203,8 @@ const QuizAttempt = () => {
     <Layout title={quiz?.title || "Quiz Attempt"}>
       {/* Timer Component */}
       {startTime && durationMinutes && (
-        <Timer 
-          durationMinutes={durationMinutes} 
+        <Timer
+          durationMinutes={durationMinutes}
           onTimeUp={handleTimeUp}
           startTime={startTime}
         />
@@ -323,7 +326,7 @@ const QuizAttempt = () => {
                   <button
                     onClick={() =>
                       setCurrentQuestion((prev) =>
-                        Math.min(questions.length - 1, prev + 1)
+                        Math.min(questions.length - 1, prev + 1),
                       )
                     }
                     className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
@@ -350,8 +353,8 @@ const QuizAttempt = () => {
                       index === currentQuestion
                         ? "bg-blue-600 text-white ring-2 ring-blue-400"
                         : answers[q._id]
-                        ? "bg-green-100 text-green-800 hover:bg-green-200"
-                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                          ? "bg-green-100 text-green-800 hover:bg-green-200"
+                          : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                     }`}
                   >
                     {index + 1}

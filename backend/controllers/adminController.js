@@ -598,6 +598,17 @@ exports.getSystemAnalytics = async (req, res) => {
     const draftQuizzes = await Quiz.countDocuments({ status: "draft" });
     const closedQuizzes = await Quiz.countDocuments({ status: "closed" });
 
+    // Active quizzes (published quizzes that are currently within their time window)
+    const now = new Date();
+    const activeQuizzes = await Quiz.countDocuments({
+      status: "published",
+      $or: [
+        { startDate: { $lte: now }, endDate: { $gte: now } },
+        { startDate: { $exists: false }, endDate: { $exists: false } },
+        { startDate: null, endDate: null },
+      ],
+    });
+
     // Assignment statistics
     const totalAssignments = await QuizAssignment.countDocuments();
 
@@ -622,9 +633,56 @@ exports.getSystemAnalytics = async (req, res) => {
       },
     ]);
 
+    // Recent quiz attempts (last 10)
+    const recentAttempts = await QuizAttempt.find()
+      .populate("studentId", "fullName email studentId")
+      .populate("quizId", "title")
+      .sort({ submittedAt: -1 })
+      .limit(10);
+
+    // Recent quizzes (last 5)
+    const recentQuizzes = await Quiz.find()
+      .populate("createdBy", "fullName")
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .select("title duration questions isActive isPublished createdBy");
+
+    // Department statistics
+    const departmentStats = await User.aggregate([
+      { $match: { role: "student" } },
+      {
+        $group: {
+          _id: "$department",
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { count: -1 } },
+    ]);
+
     res.status(200).json({
       success: true,
       data: {
+        overview: {
+          totalStudents: totalStudents,
+          totalCoordinators: totalCoordinators,
+          totalQuizzes: totalQuizzes,
+          activeQuizzes: activeQuizzes,
+          totalAttempts: totalAttempts,
+          totalAdmins: totalAdmins,
+          totalUsers: totalUsers,
+          activeUsers: activeUsers,
+          publishedQuizzes: publishedQuizzes,
+          draftQuizzes: draftQuizzes,
+          closedQuizzes: closedQuizzes,
+          submittedAttempts: submittedAttempts,
+          inProgressAttempts: inProgressAttempts,
+          averageScore: attemptStats[0]?.avgScore || 0,
+          averagePercentage: attemptStats[0]?.avgPercentage || 0,
+        },
+        recentAttempts: recentAttempts,
+        recentQuizzes: recentQuizzes,
+        departmentStats: departmentStats,
+        // Keep the old structure for backwards compatibility
         users: {
           total: totalUsers,
           admins: totalAdmins,
@@ -637,6 +695,7 @@ exports.getSystemAnalytics = async (req, res) => {
           published: publishedQuizzes,
           draft: draftQuizzes,
           closed: closedQuizzes,
+          active: activeQuizzes,
         },
         assignments: {
           total: totalAssignments,
