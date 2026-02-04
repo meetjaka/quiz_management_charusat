@@ -603,9 +603,9 @@ exports.getSystemAnalytics = async (req, res) => {
     const activeQuizzes = await Quiz.countDocuments({
       status: "published",
       $or: [
-        { startDate: { $lte: now }, endDate: { $gte: now } },
-        { startDate: { $exists: false }, endDate: { $exists: false } },
-        { startDate: null, endDate: null },
+        { startTime: { $lte: now }, endTime: { $gte: now } },
+        { startTime: { $exists: false }, endTime: { $exists: false } },
+        { startTime: null, endTime: null },
       ],
     });
 
@@ -642,10 +642,10 @@ exports.getSystemAnalytics = async (req, res) => {
 
     // Recent quizzes (last 5)
     const recentQuizzes = await Quiz.find()
-      .populate("createdBy", "fullName")
+      .populate("coordinatorId", "fullName")
       .sort({ createdAt: -1 })
       .limit(5)
-      .select("title duration questions isActive isPublished createdBy");
+      .select("title durationMinutes isActive status coordinatorId createdAt");
 
     // Department statistics
     const departmentStats = await User.aggregate([
