@@ -1,16 +1,10 @@
-const Group = require('../models/Group');
-const User = require('../models/User');
+const Group = require("../models/Group");
+const User = require("../models/User");
 
 // Get all groups with filtering and pagination
 exports.getAllGroups = async (req, res) => {
   try {
-    const {
-      groupType,
-      isActive,
-      page = 1,
-      limit = 20,
-      search,
-    } = req.query;
+    const { groupType, isActive, page = 1, limit = 20, search } = req.query;
 
     const query = {};
 
@@ -28,9 +22,9 @@ exports.getAllGroups = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const groups = await Group.find(query)
-      .populate('createdBy', 'fullName email')
-      .populate('members.user', 'fullName email role studentId')
-      .populate('members.addedBy', 'fullName email')
+      .populate("createdBy", "fullName email")
+      .populate("members.user", "fullName email role studentId")
+      .populate("members.addedBy", "fullName email")
       .sort({ createdAt: -1 })
       .limit(parseInt(limit))
       .skip(skip);
@@ -58,9 +52,12 @@ exports.getAllGroups = async (req, res) => {
 exports.getGroupById = async (req, res) => {
   try {
     const group = await Group.findById(req.params.id)
-      .populate('createdBy', 'fullName email')
-      .populate('members.user', 'fullName email role studentId department semester')
-      .populate('members.addedBy', 'fullName email');
+      .populate("createdBy", "fullName email")
+      .populate(
+        "members.user",
+        "fullName email role studentId department semester",
+      )
+      .populate("members.addedBy", "fullName email");
 
     if (!group) {
       return res.status(404).json({
@@ -107,14 +104,16 @@ exports.createGroup = async (req, res) => {
     // Create group
     const group = await Group.create({
       name,
-      description: description || '',
-      groupType: groupType || 'batch',
+      description: description || "",
+      groupType: groupType || "batch",
       createdBy: req.user._id,
     });
 
     // Populate the created group
-    const populatedGroup = await Group.findById(group._id)
-      .populate('createdBy', 'fullName email');
+    const populatedGroup = await Group.findById(group._id).populate(
+      "createdBy",
+      "fullName email",
+    );
 
     res.status(201).json({
       success: true,
@@ -146,7 +145,10 @@ exports.updateGroup = async (req, res) => {
 
     // Check if new name already exists (excluding current group)
     if (name && name !== group.name) {
-      const existingGroup = await Group.findOne({ name, _id: { $ne: req.params.id } });
+      const existingGroup = await Group.findOne({
+        name,
+        _id: { $ne: req.params.id },
+      });
       if (existingGroup) {
         return res.status(400).json({
           success: false,
@@ -165,8 +167,8 @@ exports.updateGroup = async (req, res) => {
 
     // Populate the updated group
     const updatedGroup = await Group.findById(group._id)
-      .populate('createdBy', 'fullName email')
-      .populate('members.user', 'fullName email role studentId');
+      .populate("createdBy", "fullName email")
+      .populate("members.user", "fullName email role studentId");
 
     res.status(200).json({
       success: true,
@@ -197,13 +199,13 @@ exports.deleteGroup = async (req, res) => {
     // Remove group reference from all users
     await User.updateMany(
       { groups: req.params.id },
-      { $pull: { groups: req.params.id } }
+      { $pull: { groups: req.params.id } },
     );
 
     // Reset primary group for users who had this as primary
     await User.updateMany(
       { primaryGroup: req.params.id },
-      { $unset: { primaryGroup: "" } }
+      { $unset: { primaryGroup: "" } },
     );
 
     await Group.findByIdAndDelete(req.params.id);
@@ -216,6 +218,66 @@ exports.deleteGroup = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error deleting group",
+      error: error.message,
+    });
+  }
+};
+
+// Delete group with all its users
+exports.deleteGroupWithUsers = async (req, res) => {
+  try {
+    const group = await Group.findById(req.params.id).populate(
+      "members.user",
+      "_id",
+    );
+
+    if (!group) {
+      return res.status(404).json({
+        success: false,
+        message: "Group not found",
+      });
+    }
+
+    // Get all user IDs from the group members
+    const userIds = group.members
+      .map((member) => member.user?._id)
+      .filter(Boolean);
+
+    // Count users that will be deleted
+    const userCount = userIds.length;
+
+    // Delete all users in the group (except admins for safety)
+    if (userIds.length > 0) {
+      await User.deleteMany({
+        _id: { $in: userIds },
+        role: { $ne: "admin" }, // Don't delete admin users for safety
+      });
+    }
+
+    // Remove group reference from any remaining users (in case user is in multiple groups)
+    await User.updateMany(
+      { groups: req.params.id },
+      { $pull: { groups: req.params.id } },
+    );
+
+    // Reset primary group for remaining users who had this as primary
+    await User.updateMany(
+      { primaryGroup: req.params.id },
+      { $unset: { primaryGroup: "" } },
+    );
+
+    // Delete the group
+    await Group.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({
+      success: true,
+      message: `Group and ${userCount} user(s) deleted successfully`,
+      deletedUsersCount: userCount,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error deleting group with users",
       error: error.message,
     });
   }
@@ -253,7 +315,7 @@ exports.addMemberToGroup = async (req, res) => {
 
     // Check if user is already in group
     const isAlreadyMember = group.members.some(
-      member => member.user.toString() === userId
+      (member) => member.user.toString() === userId,
     );
 
     if (isAlreadyMember) {
@@ -270,17 +332,19 @@ exports.addMemberToGroup = async (req, res) => {
     // Add group to user's groups array
     if (!user.groups.includes(groupId)) {
       user.groups.push(groupId);
-      
+
       // Set as primary group if user doesn't have one
       if (!user.primaryGroup) {
         user.primaryGroup = groupId;
       }
-      
+
       await user.save();
     }
 
-    const updatedGroup = await Group.findById(groupId)
-      .populate('members.user', 'fullName email role studentId');
+    const updatedGroup = await Group.findById(groupId).populate(
+      "members.user",
+      "fullName email role studentId",
+    );
 
     res.status(200).json({
       success: true,
@@ -317,13 +381,13 @@ exports.removeMemberFromGroup = async (req, res) => {
     await group.save();
 
     // Remove group from user's groups array
-    user.groups = user.groups.filter(g => g.toString() !== groupId);
-    
+    user.groups = user.groups.filter((g) => g.toString() !== groupId);
+
     // Reset primary group if this was the primary
     if (user.primaryGroup && user.primaryGroup.toString() === groupId) {
       user.primaryGroup = user.groups.length > 0 ? user.groups[0] : null;
     }
-    
+
     await user.save();
 
     res.status(200).json({
@@ -361,30 +425,30 @@ exports.bulkAddMembersToGroup = async (req, res) => {
     }
 
     const users = await User.find({ _id: { $in: userIds } });
-    
+
     let addedCount = 0;
     let skippedCount = 0;
 
     for (const user of users) {
       const isAlreadyMember = group.members.some(
-        member => member.user.toString() === user._id.toString()
+        (member) => member.user.toString() === user._id.toString(),
       );
 
       if (!isAlreadyMember) {
         group.addMember(user._id, req.user._id);
-        
+
         // Add group to user's groups array
         if (!user.groups.includes(groupId)) {
           user.groups.push(groupId);
-          
+
           // Set as primary group if user doesn't have one
           if (!user.primaryGroup) {
             user.primaryGroup = groupId;
           }
-          
+
           await user.save();
         }
-        
+
         addedCount++;
       } else {
         skippedCount++;
@@ -399,8 +463,8 @@ exports.bulkAddMembersToGroup = async (req, res) => {
       data: {
         addedCount,
         skippedCount,
-        totalRequested: userIds.length
-      }
+        totalRequested: userIds.length,
+      },
     });
   } catch (error) {
     res.status(500).json({
@@ -417,7 +481,8 @@ module.exports = {
   createGroup: exports.createGroup,
   updateGroup: exports.updateGroup,
   deleteGroup: exports.deleteGroup,
+  deleteGroupWithUsers: exports.deleteGroupWithUsers,
   addMemberToGroup: exports.addMemberToGroup,
   removeMemberFromGroup: exports.removeMemberFromGroup,
-  bulkAddMembersToGroup: exports.bulkAddMembersToGroup
+  bulkAddMembersToGroup: exports.bulkAddMembersToGroup,
 };
