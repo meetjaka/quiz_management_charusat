@@ -181,7 +181,7 @@ const CoordinatorQuizzes = () => {
         `/coordinator/quizzes/${selectedQuiz._id}/assigned-students/${studentId}`,
       );
       setAssignedStudents(
-        assignedStudents.filter((a) => a.studentId._id !== studentId),
+        assignedStudents.filter((a) => a.studentId?._id !== studentId),
       );
       alert("Student removed from quiz successfully!");
       // Refresh quizzes to update stats
@@ -204,7 +204,9 @@ const CoordinatorQuizzes = () => {
 
   // Select/deselect all students
   const toggleSelectAll = () => {
-    const assignedIds = assignedStudents.map((a) => a.studentId._id);
+    const assignedIds = assignedStudents
+      .map((a) => a.studentId?._id)
+      .filter(Boolean);
     const availableStudents = allStudents.filter(
       (s) => !assignedIds.includes(s._id),
     );
@@ -525,7 +527,7 @@ const CoordinatorQuizzes = () => {
                 </div>
               </div>
               <div className="p-6 overflow-y-auto flex-1">
-                {assignedStudents.length === 0 ? (
+                {assignedStudents.filter((a) => a.studentId).length === 0 ? (
                   <div className="text-center py-8">
                     <Users className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                     <p className="text-gray-500">No students assigned yet</p>
@@ -542,37 +544,39 @@ const CoordinatorQuizzes = () => {
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {assignedStudents.map((assignment) => (
-                      <div
-                        key={assignment._id}
-                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                      >
-                        <div>
-                          <p className="font-medium text-gray-900">
-                            {assignment.studentId?.fullName}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {assignment.studentId?.email} |{" "}
-                            {assignment.studentId?.studentId}
-                          </p>
-                          <p className="text-xs text-gray-400">
-                            {assignment.studentId?.department}
-                          </p>
-                        </div>
-                        <button
-                          onClick={() =>
-                            handleRemoveStudentAssignment(
-                              assignment.studentId._id,
-                              assignment.studentId.fullName,
-                            )
-                          }
-                          className="text-red-600 hover:text-red-800 p-2"
-                          title="Remove assignment"
+                    {assignedStudents
+                      .filter((a) => a.studentId)
+                      .map((assignment) => (
+                        <div
+                          key={assignment._id}
+                          className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
                         >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    ))}
+                          <div>
+                            <p className="font-medium text-gray-900">
+                              {assignment.studentId?.fullName}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              {assignment.studentId?.email} |{" "}
+                              {assignment.studentId?.studentId}
+                            </p>
+                            <p className="text-xs text-gray-400">
+                              {assignment.studentId?.department}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() =>
+                              handleRemoveStudentAssignment(
+                                assignment.studentId?._id,
+                                assignment.studentId?.fullName,
+                              )
+                            }
+                            className="text-red-600 hover:text-red-800 p-2"
+                            title="Remove assignment"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ))}
                   </div>
                 )}
               </div>
@@ -642,14 +646,14 @@ const CoordinatorQuizzes = () => {
                       allStudents.filter(
                         (s) =>
                           !assignedStudents.some(
-                            (a) => a.studentId._id === s._id,
+                            (a) => a.studentId?._id === s._id,
                           ),
                       ).length > 0 &&
                       selectedStudents.length ===
                         allStudents.filter(
                           (s) =>
                             !assignedStudents.some(
-                              (a) => a.studentId._id === s._id,
+                              (a) => a.studentId?._id === s._id,
                             ),
                         ).length
                     }
@@ -662,7 +666,7 @@ const CoordinatorQuizzes = () => {
                       allStudents.filter(
                         (s) =>
                           !assignedStudents.some(
-                            (a) => a.studentId._id === s._id,
+                            (a) => a.studentId?._id === s._id,
                           ),
                       ).length
                     }{" "}
@@ -683,7 +687,7 @@ const CoordinatorQuizzes = () => {
                   <div className="space-y-2">
                     {allStudents.map((student) => {
                       const isAssigned = assignedStudents.some(
-                        (a) => a.studentId._id === student._id,
+                        (a) => a.studentId?._id === student._id,
                       );
                       const isSelected = selectedStudents.includes(student._id);
 

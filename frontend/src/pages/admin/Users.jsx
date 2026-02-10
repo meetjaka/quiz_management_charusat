@@ -48,6 +48,11 @@ const AdminUsers = () => {
   const [showGroupDropdown, setShowGroupDropdown] = useState(null);
   const [expandedGroups, setExpandedGroups] = useState({});
   const [groupedUsers, setGroupedUsers] = useState({});
+  const [deleteGroupDialog, setDeleteGroupDialog] = useState({
+    show: false,
+    group: null,
+    deleteUsers: false,
+  });
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -373,6 +378,35 @@ const AdminUsers = () => {
 
   const collapseAllGroups = () => {
     setExpandedGroups({});
+  };
+
+  // Handle delete group
+  const handleDeleteGroup = (e, groupId, groupInfo, userCount) => {
+    e.stopPropagation();
+    setDeleteGroupDialog({
+      show: true,
+      group: { _id: groupId, name: groupInfo?.name, memberCount: userCount },
+      deleteUsers: false,
+    });
+  };
+
+  // Confirm delete group
+  const confirmDeleteGroup = async () => {
+    try {
+      const endpoint = deleteGroupDialog.deleteUsers
+        ? `/groups/${deleteGroupDialog.group._id}/with-users`
+        : `/groups/${deleteGroupDialog.group._id}`;
+
+      const response = await apiClient.delete(endpoint);
+      showToast.success(response.data.message || "Group deleted successfully");
+      fetchUsers();
+      fetchGroups();
+      setDeleteGroupDialog({ show: false, group: null, deleteUsers: false });
+    } catch (error) {
+      showToast.error(
+        error.response?.data?.message || "Failed to delete group",
+      );
+    }
   };
 
   const filteredUsers = users.filter((user) => {
@@ -719,9 +753,9 @@ const AdminUsers = () => {
                 className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
               >
                 {/* Group Header */}
-                <button
+                <div
+                  className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors cursor-pointer"
                   onClick={() => toggleGroupExpansion(groupId)}
-                  className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
                 >
                   <div className="flex items-center space-x-3">
                     <div
@@ -744,7 +778,24 @@ const AdminUsers = () => {
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-3">
+                    {/* Delete Group Button - only for actual groups */}
+                    {groupId !== "no-group" && (
+                      <button
+                        onClick={(e) =>
+                          handleDeleteGroup(
+                            e,
+                            groupId,
+                            groupInfo,
+                            groupUsers.length,
+                          )
+                        }
+                        className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Delete Group"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
                     {expandedGroups[groupId] ? (
                       <svg
                         className="w-5 h-5 text-gray-400"
@@ -775,7 +826,7 @@ const AdminUsers = () => {
                       </svg>
                     )}
                   </div>
-                </button>
+                </div>
 
                 {/* Group Users - Expanded View */}
                 {expandedGroups[groupId] && (
@@ -978,6 +1029,142 @@ const AdminUsers = () => {
           confirmText="Delete Users"
           confirmButtonClass="bg-red-600 hover:bg-red-700"
         />
+
+        {/* Delete Group Dialog */}
+        {deleteGroupDialog.show && deleteGroupDialog.group && (
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+              <div
+                className="fixed inset-0 transition-opacity"
+                aria-hidden="true"
+              >
+                <div
+                  className="absolute inset-0 bg-gray-500 opacity-75"
+                  onClick={() =>
+                    setDeleteGroupDialog({
+                      show: false,
+                      group: null,
+                      deleteUsers: false,
+                    })
+                  }
+                ></div>
+              </div>
+              <span
+                className="hidden sm:inline-block sm:align-middle sm:h-screen"
+                aria-hidden="true"
+              >
+                &#8203;
+              </span>
+              <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+                <div className="sm:flex sm:items-start">
+                  <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                    <Trash2 className="h-6 w-6 text-red-600" />
+                  </div>
+                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <h3 className="text-lg leading-6 font-medium text-gray-900">
+                      Delete Group: {deleteGroupDialog.group?.name}
+                    </h3>
+                    <div className="mt-2">
+                      <p className="text-sm text-gray-500">
+                        This group has{" "}
+                        <strong>
+                          {deleteGroupDialog.group?.memberCount || 0} member(s)
+                        </strong>
+                        . Choose how you want to delete this group:
+                      </p>
+                    </div>
+                    <div className="mt-4 space-y-3">
+                      <label className="flex items-start space-x-3 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="deleteGroupOption"
+                          checked={!deleteGroupDialog.deleteUsers}
+                          onChange={() =>
+                            setDeleteGroupDialog((prev) => ({
+                              ...prev,
+                              deleteUsers: false,
+                            }))
+                          }
+                          className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500"
+                        />
+                        <div>
+                          <span className="text-sm font-medium text-gray-900">
+                            Delete group only
+                          </span>
+                          <p className="text-xs text-gray-500">
+                            The group will be removed but users will remain in
+                            the system
+                          </p>
+                        </div>
+                      </label>
+                      <label className="flex items-start space-x-3 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="deleteGroupOption"
+                          checked={deleteGroupDialog.deleteUsers}
+                          onChange={() =>
+                            setDeleteGroupDialog((prev) => ({
+                              ...prev,
+                              deleteUsers: true,
+                            }))
+                          }
+                          className="mt-1 h-4 w-4 text-red-600 focus:ring-red-500"
+                        />
+                        <div>
+                          <span className="text-sm font-medium text-red-600">
+                            Delete group and all users
+                          </span>
+                          <p className="text-xs text-gray-500">
+                            The group and all{" "}
+                            {deleteGroupDialog.group?.memberCount || 0}{" "}
+                            member(s) will be permanently deleted
+                          </p>
+                        </div>
+                      </label>
+                    </div>
+                    {deleteGroupDialog.deleteUsers && (
+                      <div className="mt-3 p-3 bg-red-50 rounded-md">
+                        <p className="text-sm text-red-700 font-medium">
+                          ⚠️ Warning: This action cannot be undone. All user
+                          data including quiz attempts and results will be
+                          permanently deleted.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                  <button
+                    type="button"
+                    onClick={confirmDeleteGroup}
+                    className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
+                      deleteGroupDialog.deleteUsers
+                        ? "bg-red-600 hover:bg-red-700 focus:ring-red-500"
+                        : "bg-orange-600 hover:bg-orange-700 focus:ring-orange-500"
+                    }`}
+                  >
+                    {deleteGroupDialog.deleteUsers
+                      ? "Delete Group & Users"
+                      : "Delete Group Only"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setDeleteGroupDialog({
+                        show: false,
+                        group: null,
+                        deleteUsers: false,
+                      })
+                    }
+                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:w-auto sm:text-sm"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </motion.div>
     </Layout>
   );
