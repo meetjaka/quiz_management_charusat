@@ -301,6 +301,42 @@ exports.startQuizAttempt = async (req, res) => {
   }
 };
 
+// Report tab switch during attempt
+exports.reportTabSwitch = async (req, res) => {
+  try {
+    const { attemptId } = req.params;
+
+    const attempt = await QuizAttempt.findOne({
+      _id: attemptId,
+      studentId: req.user._id,
+      status: "in_progress",
+    });
+
+    if (!attempt) {
+      return res.status(404).json({
+        success: false,
+        message: "Active attempt not found",
+      });
+    }
+
+    // Increment tab switch count
+    attempt.tabSwitchCount = (attempt.tabSwitchCount || 0) + 1;
+    await attempt.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Tab switch recorded",
+      data: { tabSwitchCount: attempt.tabSwitchCount },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error reporting tab switch",
+      error: error.message,
+    });
+  }
+};
+
 // Save answer during attempt
 exports.saveAnswer = async (req, res) => {
   try {

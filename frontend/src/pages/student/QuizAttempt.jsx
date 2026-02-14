@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "../../components/Layout";
 import Timer from "../../components/Timer";
@@ -9,6 +9,7 @@ import apiClient from "../../api";
 const QuizAttempt = () => {
   const { quizId } = useParams();
   const navigate = useNavigate();
+  const startAttemptCalled = useRef(false);
 
   const [quiz, setQuiz] = useState(null);
   const [attemptId, setAttemptId] = useState(null);
@@ -23,8 +24,10 @@ const QuizAttempt = () => {
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
   const [tabSwitchCount, setTabSwitchCount] = useState(0);
 
-  // Start quiz attempt
+  // Start quiz attempt (ref guard prevents double-invocation in StrictMode)
   useEffect(() => {
+    if (startAttemptCalled.current) return;
+    startAttemptCalled.current = true;
     startAttempt();
   }, [quizId]);
 
@@ -98,14 +101,14 @@ const QuizAttempt = () => {
     }
   };
 
-  const handleAnswerChange = async (questionId, answer) => {
-    setAnswers((prev) => ({ ...prev, [questionId]: answer }));
+  const handleAnswerChange = async (questionId, selectedOptionId) => {
+    setAnswers((prev) => ({ ...prev, [questionId]: selectedOptionId }));
 
     // Save answer to backend
     try {
       await apiClient.put(`/student/attempts/${attemptId}/answer`, {
         questionId,
-        answer,
+        selectedOptionId,
       });
     } catch (err) {
       showToast.error("Failed to save answer. Please try again.");
@@ -271,35 +274,36 @@ const QuizAttempt = () => {
 
               {/* Options */}
               <div className="space-y-3 mb-6">
-                {["A", "B", "C", "D"].map((option) => (
-                  <label
-                    key={option}
-                    className={`flex items-start p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                      answers[currentQ?._id] === option
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-gray-200 hover:border-blue-300 hover:bg-gray-50"
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name={`question-${currentQ?._id}`}
-                      value={option}
-                      checked={answers[currentQ?._id] === option}
-                      onChange={(e) =>
-                        handleAnswerChange(currentQ?._id, e.target.value)
-                      }
-                      className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500"
-                    />
-                    <div className="ml-3">
-                      <span className="font-semibold text-gray-700 mr-2">
-                        {option}.
-                      </span>
-                      <span className="text-gray-900">
-                        {currentQ?.options[option]}
-                      </span>
-                    </div>
-                  </label>
-                ))}
+                {currentQ?.options?.map((option, index) => {
+                  const label = String.fromCharCode(65 + index); // A, B, C, D...
+                  return (
+                    <label
+                      key={option._id}
+                      className={`flex items-start p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                        answers[currentQ?._id] === option._id
+                          ? "border-blue-500 bg-blue-50"
+                          : "border-gray-200 hover:border-blue-300 hover:bg-gray-50"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name={`question-${currentQ?._id}`}
+                        value={option._id}
+                        checked={answers[currentQ?._id] === option._id}
+                        onChange={() =>
+                          handleAnswerChange(currentQ?._id, option._id)
+                        }
+                        className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500"
+                      />
+                      <div className="ml-3">
+                        <span className="font-semibold text-gray-700 mr-2">
+                          {label}.
+                        </span>
+                        <span className="text-gray-900">{option.text}</span>
+                      </div>
+                    </label>
+                  );
+                })}
               </div>
 
               {/* Navigation Buttons */}

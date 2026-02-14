@@ -1,16 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Save, Plus, Trash2, Edit2, Calendar, Clock, BookOpen } from 'lucide-react';
-import { showToast } from '../../utils/toast';
-import apiClient from '../../api';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  ArrowLeft,
+  Save,
+  Plus,
+  Trash2,
+  Edit2,
+  Calendar,
+  Clock,
+  BookOpen,
+} from "lucide-react";
+import { showToast } from "../../utils/toast";
+import apiClient from "../../api";
 
 const EditQuiz = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [quiz, setQuiz] = useState(null);
+  const [initialIsActive, setInitialIsActive] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [editingQuestion, setEditingQuestion] = useState(null);
   const [addingQuestion, setAddingQuestion] = useState(false);
@@ -24,15 +34,16 @@ const EditQuiz = () => {
       setLoading(true);
       const [quizRes, questionsRes] = await Promise.all([
         apiClient.get(`/coordinator/quizzes/${id}`),
-        apiClient.get(`/coordinator/quizzes/${id}/questions`)
+        apiClient.get(`/coordinator/quizzes/${id}/questions`),
       ]);
 
       // Backend returns nested structure: { quiz: {...}, questions: [...], stats: {...} }
       const quizData = quizRes.data.data.quiz || quizRes.data.data;
       setQuiz(quizData);
+      setInitialIsActive(quizData?.isActive ?? null);
       setQuestions(questionsRes.data.data || []);
     } catch (err) {
-      showToast.error('Failed to fetch quiz data');
+      showToast.error("Failed to fetch quiz data");
       console.error(err);
     } finally {
       setLoading(false);
@@ -42,13 +53,28 @@ const EditQuiz = () => {
   const handleUpdateQuiz = async () => {
     try {
       setSaving(true);
-      await apiClient.put(`/coordinator/quizzes/${id}`, quiz);
-      showToast.success('Quiz updated successfully!');
-      
+      const updatePayload = {
+        title: quiz?.title,
+        description: quiz?.description,
+        totalMarks: quiz?.totalMarks,
+        passingMarks: quiz?.passingMarks,
+        durationMinutes: quiz?.durationMinutes,
+        startTime: quiz?.startTime,
+        endTime: quiz?.endTime,
+        shuffleQuestions: quiz?.shuffleQuestions,
+        shuffleOptions: quiz?.shuffleOptions,
+        maxAttempts: quiz?.maxAttempts,
+      };
+      if (initialIsActive !== null && quiz?.isActive !== initialIsActive) {
+        updatePayload.isActive = quiz?.isActive;
+      }
+      await apiClient.put(`/coordinator/quizzes/${id}`, updatePayload);
+      showToast.success("Quiz updated successfully!");
+
       // Refetch to ensure we have latest data from backend
       await fetchQuizData();
     } catch (err) {
-      showToast.error('Failed to update quiz');
+      showToast.error("Failed to update quiz");
       console.error(err);
     } finally {
       setSaving(false);
@@ -56,41 +82,54 @@ const EditQuiz = () => {
   };
 
   const handleDeleteQuestion = async (questionId) => {
-    if (!window.confirm('Are you sure you want to delete this question?')) return;
-    
+    if (!window.confirm("Are you sure you want to delete this question?"))
+      return;
+
     try {
-      await apiClient.delete(`/coordinator/quizzes/${id}/questions/${questionId}`);
-      setQuestions(questions.filter(q => q._id !== questionId));
-      showToast.success('Question deleted successfully!');
+      await apiClient.delete(
+        `/coordinator/quizzes/${id}/questions/${questionId}`,
+      );
+      setQuestions(questions.filter((q) => q._id !== questionId));
+      showToast.success("Question deleted successfully!");
     } catch (err) {
-      showToast.error('Failed to delete question');
+      showToast.error("Failed to delete question");
       console.error(err);
     }
   };
 
   const handleUpdateQuestion = async (questionId, updatedData) => {
     try {
-      await apiClient.put(`/coordinator/quizzes/${id}/questions/${questionId}`, updatedData);
-      setQuestions(questions.map(q => q._id === questionId ? { ...q, ...updatedData } : q));
+      await apiClient.put(
+        `/coordinator/quizzes/${id}/questions/${questionId}`,
+        updatedData,
+      );
+      setQuestions(
+        questions.map((q) =>
+          q._id === questionId ? { ...q, ...updatedData } : q,
+        ),
+      );
       setEditingQuestion(null);
-      showToast.success('Question updated successfully!');
+      showToast.success("Question updated successfully!");
     } catch (err) {
-      showToast.error('Failed to update question');
+      showToast.error("Failed to update question");
       console.error(err);
     }
   };
 
   const handleAddQuestion = async (questionData) => {
     try {
-      const response = await apiClient.post(`/coordinator/quizzes/${id}/questions`, {
-        ...questionData,
-        orderNumber: questions.length + 1
-      });
+      const response = await apiClient.post(
+        `/coordinator/quizzes/${id}/questions`,
+        {
+          ...questionData,
+          orderNumber: questions.length + 1,
+        },
+      );
       setQuestions([...questions, response.data.data]);
       setAddingQuestion(false);
-      showToast.success('Question added successfully!');
+      showToast.success("Question added successfully!");
     } catch (err) {
-      showToast.error('Failed to add question');
+      showToast.error("Failed to add question");
       console.error(err);
     }
   };
@@ -98,17 +137,18 @@ const EditQuiz = () => {
   const toggleQuizStatus = async () => {
     try {
       const newIsActive = !quiz.isActive;
-      const updatedQuiz = { ...quiz, isActive: newIsActive };
-      
-      const response = await apiClient.put(`/coordinator/quizzes/${id}`, updatedQuiz);
-      
+      const response = await apiClient.put(`/coordinator/quizzes/${id}`, {
+        isActive: newIsActive,
+      });
+
       // Backend now returns isActive properly, use it from response
       const updatedQuizFromBackend = response.data.data;
       setQuiz(updatedQuizFromBackend);
-      showToast.success(`Quiz ${newIsActive ? 'activated' : 'deactivated'}!`);
+      setInitialIsActive(updatedQuizFromBackend?.isActive ?? null);
+      showToast.success(`Quiz ${newIsActive ? "activated" : "deactivated"}!`);
     } catch (err) {
-      showToast.error('Failed to update quiz status');
-      console.error('Toggle error:', err);
+      showToast.error("Failed to update quiz status");
+      console.error("Toggle error:", err);
     }
   };
 
@@ -129,7 +169,7 @@ const EditQuiz = () => {
         <div className="text-center">
           <p className="text-gray-600">Quiz not found</p>
           <button
-            onClick={() => navigate('/coordinator/quizzes')}
+            onClick={() => navigate("/coordinator/quizzes")}
             className="mt-4 text-blue-600 hover:underline"
           >
             Go back to quizzes
@@ -145,7 +185,7 @@ const EditQuiz = () => {
         {/* Header */}
         <div className="mb-6">
           <button
-            onClick={() => navigate('/coordinator/quizzes')}
+            onClick={() => navigate("/coordinator/quizzes")}
             className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -158,11 +198,11 @@ const EditQuiz = () => {
                 onClick={toggleQuizStatus}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   quiz.isActive
-                    ? 'bg-red-600 text-white hover:bg-red-700'
-                    : 'bg-green-600 text-white hover:bg-green-700'
+                    ? "bg-red-600 text-white hover:bg-red-700"
+                    : "bg-green-600 text-white hover:bg-green-700"
                 }`}
               >
-                {quiz.isActive ? 'Deactivate' : 'Activate'}
+                {quiz.isActive ? "Deactivate" : "Activate"}
               </button>
               <button
                 onClick={handleUpdateQuiz}
@@ -170,7 +210,7 @@ const EditQuiz = () => {
                 className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
               >
                 <Save className="w-4 h-4" />
-                {saving ? 'Saving...' : 'Save Changes'}
+                {saving ? "Saving..." : "Save Changes"}
               </button>
             </div>
           </div>
@@ -181,21 +221,27 @@ const EditQuiz = () => {
           <h2 className="text-xl font-bold text-gray-900 mb-4">Quiz Details</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Title
+              </label>
               <input
                 type="text"
-                value={quiz?.title || ''}
+                value={quiz?.title || ""}
                 onChange={(e) => setQuiz({ ...quiz, title: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter quiz title"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Description
+              </label>
               <input
                 type="text"
-                value={quiz?.description || ''}
-                onChange={(e) => setQuiz({ ...quiz, description: e.target.value })}
+                value={quiz?.description || ""}
+                onChange={(e) =>
+                  setQuiz({ ...quiz, description: e.target.value })
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter quiz description"
               />
@@ -207,8 +253,24 @@ const EditQuiz = () => {
               </label>
               <input
                 type="datetime-local"
-                value={quiz?.startTime ? new Date(new Date(quiz.startTime).getTime() - new Date(quiz.startTime).getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''}
-                onChange={(e) => setQuiz({ ...quiz, startTime: e.target.value ? new Date(e.target.value).toISOString() : null })}
+                value={
+                  quiz?.startTime
+                    ? new Date(
+                        new Date(quiz.startTime).getTime() -
+                          new Date(quiz.startTime).getTimezoneOffset() * 60000,
+                      )
+                        .toISOString()
+                        .slice(0, 16)
+                    : ""
+                }
+                onChange={(e) =>
+                  setQuiz({
+                    ...quiz,
+                    startTime: e.target.value
+                      ? new Date(e.target.value).toISOString()
+                      : null,
+                  })
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -219,8 +281,24 @@ const EditQuiz = () => {
               </label>
               <input
                 type="datetime-local"
-                value={quiz?.endTime ? new Date(new Date(quiz.endTime).getTime() - new Date(quiz.endTime).getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''}
-                onChange={(e) => setQuiz({ ...quiz, endTime: e.target.value ? new Date(e.target.value).toISOString() : null })}
+                value={
+                  quiz?.endTime
+                    ? new Date(
+                        new Date(quiz.endTime).getTime() -
+                          new Date(quiz.endTime).getTimezoneOffset() * 60000,
+                      )
+                        .toISOString()
+                        .slice(0, 16)
+                    : ""
+                }
+                onChange={(e) =>
+                  setQuiz({
+                    ...quiz,
+                    endTime: e.target.value
+                      ? new Date(e.target.value).toISOString()
+                      : null,
+                  })
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -231,30 +309,51 @@ const EditQuiz = () => {
               </label>
               <input
                 type="number"
-                value={quiz?.durationMinutes || ''}
-                onChange={(e) => setQuiz({ ...quiz, durationMinutes: e.target.value ? parseInt(e.target.value) : 0 })}
+                value={quiz?.durationMinutes || ""}
+                onChange={(e) =>
+                  setQuiz({
+                    ...quiz,
+                    durationMinutes: e.target.value
+                      ? parseInt(e.target.value)
+                      : 0,
+                  })
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 min="1"
                 placeholder="Enter duration"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Total Marks</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Total Marks
+              </label>
               <input
                 type="number"
-                value={quiz?.totalMarks || ''}
-                onChange={(e) => setQuiz({ ...quiz, totalMarks: e.target.value ? parseInt(e.target.value) : 0 })}
+                value={quiz?.totalMarks || ""}
+                onChange={(e) =>
+                  setQuiz({
+                    ...quiz,
+                    totalMarks: e.target.value ? parseInt(e.target.value) : 0,
+                  })
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 min="1"
                 placeholder="Enter total marks"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Passing Marks</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Passing Marks
+              </label>
               <input
                 type="number"
-                value={quiz?.passingMarks || ''}
-                onChange={(e) => setQuiz({ ...quiz, passingMarks: e.target.value ? parseInt(e.target.value) : 0 })}
+                value={quiz?.passingMarks || ""}
+                onChange={(e) =>
+                  setQuiz({
+                    ...quiz,
+                    passingMarks: e.target.value ? parseInt(e.target.value) : 0,
+                  })
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 min="0"
                 placeholder="Enter passing marks"
@@ -264,10 +363,14 @@ const EditQuiz = () => {
               <input
                 type="checkbox"
                 checked={quiz?.isActive || false}
-                onChange={(e) => setQuiz({ ...quiz, isActive: e.target.checked })}
+                onChange={(e) =>
+                  setQuiz({ ...quiz, isActive: e.target.checked })
+                }
                 className="h-4 w-4 text-blue-600 rounded mr-2"
               />
-              <label className="text-sm font-medium text-gray-700">Active</label>
+              <label className="text-sm font-medium text-gray-700">
+                Active
+              </label>
             </div>
           </div>
         </div>
@@ -290,14 +393,19 @@ const EditQuiz = () => {
 
           {addingQuestion && (
             <div className="border-2 border-green-500 rounded-lg p-4 mb-4">
-              <h3 className="font-semibold text-gray-900 mb-3">Add New Question</h3>
+              <h3 className="font-semibold text-gray-900 mb-3">
+                Add New Question
+              </h3>
               <QuestionEditForm
                 question={{
-                  questionText: '',
-                  questionType: 'mcq',
+                  questionText: "",
+                  questionType: "mcq",
                   marks: 1,
-                  options: [{ text: '', isCorrect: false }, { text: '', isCorrect: false }],
-                  correctAnswer: ''
+                  options: [
+                    { text: "", isCorrect: false },
+                    { text: "", isCorrect: false },
+                  ],
+                  correctAnswer: "",
                 }}
                 onSave={handleAddQuestion}
                 onCancel={() => setAddingQuestion(false)}
@@ -307,15 +415,22 @@ const EditQuiz = () => {
           )}
 
           {questions.length === 0 && !addingQuestion ? (
-            <p className="text-center text-gray-500 py-8">No questions added yet</p>
+            <p className="text-center text-gray-500 py-8">
+              No questions added yet
+            </p>
           ) : (
             <div className="space-y-4">
               {questions.map((question, index) => (
-                <div key={question._id} className="border border-gray-200 rounded-lg p-4">
+                <div
+                  key={question._id}
+                  className="border border-gray-200 rounded-lg p-4"
+                >
                   {editingQuestion === question._id ? (
                     <QuestionEditForm
                       question={question}
-                      onSave={(data) => handleUpdateQuestion(question._id, data)}
+                      onSave={(data) =>
+                        handleUpdateQuestion(question._id, data)
+                      }
                       onCancel={() => setEditingQuestion(null)}
                     />
                   ) : (
@@ -356,19 +471,22 @@ const EditQuiz = () => {
                             <div
                               key={optIdx}
                               className={`pl-4 py-1 rounded ${
-                                opt.isCorrect ? 'text-green-700 bg-green-50 font-medium' : 'text-gray-700'
+                                opt.isCorrect
+                                  ? "text-green-700 bg-green-50 font-medium"
+                                  : "text-gray-700"
                               }`}
                             >
                               {String.fromCharCode(65 + optIdx)}. {opt.text}
-                              {opt.isCorrect && ' ✓'}
+                              {opt.isCorrect && " ✓"}
                             </div>
                           ))}
                         </div>
                       )}
 
-                      {question.questionType === 'short_answer' && (
+                      {question.questionType === "short_answer" && (
                         <div className="mt-2 text-sm bg-green-50 text-green-700 p-2 rounded">
-                          <strong>Correct Answer:</strong> {question.correctAnswer}
+                          <strong>Correct Answer:</strong>{" "}
+                          {question.correctAnswer}
                         </div>
                       )}
                     </div>
@@ -389,44 +507,51 @@ const QuestionEditForm = ({ question, onSave, onCancel }) => {
     questionType: question.questionType,
     marks: question.marks,
     options: question.options || [],
-    correctAnswer: question.correctAnswer || ''
+    correctAnswer: question.correctAnswer || "",
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     // Validate that at least one option is marked as correct for MCQ types
-    if (formData.questionType !== 'short_answer') {
-      const hasCorrectAnswer = formData.options.some(opt => opt.isCorrect);
+    if (formData.questionType !== "short_answer") {
+      const hasCorrectAnswer = formData.options.some((opt) => opt.isCorrect);
       if (!hasCorrectAnswer) {
-        showToast.error('Please mark at least one option as correct');
+        showToast.error("Please mark at least one option as correct");
         return;
       }
-      
+
       // Validate that all options have text
-      const hasEmptyOption = formData.options.some(opt => !opt.text.trim());
+      const hasEmptyOption = formData.options.some((opt) => !opt.text.trim());
       if (hasEmptyOption) {
-        showToast.error('All options must have text');
+        showToast.error("All options must have text");
         return;
       }
     }
-    
+
     // Validate short answer has correct answer
-    if (formData.questionType === 'short_answer' && !formData.correctAnswer.trim()) {
-      showToast.error('Please provide a correct answer');
+    if (
+      formData.questionType === "short_answer" &&
+      !formData.correctAnswer.trim()
+    ) {
+      showToast.error("Please provide a correct answer");
       return;
     }
-    
+
     onSave(formData);
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Question Text</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Question Text
+        </label>
         <textarea
           value={formData.questionText}
-          onChange={(e) => setFormData({ ...formData, questionText: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, questionText: e.target.value })
+          }
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           rows="3"
           required
@@ -435,10 +560,14 @@ const QuestionEditForm = ({ question, onSave, onCancel }) => {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Type
+          </label>
           <select
             value={formData.questionType}
-            onChange={(e) => setFormData({ ...formData, questionType: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, questionType: e.target.value })
+            }
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           >
             <option value="mcq">Multiple Choice (Single Answer)</option>
@@ -448,11 +577,15 @@ const QuestionEditForm = ({ question, onSave, onCancel }) => {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Marks</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Marks
+          </label>
           <input
             type="number"
             value={formData.marks}
-            onChange={(e) => setFormData({ ...formData, marks: parseInt(e.target.value) })}
+            onChange={(e) =>
+              setFormData({ ...formData, marks: parseInt(e.target.value) })
+            }
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             min="1"
             required
@@ -460,16 +593,23 @@ const QuestionEditForm = ({ question, onSave, onCancel }) => {
         </div>
       </div>
 
-      {formData.questionType !== 'short_answer' && (
+      {formData.questionType !== "short_answer" && (
         <div>
           <div className="flex justify-between items-center mb-2">
-            <label className="block text-sm font-medium text-gray-700">Options</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Options
+            </label>
             <button
               type="button"
-              onClick={() => setFormData({
-                ...formData,
-                options: [...formData.options, { text: '', isCorrect: false }]
-              })}
+              onClick={() =>
+                setFormData({
+                  ...formData,
+                  options: [
+                    ...formData.options,
+                    { text: "", isCorrect: false },
+                  ],
+                })
+              }
               className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
             >
               <Plus className="w-4 h-4" />
@@ -496,15 +636,17 @@ const QuestionEditForm = ({ question, onSave, onCancel }) => {
                   onChange={(e) => {
                     // For single select (mcq), only one can be correct
                     // For multi-select (mcq_multiple), multiple can be correct
-                    const newOptions = formData.questionType === 'mcq'
-                      ? formData.options.map((o, i) => ({
-                          ...o,
-                          isCorrect: i === idx ? e.target.checked : false
-                        }))
-                      : formData.options.map((o, i) => ({
-                          ...o,
-                          isCorrect: i === idx ? e.target.checked : o.isCorrect
-                        }));
+                    const newOptions =
+                      formData.questionType === "mcq"
+                        ? formData.options.map((o, i) => ({
+                            ...o,
+                            isCorrect: i === idx ? e.target.checked : false,
+                          }))
+                        : formData.options.map((o, i) => ({
+                            ...o,
+                            isCorrect:
+                              i === idx ? e.target.checked : o.isCorrect,
+                          }));
                     setFormData({ ...formData, options: newOptions });
                   }}
                   className="h-4 w-4 text-blue-600 rounded"
@@ -515,7 +657,9 @@ const QuestionEditForm = ({ question, onSave, onCancel }) => {
                 <button
                   type="button"
                   onClick={() => {
-                    const newOptions = formData.options.filter((_, i) => i !== idx);
+                    const newOptions = formData.options.filter(
+                      (_, i) => i !== idx,
+                    );
                     setFormData({ ...formData, options: newOptions });
                   }}
                   className="p-2 text-red-600 hover:bg-red-50 rounded"
@@ -528,13 +672,17 @@ const QuestionEditForm = ({ question, onSave, onCancel }) => {
         </div>
       )}
 
-      {formData.questionType === 'short_answer' && (
+      {formData.questionType === "short_answer" && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Correct Answer</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Correct Answer
+          </label>
           <input
             type="text"
             value={formData.correctAnswer}
-            onChange={(e) => setFormData({ ...formData, correctAnswer: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, correctAnswer: e.target.value })
+            }
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             required
           />

@@ -1,9 +1,14 @@
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
+
+// Generate a stable toastId from the message to prevent duplicate toasts
+const toastId = (message) =>
+  typeof message === "string" ? message.slice(0, 64) : undefined;
 
 export const showToast = {
   success: (message) => {
     toast.success(message, {
-      position: 'top-right',
+      toastId: toastId(message),
+      position: "top-right",
       autoClose: 3000,
       hideProgressBar: false,
       closeOnClick: true,
@@ -13,7 +18,8 @@ export const showToast = {
   },
   error: (message) => {
     toast.error(message, {
-      position: 'top-right',
+      toastId: toastId(message),
+      position: "top-right",
       autoClose: 4000,
       hideProgressBar: false,
       closeOnClick: true,
@@ -23,7 +29,8 @@ export const showToast = {
   },
   warning: (message) => {
     toast.warning(message, {
-      position: 'top-right',
+      toastId: toastId(message),
+      position: "top-right",
       autoClose: 3000,
       hideProgressBar: false,
       closeOnClick: true,
@@ -33,7 +40,8 @@ export const showToast = {
   },
   info: (message) => {
     toast.info(message, {
-      position: 'top-right',
+      toastId: toastId(message),
+      position: "top-right",
       autoClose: 3000,
       hideProgressBar: false,
       closeOnClick: true,

@@ -239,6 +239,9 @@ exports.updateQuiz = async (req, res) => {
     if (shuffleOptions !== undefined) quiz.shuffleOptions = shuffleOptions;
     if (maxAttempts) quiz.maxAttempts = maxAttempts;
     if (status) quiz.status = status;
+    if (status === "published" && isActive === undefined) {
+      quiz.isActive = true;
+    }
     if (isActive !== undefined) quiz.isActive = isActive;
 
     await quiz.save();

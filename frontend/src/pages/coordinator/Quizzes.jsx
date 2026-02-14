@@ -232,9 +232,10 @@ const CoordinatorQuizzes = () => {
       setQuizzes(quizzes.filter((q) => q._id !== quizId));
       alert("Quiz deleted successfully!");
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to delete quiz");
+      const errorMsg = err.response?.data?.message || "Failed to delete quiz";
+      setError(errorMsg);
       console.error("Error deleting quiz:", err);
-      alert("Failed to delete quiz");
+      alert(errorMsg);
     }
   };
 
@@ -253,10 +254,9 @@ const CoordinatorQuizzes = () => {
         updatedQuiz.isActive,
       );
 
-      const response = await apiClient.put(
-        `/coordinator/quizzes/${quiz._id}`,
-        updatedQuiz,
-      );
+      const response = await apiClient.put(`/coordinator/quizzes/${quiz._id}`, {
+        isActive: updatedQuiz.isActive,
+      });
       console.log("Activate response:", response.data);
 
       // Update local state
@@ -313,7 +313,9 @@ const CoordinatorQuizzes = () => {
     try {
       const quiz = quizzes.find((q) => q._id === quizId);
       const updatedQuiz = { ...quiz, [field]: value };
-      await apiClient.put(`/coordinator/quizzes/${quizId}`, updatedQuiz);
+      await apiClient.put(`/coordinator/quizzes/${quizId}`, {
+        [field]: value,
+      });
       setQuizzes(quizzes.map((q) => (q._id === quizId ? updatedQuiz : q)));
       setEditingQuizData({ ...editingQuizData, [quizId]: updatedQuiz });
 

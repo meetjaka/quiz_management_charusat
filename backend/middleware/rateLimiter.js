@@ -1,9 +1,11 @@
 const rateLimit = require("express-rate-limit");
 
+const isProd = process.env.NODE_ENV === "production";
+
 // General API rate limiter
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  max: isProd ? 100 : 1000, // higher limit in development
   message: "Too many requests from this IP, please try again later.",
   standardHeaders: true,
   legacyHeaders: false,
@@ -12,7 +14,7 @@ const apiLimiter = rateLimit({
 // Strict rate limiter for auth routes
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.NODE_ENV === "production" ? 5 : 100, // 5 in production, 100 in development
+  max: isProd ? 5 : 200, // 5 in production, higher in development
   message: "Too many login attempts, please try again after 15 minutes.",
   standardHeaders: true,
   legacyHeaders: false,
@@ -22,7 +24,7 @@ const authLimiter = rateLimit({
 // Quiz attempt rate limiter
 const quizLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 50, // limit each IP to 50 quiz-related requests per hour
+  max: isProd ? 50 : 500, // higher limit in development
   message: "Too many quiz requests, please try again later.",
   standardHeaders: true,
   legacyHeaders: false,
