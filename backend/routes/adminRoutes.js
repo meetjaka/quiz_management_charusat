@@ -4,29 +4,45 @@ const adminController = require("../controllers/adminController");
 const { protect, authorize } = require("../middleware/auth");
 const { upload } = require("../utils/bulkUpload");
 
+// ============================================
+// STUDENT QUIZ DETAILS & MARKS
+// ============================================
+router.get(
+  "/students/:id/quizzes",
+  adminController.getStudentQuizzesWithAttempts,
+);
+router.put(
+  "/students/:id/attempts/:attemptId/marks",
+  adminController.updateStudentQuizMarks,
+);
+
 // Test endpoint without auth
 router.get("/test-template", async (req, res) => {
   try {
-    const xlsx = require('xlsx');
-    console.log('🧪 Test template endpoint called');
-    
-    const sampleData = [
-      { email: "test@charusat.edu.in", password: "test123" }
-    ];
-    
+    const xlsx = require("xlsx");
+    console.log("🧪 Test template endpoint called");
+
+    const sampleData = [{ email: "test@charusat.edu.in", password: "test123" }];
+
     const worksheet = xlsx.utils.json_to_sheet(sampleData);
     const workbook = xlsx.utils.book_new();
     xlsx.utils.book_append_sheet(workbook, worksheet, "Users");
-    
-    const buffer = xlsx.write(workbook, { type: 'buffer', bookType: 'xlsx' });
-    
-    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.setHeader('Content-Disposition', 'attachment; filename=test-template.xlsx');
+
+    const buffer = xlsx.write(workbook, { type: "buffer", bookType: "xlsx" });
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    );
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=test-template.xlsx",
+    );
     res.send(buffer);
-    
-    console.log('✅ Test template sent successfully');
+
+    console.log("✅ Test template sent successfully");
   } catch (error) {
-    console.error('❌ Test template error:', error);
+    console.error("❌ Test template error:", error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -41,7 +57,11 @@ router.use(authorize("admin"));
 router.get("/users", adminController.getAllUsers);
 // Specific routes must come before parameterized routes
 router.get("/users/download-template", adminController.downloadUserTemplate);
-router.post("/users/bulk-create", upload.single("file"), adminController.bulkCreateUsers);
+router.post(
+  "/users/bulk-create",
+  upload.single("file"),
+  adminController.bulkCreateUsers,
+);
 router.delete("/users/bulk", adminController.bulkDeleteUsers);
 router.get("/users/:id", adminController.getUserById);
 router.post("/users", adminController.createUser);

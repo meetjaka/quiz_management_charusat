@@ -1,3 +1,100 @@
+// Get all quizzes (assigned and not attempted) and attempts for a student, with subject filter
+exports.getStudentQuizzesWithAttempts = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { subject } = req.query;
+
+    // Find all quizzes assigned to the student
+    const assignments = await QuizAssignment.find({ studentId: id }).populate({
+      path: "quizId",
+      select: "title subject totalMarks passingMarks startTime endTime",
+    });
+    const assignedQuizIds = assignments
+      .map((a) => a.quizId?._id)
+      .filter(Boolean);
+
+    // Find all attempts by the student
+    const attempts = await QuizAttempt.find({ studentId: id }).populate({
+      path: "quizId",
+      select: "title subject totalMarks passingMarks startTime endTime",
+    });
+
+    // Build quiz list with status and marks
+    let quizzes = assignments
+      .map((a) => {
+        const quiz = a.quizId;
+        if (!quiz) return null;
+        // Find attempt for this quiz
+        const attempt = attempts.find(
+          (at) => at.quizId && at.quizId._id.toString() === quiz._id.toString(),
+        );
+        return {
+          quizId: quiz._id,
+          title: quiz.title,
+          subject: quiz.subject || "",
+          marks: attempt ? attempt.totalScore : undefined,
+          status: attempt ? "Attempted" : "Not given",
+          attemptId: attempt ? attempt._id : null,
+          totalMarks: quiz.totalMarks,
+          passingMarks: quiz.passingMarks,
+          startTime: quiz.startTime,
+          endTime: quiz.endTime,
+        };
+      })
+      .filter(Boolean);
+
+    // Optionally filter by subject
+    if (subject) {
+      quizzes = quizzes.filter(
+        (q) =>
+          q.subject && q.subject.toLowerCase().includes(subject.toLowerCase()),
+      );
+    }
+
+    res.status(200).json({ success: true, data: quizzes });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching student quizzes",
+      error: error.message,
+    });
+  }
+};
+
+// Admin can update marks for a student's quiz attempt
+exports.updateStudentQuizMarks = async (req, res) => {
+  try {
+    const { id, attemptId } = req.params;
+    const { marks } = req.body;
+    if (typeof marks !== "number") {
+      return res
+        .status(400)
+        .json({ success: false, message: "Marks must be a number" });
+    }
+    const attempt = await QuizAttempt.findOne({
+      _id: attemptId,
+      studentId: id,
+    });
+    if (!attempt) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Attempt not found" });
+    }
+    attempt.totalScore = marks;
+    await attempt.save();
+    res.status(200).json({
+      success: true,
+      message: "Marks updated",
+      data: { attemptId, marks },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error updating marks",
+      error: error.message,
+    });
+  }
+};
 const User = require("../models/User");
 const Quiz = require("../models/Quiz");
 const Question = require("../models/Question");
@@ -20,7 +117,7 @@ exports.getAllUsers = async (req, res) => {
       department,
       isActive,
       page = 1,
-      limit = 20,
+      limit = 1000,
       search,
     } = req.query;
 

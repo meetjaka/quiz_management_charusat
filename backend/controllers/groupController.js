@@ -475,6 +475,52 @@ exports.bulkAddMembersToGroup = async (req, res) => {
   }
 };
 
+// Get all members (students) of a group
+exports.getGroupMembers = async (req, res) => {
+  try {
+    const groupId = req.params.id;
+    console.log('getGroupMembers called for groupId:', groupId);
+    
+    const group = await Group.findById(groupId).populate({
+      path: "members.user",
+      select: "fullName email studentId department role",
+    });
+    
+    if (!group) {
+      console.log('Group not found:', groupId);
+      return res.status(404).json({ 
+        success: false, 
+        message: "Group not found" 
+      });
+    }
+    
+    let students = (group.members || [])
+      .map((m) => m.user)
+      .filter((u) => u && u.role === "student");
+
+    // Fallback: if no students found, also check User model's groups array
+    if (students.length === 0) {
+      students = await User.find({ 
+        groups: groupId, 
+        role: "student" 
+      }).select("fullName email studentId department role");
+    }
+    
+    console.log('Returning students:', students.length);
+    res.status(200).json({ 
+      success: true, 
+      data: students 
+    });
+  } catch (error) {
+    console.error('Error in getGroupMembers:', error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching group members",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getAllGroups: exports.getAllGroups,
   getGroupById: exports.getGroupById,
@@ -485,4 +531,5 @@ module.exports = {
   addMemberToGroup: exports.addMemberToGroup,
   removeMemberFromGroup: exports.removeMemberFromGroup,
   bulkAddMembersToGroup: exports.bulkAddMembersToGroup,
+  getGroupMembers: exports.getGroupMembers,
 };

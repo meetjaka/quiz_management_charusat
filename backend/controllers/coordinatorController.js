@@ -127,6 +127,9 @@ exports.createQuiz = async (req, res) => {
     const {
       title,
       description,
+      subject,
+      department,
+      semester,
       totalMarks,
       passingMarks,
       durationMinutes,
@@ -165,6 +168,9 @@ exports.createQuiz = async (req, res) => {
     const quiz = await Quiz.create({
       title,
       description,
+      subject,
+      department,
+      semester,
       coordinatorId: req.user._id,
       totalMarks,
       passingMarks,
@@ -200,6 +206,9 @@ exports.updateQuiz = async (req, res) => {
     const {
       title,
       description,
+      subject,
+      department,
+      semester,
       totalMarks,
       passingMarks,
       durationMinutes,
@@ -229,6 +238,9 @@ exports.updateQuiz = async (req, res) => {
     // Update fields
     if (title) quiz.title = title;
     if (description !== undefined) quiz.description = description;
+    if (subject !== undefined) quiz.subject = subject;
+    if (department !== undefined) quiz.department = department;
+    if (semester !== undefined) quiz.semester = semester;
     if (totalMarks) quiz.totalMarks = totalMarks;
     if (passingMarks) quiz.passingMarks = passingMarks;
     if (durationMinutes) quiz.durationMinutes = durationMinutes;
@@ -329,32 +341,68 @@ exports.getQuestions = async (req, res) => {
 exports.addQuestion = async (req, res) => {
   try {
     const quiz = req.quiz;
-    const { questionText, questionType, marks, options, correctAnswer } =
-      req.body;
+    const {
+      questionText,
+      questionType,
+      marks,
+      options,
+      correctAnswer,
+      orderNumber,
+    } = req.body;
 
     // Validate required fields
-    if (!questionText || !questionType || !marks) {
+    if (!questionText?.trim()) {
       return res.status(400).json({
         success: false,
-        message: "Please provide questionText, questionType, and marks",
+        message: "Question text is required",
       });
     }
 
-    // Get next order number
-    const lastQuestion = await Question.findOne({ quizId: quiz._id }).sort({
-      orderNumber: -1,
-    });
-    const orderNumber = lastQuestion ? lastQuestion.orderNumber + 1 : 1;
+    if (!questionType) {
+      return res.status(400).json({
+        success: false,
+        message: "Question type is required",
+      });
+    }
+
+    if (!marks || marks <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Marks must be a positive number",
+      });
+    }
+
+    // Validate options for MCQ/True-False questions
+    if (
+      (questionType === "mcq" ||
+        questionType === "mcq_multiple" ||
+        questionType === "true_false") &&
+      (!options || options.length === 0)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Options are required for MCQ questions",
+      });
+    }
+
+    // Get next order number if not provided
+    let finalOrderNumber = orderNumber;
+    if (!finalOrderNumber) {
+      const lastQuestion = await Question.findOne({ quizId: quiz._id }).sort({
+        orderNumber: -1,
+      });
+      finalOrderNumber = lastQuestion ? lastQuestion.orderNumber + 1 : 1;
+    }
 
     // Create question
     const question = await Question.create({
       quizId: quiz._id,
-      questionText,
+      questionText: questionText.trim(),
       questionType,
-      marks,
-      orderNumber,
-      options: options || [],
-      correctAnswer,
+      marks: parseFloat(marks),
+      orderNumber: finalOrderNumber,
+      options: options && Array.isArray(options) ? options : [],
+      correctAnswer: correctAnswer || undefined,
     });
 
     res.status(201).json({
@@ -363,6 +411,7 @@ exports.addQuestion = async (req, res) => {
       data: question,
     });
   } catch (error) {
+    console.error("Error adding question:", error);
     res.status(500).json({
       success: false,
       message: "Error adding question",
@@ -388,10 +437,35 @@ exports.addBulkQuestions = async (req, res) => {
     // Validate each question
     for (let i = 0; i < questions.length; i++) {
       const q = questions[i];
-      if (!q.questionText || !q.questionType || !q.marks) {
+      if (!q.questionText?.trim()) {
         return res.status(400).json({
           success: false,
-          message: `Question ${i + 1}: questionText, questionType, and marks are required`,
+          message: `Question ${i + 1}: questionText is required`,
+        });
+      }
+      if (!q.questionType) {
+        return res.status(400).json({
+          success: false,
+          message: `Question ${i + 1}: questionType is required`,
+        });
+      }
+      if (!q.marks || q.marks <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: `Question ${i + 1}: marks must be a positive number`,
+        });
+      }
+
+      // Validate options for MCQ questions
+      if (
+        (q.questionType === "mcq" ||
+          q.questionType === "mcq_multiple" ||
+          q.questionType === "true_false") &&
+        (!q.options || q.options.length === 0)
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: `Question ${i + 1}: options are required for MCQ questions`,
         });
       }
     }
@@ -400,12 +474,12 @@ exports.addBulkQuestions = async (req, res) => {
     const createdQuestions = await Question.insertMany(
       questions.map((q, index) => ({
         quizId: quiz._id,
-        questionText: q.questionText,
+        questionText: q.questionText.trim(),
         questionType: q.questionType,
-        marks: q.marks,
+        marks: parseFloat(q.marks),
         orderNumber: q.orderNumber || index + 1,
-        options: q.options || [],
-        correctAnswer: q.correctAnswer,
+        options: q.options && Array.isArray(q.options) ? q.options : [],
+        correctAnswer: q.correctAnswer || undefined,
       })),
     );
 
@@ -415,6 +489,7 @@ exports.addBulkQuestions = async (req, res) => {
       data: createdQuestions,
     });
   } catch (error) {
+    console.error("Error adding bulk questions:", error);
     res.status(500).json({
       success: false,
       message: "Error adding bulk questions",
@@ -656,13 +731,32 @@ exports.getQuizResults = async (req, res) => {
     const quiz = req.quiz;
 
     const attempts = await QuizAttempt.find({ quizId: quiz._id })
-      .populate("studentId", "fullName email studentId department")
+      .populate(
+        "studentId",
+        "fullName email studentId enrollmentNumber department",
+      )
       .sort({ submittedAt: -1 });
+
+    // Ensure studentId is included in response
+    const enrichedAttempts = attempts.map((attempt) => {
+      const attemptObj = attempt.toObject();
+      if (attemptObj.studentId) {
+        // If studentId field is empty but enrollmentNumber exists, use that
+        if (
+          !attemptObj.studentId.studentId &&
+          attemptObj.studentId.enrollmentNumber
+        ) {
+          attemptObj.studentId.studentId =
+            attemptObj.studentId.enrollmentNumber;
+        }
+      }
+      return attemptObj;
+    });
 
     res.status(200).json({
       success: true,
-      count: attempts.length,
-      data: attempts,
+      count: enrichedAttempts.length,
+      data: enrichedAttempts,
     });
   } catch (error) {
     res.status(500).json({
@@ -927,7 +1021,7 @@ exports.deleteFromQuestionBank = async (req, res) => {
 // Get all students
 exports.getAllStudents = async (req, res) => {
   try {
-    const { department, page = 1, limit = 50, search } = req.query;
+    const { department, page = 1, limit = 1000, search } = req.query;
 
     const query = { role: "student", isActive: true };
 

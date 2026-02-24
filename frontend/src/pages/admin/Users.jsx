@@ -108,6 +108,7 @@ const AdminUsers = () => {
         params: {
           role: roleFilter !== "all" ? roleFilter : undefined,
           populate: "groups",
+          limit: 1000,
         },
       });
       const fetchedUsers = response.data.data || [];
@@ -898,7 +899,16 @@ const AdminUsers = () => {
                               <td className="px-6 py-4">
                                 <div>
                                   <div className="font-medium text-gray-900">
-                                    {user.name}
+                                    {user.role === "student" ? (
+                                      <Link
+                                        to={`/admin/students/${user._id}`}
+                                        className="text-blue-600 hover:underline"
+                                      >
+                                        {user.name}
+                                      </Link>
+                                    ) : (
+                                      user.name
+                                    )}
                                   </div>
                                   {user.enrollmentNumber && (
                                     <div className="text-xs text-gray-500">

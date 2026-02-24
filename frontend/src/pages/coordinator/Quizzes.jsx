@@ -17,6 +17,13 @@ import {
 import Layout from "../../components/Layout";
 import apiClient from "../../api";
 
+// Helper to derive batch/group from studentId (e.g. "23it001" -> "23IT")
+const getBatchFromStudentId = (studentId) => {
+  if (!studentId) return null;
+  const match = String(studentId).match(/^\d{2}[A-Za-z]+/);
+  return match ? match[0].toUpperCase() : null;
+};
+
 const CoordinatorQuizzes = () => {
   const navigate = useNavigate();
   const [quizzes, setQuizzes] = useState([]);
@@ -37,6 +44,7 @@ const CoordinatorQuizzes = () => {
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [studentSearchTerm, setStudentSearchTerm] = useState("");
   const [assigningStudents, setAssigningStudents] = useState(false);
+  const [batchFilter, setBatchFilter] = useState("all");
 
   useEffect(() => {
     fetchQuizzes();
@@ -115,8 +123,12 @@ const CoordinatorQuizzes = () => {
   // Fetch all students for assignment
   const fetchAllStudents = async (searchTerm = "") => {
     try {
+      const params = new URLSearchParams();
+      params.append("limit", "1000");
+      if (searchTerm) params.append("search", searchTerm);
+
       const response = await apiClient.get(
-        `/coordinator/students${searchTerm ? `?search=${searchTerm}` : ""}`,
+        `/coordinator/students?${params.toString()}`,
       );
       setAllStudents(response.data.data || []);
     } catch (err) {
@@ -129,6 +141,7 @@ const CoordinatorQuizzes = () => {
     setSelectedQuiz(quiz);
     setSelectedStudents([]);
     setStudentSearchTerm("");
+    setBatchFilter("all");
     await fetchAllStudents();
     // Also fetch currently assigned to filter them out
     try {
@@ -207,9 +220,13 @@ const CoordinatorQuizzes = () => {
     const assignedIds = assignedStudents
       .map((a) => a.studentId?._id)
       .filter(Boolean);
-    const availableStudents = allStudents.filter(
-      (s) => !assignedIds.includes(s._id),
-    );
+    const availableStudents = allStudents
+      .filter((s) => !assignedIds.includes(s._id))
+      .filter((s) => {
+        if (batchFilter === "all") return true;
+        const batch = getBatchFromStudentId(s.studentId);
+        return batch === batchFilter;
+      });
 
     if (selectedStudents.length === availableStudents.length) {
       setSelectedStudents([]);
@@ -449,6 +466,9 @@ const CoordinatorQuizzes = () => {
                             Student
                           </th>
                           <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Student ID
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                             Score
                           </th>
                           <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
@@ -460,38 +480,64 @@ const CoordinatorQuizzes = () => {
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
-                        {results.map((result, index) => (
-                          <tr key={result._id}>
-                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                              #{index + 1}
-                            </td>
-                            <td className="px-4 py-3 whitespace-nowrap">
-                              <div className="text-sm font-medium text-gray-900">
-                                {result.studentId?.name}
-                              </div>
-                              <div className="text-sm text-gray-500">
-                                {result.studentId?.enrollmentNumber}
-                              </div>
-                            </td>
-                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                              {result.totalScore}/{result.maxScore}
-                            </td>
-                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                              {result.percentage.toFixed(2)}%
-                            </td>
-                            <td className="px-4 py-3 whitespace-nowrap">
-                              <span
-                                className={`px-2 py-1 text-xs rounded-full ${
-                                  result.isPassed
-                                    ? "bg-green-100 text-green-800"
-                                    : "bg-red-100 text-red-800"
-                                }`}
-                              >
-                                {result.isPassed ? "Passed" : "Failed"}
-                              </span>
-                            </td>
-                          </tr>
-                        ))}
+                        {results
+                          .slice()
+                          .sort(
+                            (a, b) => (b.totalScore || 0) - (a.totalScore || 0),
+                          )
+                          .map((result, index) => {
+                            const maxScore =
+                              selectedQuiz?.totalMarks ?? result.maxScore ?? 0;
+                            const percentage =
+                              typeof result.percentage === "number" &&
+                              !isNaN(result.percentage)
+                                ? result.percentage
+                                : maxScore > 0
+                                  ? (Number(result.totalScore || 0) /
+                                      maxScore) *
+                                    100
+                                  : 0;
+                            const isPassed =
+                              typeof selectedQuiz?.passingMarks === "number"
+                                ? Number(result.totalScore || 0) >=
+                                  Number(selectedQuiz.passingMarks)
+                                : Boolean(result.isPassed);
+
+                            return (
+                              <tr key={result._id}>
+                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                  #{index + 1}
+                                </td>
+                                <td className="px-4 py-3 whitespace-nowrap">
+                                  <div className="text-sm font-medium text-gray-900">
+                                    {result.studentId?.fullName || "N/A"}
+                                  </div>
+                                </td>
+                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                  {result.studentId?.studentId ||
+                                    result.studentId?.enrollmentNumber ||
+                                    "Not Provided"}
+                                </td>
+                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                  {result.totalScore}/{maxScore || "-"}
+                                </td>
+                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                  {percentage.toFixed(2)}%
+                                </td>
+                                <td className="px-4 py-3 whitespace-nowrap">
+                                  <span
+                                    className={`px-2 py-1 text-xs rounded-full ${
+                                      isPassed
+                                        ? "bg-green-100 text-green-800"
+                                        : "bg-red-100 text-red-800"
+                                    }`}
+                                  >
+                                    {isPassed ? "Passed" : "Failed"}
+                                  </span>
+                                </td>
+                              </tr>
+                            );
+                          })}
                       </tbody>
                     </table>
                   </div>
@@ -639,41 +685,69 @@ const CoordinatorQuizzes = () => {
                   />
                 </div>
               </div>
-              <div className="p-4 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
+              <div className="p-4 border-b border-gray-200 bg-gray-50 flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <input
                     type="checkbox"
                     id="selectAll"
-                    checked={
-                      allStudents.filter(
-                        (s) =>
-                          !assignedStudents.some(
-                            (a) => a.studentId?._id === s._id,
-                          ),
-                      ).length > 0 &&
-                      selectedStudents.length ===
-                        allStudents.filter(
-                          (s) =>
-                            !assignedStudents.some(
-                              (a) => a.studentId?._id === s._id,
-                            ),
-                        ).length
-                    }
+                    checked={() => {
+                      const assignedIds = assignedStudents
+                        .map((a) => a.studentId?._id)
+                        .filter(Boolean);
+                      const availableFiltered = allStudents
+                        .filter((s) => !assignedIds.includes(s._id))
+                        .filter((s) => {
+                          if (batchFilter === "all") return true;
+                          const batch = getBatchFromStudentId(s.studentId);
+                          return batch === batchFilter;
+                        });
+                      return (
+                        availableFiltered.length > 0 &&
+                        selectedStudents.length === availableFiltered.length
+                      );
+                    }}
                     onChange={toggleSelectAll}
                     className="w-4 h-4 text-blue-600 rounded"
                   />
                   <label htmlFor="selectAll" className="text-sm text-gray-700">
                     Select All (
-                    {
-                      allStudents.filter(
-                        (s) =>
-                          !assignedStudents.some(
-                            (a) => a.studentId?._id === s._id,
-                          ),
-                      ).length
-                    }{" "}
+                    {(() => {
+                      const assignedIds = assignedStudents
+                        .map((a) => a.studentId?._id)
+                        .filter(Boolean);
+                      return allStudents
+                        .filter((s) => !assignedIds.includes(s._id))
+                        .filter((s) => {
+                          if (batchFilter === "all") return true;
+                          const batch = getBatchFromStudentId(s.studentId);
+                          return batch === batchFilter;
+                        }).length;
+                    })()}{" "}
                     available)
                   </label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-700">Batch:</span>
+                  <select
+                    value={batchFilter}
+                    onChange={(e) => setBatchFilter(e.target.value)}
+                    className="border border-gray-300 rounded-md text-sm px-2 py-1 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="all">All batches</option>
+                    {Array.from(
+                      new Set(
+                        allStudents
+                          .map((s) => getBatchFromStudentId(s.studentId))
+                          .filter(Boolean),
+                      ),
+                    )
+                      .sort()
+                      .map((batch) => (
+                        <option key={batch} value={batch}>
+                          {batch}
+                        </option>
+                      ))}
+                  </select>
                 </div>
                 <p className="text-sm text-gray-600">
                   {selectedStudents.length} selected
@@ -688,6 +762,10 @@ const CoordinatorQuizzes = () => {
                 ) : (
                   <div className="space-y-2">
                     {allStudents.map((student) => {
+                      const batch = getBatchFromStudentId(student.studentId);
+                      if (batchFilter !== "all" && batch !== batchFilter) {
+                        return null;
+                      }
                       const isAssigned = assignedStudents.some(
                         (a) => a.studentId?._id === student._id,
                       );
@@ -720,6 +798,7 @@ const CoordinatorQuizzes = () => {
                             </p>
                             <p className="text-xs text-gray-400">
                               {student.department}
+                              {batch && ` • ${batch} batch`}
                             </p>
                           </div>
                           {isAssigned && (

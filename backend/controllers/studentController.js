@@ -637,7 +637,7 @@ exports.getAllMyResults = async (req, res) => {
     })
       .populate({
         path: "quizId",
-        select: "title totalMarks passingMarks",
+        select: "title totalMarks passingMarks subject department semester",
         populate: {
           path: "coordinatorId",
           select: "fullName department",
@@ -645,10 +645,26 @@ exports.getAllMyResults = async (req, res) => {
       })
       .sort({ submittedAt: -1 });
 
+    // Transform the data to include calculated fields
+    const resultsWithCalculations = attempts.map((attempt) => {
+      const attemptObj = attempt.toObject();
+
+      // Add calculated fields
+      attemptObj.totalScore = attempt.totalScore || 0;
+      attemptObj.maxScore = attempt.quizId?.totalMarks || 0;
+      attemptObj.percentage = attempt.percentage || 0;
+
+      // Calculate isPassed: if student's score >= passing marks
+      const passingMarks = attempt.quizId?.passingMarks || 0;
+      attemptObj.isPassed = (attempt.totalScore || 0) >= passingMarks;
+
+      return attemptObj;
+    });
+
     res.status(200).json({
       success: true,
-      count: attempts.length,
-      data: attempts,
+      count: resultsWithCalculations.length,
+      data: resultsWithCalculations,
     });
   } catch (error) {
     res.status(500).json({

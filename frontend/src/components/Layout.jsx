@@ -12,7 +12,7 @@ import {
   ChevronRight,
   GraduationCap,
   Award,
-  Settings
+  Settings,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
@@ -33,23 +33,48 @@ const Layout = ({ children, title }) => {
     switch (user.role) {
       case "admin":
         return [
-          { path: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
+          {
+            path: "/admin/dashboard",
+            label: "Dashboard",
+            icon: LayoutDashboard,
+          },
           { path: "/admin/users", label: "Users", icon: Users },
+          { path: "/admin/groups", label: "Groups", icon: GraduationCap },
           { path: "/admin/quizzes", label: "Quizzes", icon: FileText },
           { path: "/admin/analytics", label: "Analytics", icon: BarChart3 },
         ];
       case "coordinator":
         return [
-          { path: "/coordinator/dashboard", label: "Dashboard", icon: LayoutDashboard },
+          {
+            path: "/coordinator/dashboard",
+            label: "Dashboard",
+            icon: LayoutDashboard,
+          },
           { path: "/coordinator/quizzes", label: "My Quizzes", icon: FileText },
-          { path: "/coordinator/analytics", label: "Analytics", icon: BarChart3 },
+          {
+            path: "/coordinator/analytics",
+            label: "Analytics",
+            icon: BarChart3,
+          },
           { path: "/coordinator/settings", label: "Settings", icon: Settings },
         ];
       case "student":
         return [
-          { path: "/student/dashboard", label: "Dashboard", icon: LayoutDashboard },
-          { path: "/student/quizzes", label: "Available Quizzes", icon: FileText },
-          { path: "/student/analytics", label: "My Performance", icon: BarChart3 },
+          {
+            path: "/student/dashboard",
+            label: "Dashboard",
+            icon: LayoutDashboard,
+          },
+          {
+            path: "/student/quizzes",
+            label: "Available Quizzes",
+            icon: FileText,
+          },
+          {
+            path: "/student/analytics",
+            label: "My Performance",
+            icon: BarChart3,
+          },
           { path: "/student/results", label: "My Results", icon: Award },
           { path: "/student/settings", label: "Settings", icon: Settings },
         ];
@@ -57,15 +82,19 @@ const Layout = ({ children, title }) => {
         return [];
     }
   };
-  
+
   const navLinks = getNavLinks();
 
   const getRoleBadgeColor = () => {
     switch (user?.role) {
-      case "admin": return "bg-purple-100 text-purple-700 border-purple-200";
-      case "coordinator": return "bg-blue-100 text-blue-700 border-blue-200";
-      case "student": return "bg-green-100 text-green-700 border-green-200";
-      default: return "bg-gray-100 text-gray-700 border-gray-200";
+      case "admin":
+        return "bg-purple-100 text-purple-700 border-purple-200";
+      case "coordinator":
+        return "bg-blue-100 text-blue-700 border-blue-200";
+      case "student":
+        return "bg-green-100 text-green-700 border-green-200";
+      default:
+        return "bg-gray-100 text-gray-700 border-gray-200";
     }
   };
 
@@ -81,10 +110,17 @@ const Layout = ({ children, title }) => {
                 onClick={() => setSidebarOpen(!sidebarOpen)}
                 className="lg:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors"
               >
-                {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                {sidebarOpen ? (
+                  <X className="w-5 h-5" />
+                ) : (
+                  <Menu className="w-5 h-5" />
+                )}
               </button>
-              
-              <Link to={`/${user?.role}/dashboard`} className="flex items-center gap-3 group">
+
+              <Link
+                to={`/${user?.role}/dashboard`}
+                className="flex items-center gap-3 group"
+              >
                 <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl p-2 shadow-lg shadow-blue-200 group-hover:shadow-xl group-hover:shadow-blue-300 transition-all">
                   <GraduationCap className="w-6 h-6 text-white" />
                 </div>
@@ -100,12 +136,16 @@ const Layout = ({ children, title }) => {
             {/* Right: User Info & Logout */}
             <div className="flex items-center gap-3">
               <div className="hidden md:flex flex-col items-end">
-                <span className="text-sm font-semibold text-gray-900">{user?.name}</span>
-                <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${getRoleBadgeColor()}`}>
+                <span className="text-sm font-semibold text-gray-900">
+                  {user?.name}
+                </span>
+                <span
+                  className={`text-xs font-medium px-2 py-0.5 rounded-full border ${getRoleBadgeColor()}`}
+                >
                   {user?.role}
                 </span>
               </div>
-              
+
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold shadow-lg">
                 {user?.name?.charAt(0).toUpperCase()}
               </div>
@@ -132,7 +172,7 @@ const Layout = ({ children, title }) => {
               {navLinks.map((link) => {
                 const isActive = location.pathname === link.path;
                 const Icon = link.icon;
-                
+
                 return (
                   <Link
                     key={link.path}
@@ -144,10 +184,14 @@ const Layout = ({ children, title }) => {
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? "text-blue-600" : "text-gray-400 group-hover:text-gray-600"}`} />
+                      <Icon
+                        className={`w-5 h-5 flex-shrink-0 ${isActive ? "text-blue-600" : "text-gray-400 group-hover:text-gray-600"}`}
+                      />
                       <span className="truncate">{link.label}</span>
                     </div>
-                    {isActive && <ChevronRight className="w-4 h-4 text-blue-600 flex-shrink-0" />}
+                    {isActive && (
+                      <ChevronRight className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                    )}
                   </Link>
                 );
               })}
@@ -161,8 +205,12 @@ const Layout = ({ children, title }) => {
                     <GraduationCap className="w-5 h-5 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-blue-900 truncate">Need Help?</p>
-                    <p className="text-xs text-blue-700 truncate">Contact Support</p>
+                    <p className="text-xs font-semibold text-blue-900 truncate">
+                      Need Help?
+                    </p>
+                    <p className="text-xs text-blue-700 truncate">
+                      Contact Support
+                    </p>
                   </div>
                 </div>
               </div>
@@ -194,7 +242,9 @@ const Layout = ({ children, title }) => {
                       <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg p-2">
                         <GraduationCap className="w-5 h-5 text-white" />
                       </div>
-                      <span className="font-bold text-gray-900">Quiz System</span>
+                      <span className="font-bold text-gray-900">
+                        Quiz System
+                      </span>
                     </div>
                     <button
                       onClick={() => setSidebarOpen(false)}
@@ -208,7 +258,7 @@ const Layout = ({ children, title }) => {
                     {navLinks.map((link) => {
                       const isActive = location.pathname === link.path;
                       const Icon = link.icon;
-                      
+
                       return (
                         <Link
                           key={link.path}
@@ -221,10 +271,14 @@ const Layout = ({ children, title }) => {
                           }`}
                         >
                           <div className="flex items-center gap-3">
-                            <Icon className={`w-5 h-5 ${isActive ? "text-blue-600" : "text-gray-400 group-hover:text-gray-600"}`} />
+                            <Icon
+                              className={`w-5 h-5 ${isActive ? "text-blue-600" : "text-gray-400 group-hover:text-gray-600"}`}
+                            />
                             <span>{link.label}</span>
                           </div>
-                          {isActive && <ChevronRight className="w-4 h-4 text-blue-600" />}
+                          {isActive && (
+                            <ChevronRight className="w-4 h-4 text-blue-600" />
+                          )}
                         </Link>
                       );
                     })}

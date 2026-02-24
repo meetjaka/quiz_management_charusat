@@ -409,10 +409,35 @@ const CreateQuizWizard = () => {
 
         // Add questions
         for (const question of questions) {
-          await apiClient.post(`/coordinator/quizzes/${quizId}/questions`, {
-            ...question,
+          // Convert options format for MCQ questions
+          let questionData = {
+            questionText: question.questionText,
+            questionType: question.questionType,
+            marks: question.marks,
             orderNumber: questions.indexOf(question) + 1,
-          });
+          };
+
+          if (
+            question.questionType === "mcq" ||
+            question.questionType === "true_false"
+          ) {
+            // Convert options array of strings to array of objects
+            questionData.options = (question.options || []).map((opt, idx) => ({
+              text: opt,
+              isCorrect: idx === question.correctAnswer,
+            }));
+          } else if (question.questionType === "short_answer") {
+            // For short answer, use the option at correctAnswer index as the answer
+            questionData.correctAnswer =
+              question.options[question.correctAnswer] ||
+              question.correctAnswer ||
+              "";
+          }
+
+          await apiClient.post(
+            `/coordinator/quizzes/${quizId}/questions`,
+            questionData,
+          );
         }
       }
 

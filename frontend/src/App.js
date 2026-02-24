@@ -5,8 +5,8 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 
@@ -24,6 +24,8 @@ import AdminQuizzes from "./pages/admin/Quizzes";
 import AdminAnalytics from "./pages/admin/Analytics";
 import AdminProfile from "./pages/admin/AdminProfile";
 import GroupManagement from "./pages/admin/groups/GroupManagement";
+import Groups from "./pages/admin/Groups";
+import GroupStudents from "./pages/admin/GroupStudents";
 
 // Coordinator Pages
 import CoordinatorDashboard from "./pages/coordinator/Dashboard";
@@ -106,11 +108,20 @@ function App() {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/admin/groups"
             element={
               <PrivateRoute allowedRoles={["admin"]}>
-                <GroupManagement />
+                <Groups />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/groups/:groupId"
+            element={
+              <PrivateRoute allowedRoles={["admin"]}>
+                <GroupStudents />
               </PrivateRoute>
             }
           />
