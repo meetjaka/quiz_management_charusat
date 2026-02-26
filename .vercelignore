@@ -1,6 +1,3 @@
-# Ignore frontend - it has separate deployment
-frontend/
-
 # Standard ignores
 node_modules
 .git
@@ -26,6 +23,3 @@ coverage
 *.sh
 *.ps1
 deploy-to-vercel.ps1
-.vercel
-.git
-.gitignore
