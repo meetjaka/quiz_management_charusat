@@ -1,11 +1,11 @@
-const nodemailer = require('nodemailer');
+const nodemailer = require("nodemailer");
 
 // Create transporter
 const createTransporter = () => {
   // For development, use ethereal (fake SMTP)
   // For production, replace with real SMTP settings (Gmail, SendGrid, etc.)
-  
-  if (process.env.NODE_ENV === 'production') {
+
+  if (process.env.NODE_ENV === "production") {
     // Production email settings
     return nodemailer.createTransport({
       host: process.env.SMTP_HOST,
@@ -20,22 +20,29 @@ const createTransporter = () => {
     // Development - use Gmail or Ethereal
     // For Gmail, enable "Less secure app access" or use App Password
     return nodemailer.createTransporter({
-      service: 'gmail',
+      service: "gmail",
       auth: {
-        user: process.env.EMAIL_USER || 'your-email@gmail.com',
-        pass: process.env.EMAIL_PASS || 'your-app-password',
+        user: process.env.EMAIL_USER || "your-email@gmail.com",
+        pass: process.env.EMAIL_PASS || "your-app-password",
       },
     });
   }
 };
 
 // Send quiz assignment notification
-const sendQuizAssignmentEmail = async (studentEmail, studentName, quizTitle, startTime, endTime, durationMinutes) => {
+const sendQuizAssignmentEmail = async (
+  studentEmail,
+  studentName,
+  quizTitle,
+  startTime,
+  endTime,
+  durationMinutes,
+) => {
   try {
     const transporter = createTransporter();
-    
+
     const mailOptions = {
-      from: `"CHARUSAT Quiz System" <${process.env.EMAIL_USER || 'noreply@charusat.edu.in'}>`,
+      from: `"CHARUSAT Quiz System" <${process.env.EMAIL_USER || "noreply@charusat.edu.in"}>`,
       to: studentEmail,
       subject: `New Quiz Assigned: ${quizTitle}`,
       html: `
@@ -51,7 +58,7 @@ const sendQuizAssignmentEmail = async (studentEmail, studentName, quizTitle, sta
           </div>
           <p>Please make sure to attempt the quiz within the given time window.</p>
           <p style="margin-top: 30px;">
-            <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/student/quizzes" 
+            <a href="${process.env.FRONTEND_URL || "http://localhost:3000"}/student/quizzes" 
                style="background-color: #3B82F6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">
               View Quiz
             </a>
@@ -64,21 +71,26 @@ const sendQuizAssignmentEmail = async (studentEmail, studentName, quizTitle, sta
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log('Quiz assignment email sent:', info.messageId);
+    console.log("Quiz assignment email sent:", info.messageId);
     return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error('Error sending quiz assignment email:', error);
+    console.error("Error sending quiz assignment email:", error);
     return { success: false, error: error.message };
   }
 };
 
 // Send quiz reminder (1 hour before deadline)
-const sendQuizReminderEmail = async (studentEmail, studentName, quizTitle, endTime) => {
+const sendQuizReminderEmail = async (
+  studentEmail,
+  studentName,
+  quizTitle,
+  endTime,
+) => {
   try {
     const transporter = createTransporter();
-    
+
     const mailOptions = {
-      from: `"CHARUSAT Quiz System" <${process.env.EMAIL_USER || 'noreply@charusat.edu.in'}>`,
+      from: `"CHARUSAT Quiz System" <${process.env.EMAIL_USER || "noreply@charusat.edu.in"}>`,
       to: studentEmail,
       subject: `Reminder: Quiz "${quizTitle}" Deadline Approaching`,
       html: `
@@ -92,7 +104,7 @@ const sendQuizReminderEmail = async (studentEmail, studentName, quizTitle, endTi
           </div>
           <p>If you haven't attempted this quiz yet, please do so before the deadline.</p>
           <p style="margin-top: 30px;">
-            <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/student/quizzes" 
+            <a href="${process.env.FRONTEND_URL || "http://localhost:3000"}/student/quizzes" 
                style="background-color: #F59E0B; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">
               Attempt Quiz Now
             </a>
@@ -102,24 +114,32 @@ const sendQuizReminderEmail = async (studentEmail, studentName, quizTitle, endTi
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log('Quiz reminder email sent:', info.messageId);
+    console.log("Quiz reminder email sent:", info.messageId);
     return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error('Error sending quiz reminder email:', error);
+    console.error("Error sending quiz reminder email:", error);
     return { success: false, error: error.message };
   }
 };
 
 // Send quiz result notification
-const sendQuizResultEmail = async (studentEmail, studentName, quizTitle, score, totalMarks, percentage, passed) => {
+const sendQuizResultEmail = async (
+  studentEmail,
+  studentName,
+  quizTitle,
+  score,
+  totalMarks,
+  percentage,
+  passed,
+) => {
   try {
     const transporter = createTransporter();
-    
-    const statusColor = passed ? '#10B981' : '#EF4444';
-    const statusText = passed ? 'PASSED ✓' : 'FAILED ✗';
-    
+
+    const statusColor = passed ? "#10B981" : "#EF4444";
+    const statusText = passed ? "PASSED ✓" : "FAILED ✗";
+
     const mailOptions = {
-      from: `"CHARUSAT Quiz System" <${process.env.EMAIL_USER || 'noreply@charusat.edu.in'}>`,
+      from: `"CHARUSAT Quiz System" <${process.env.EMAIL_USER || "noreply@charusat.edu.in"}>`,
       to: studentEmail,
       subject: `Quiz Result: ${quizTitle}`,
       html: `
@@ -138,7 +158,7 @@ const sendQuizResultEmail = async (studentEmail, studentName, quizTitle, score, 
             </p>
           </div>
           <p style="margin-top: 30px;">
-            <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/student/results" 
+            <a href="${process.env.FRONTEND_URL || "http://localhost:3000"}/student/results" 
                style="background-color: #3B82F6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">
               View Detailed Results
             </a>
@@ -148,12 +168,74 @@ const sendQuizResultEmail = async (studentEmail, studentName, quizTitle, score, 
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log('Quiz result email sent:', info.messageId);
+    console.log("Quiz result email sent:", info.messageId);
     return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error('Error sending quiz result email:', error);
+    console.error("Error sending quiz result email:", error);
     return { success: false, error: error.message };
   }
+};
+
+/**
+ * ASYNC VERSION - Non-blocking email sending
+ * Returns immediately, sends email in background
+ * Perfect for high-concurrency scenarios
+ */
+const sendQuizResultEmailAsync = async (
+  studentEmail,
+  studentName,
+  quizTitle,
+  score,
+  totalMarks,
+  percentage,
+  passed,
+) => {
+  // Fire and forget - don't await or return
+  setImmediate(async () => {
+    try {
+      const transporter = createTransporter();
+
+      const statusColor = passed ? "#10B981" : "#EF4444";
+      const statusText = passed ? "PASSED ✓" : "FAILED ✗";
+
+      const mailOptions = {
+        from: `"CHARUSAT Quiz System" <${process.env.EMAIL_USER || "noreply@charusat.edu.in"}>`,
+        to: studentEmail,
+        subject: `Quiz Result: ${quizTitle}`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #3B82F6;">Quiz Result Available</h2>
+            <p>Hello <strong>${studentName}</strong>,</p>
+            <p>Your quiz has been evaluated. Here are your results:</p>
+            <div style="background-color: #F3F4F6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <h3 style="margin-top: 0; color: #1F2937;">${quizTitle}</h3>
+              <div style="font-size: 48px; font-weight: bold; color: ${statusColor}; margin: 20px 0;">
+                ${percentage.toFixed(1)}%
+              </div>
+              <p><strong>Score:</strong> ${score} / ${totalMarks}</p>
+              <p style="font-size: 20px; font-weight: bold; color: ${statusColor};">
+                ${statusText}
+              </p>
+            </div>
+            <p style="margin-top: 30px;">
+              <a href="${process.env.FRONTEND_URL || "http://localhost:3000"}/student/results" 
+                 style="background-color: #3B82F6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">
+                View Detailed Results
+              </a>
+            </p>
+          </div>
+        `,
+      };
+
+      await transporter.sendMail(mailOptions);
+      console.log(`✅ [Async] Result email sent to ${studentEmail}`);
+    } catch (error) {
+      console.error(
+        `⚠️ [Async] Failed to send email to ${studentEmail}:`,
+        error.message,
+      );
+    }
+  });
 };
 
 // Test email configuration
@@ -161,10 +243,10 @@ const testEmailConfig = async () => {
   try {
     const transporter = createTransporter();
     await transporter.verify();
-    console.log('✓ Email configuration is valid');
+    console.log("✓ Email configuration is valid");
     return true;
   } catch (error) {
-    console.error('✗ Email configuration error:', error.message);
+    console.error("✗ Email configuration error:", error.message);
     return false;
   }
 };
@@ -173,5 +255,6 @@ module.exports = {
   sendQuizAssignmentEmail,
   sendQuizReminderEmail,
   sendQuizResultEmail,
+  sendQuizResultEmailAsync,
   testEmailConfig,
 };

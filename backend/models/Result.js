@@ -84,12 +84,41 @@ const resultSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-// Indexes for leaderboard and analytics
-resultSchema.index({ quizId: 1, totalScore: -1 });
-resultSchema.index({ studentId: 1, createdAt: -1 });
-resultSchema.index({ isPassed: 1 });
+// ============================================
+// OPTIMIZED INDEXES FOR RESULTS/ANALYTICS
+// ============================================
+
+// 1. Fast result lookup for dashboard
+resultSchema.index(
+  { quizId: 1, studentId: 1 },
+  { name: "idx_quiz_student_result" },
+);
+
+// 2. Leaderboard ranking queries
+resultSchema.index(
+  { quizId: 1, totalScore: -1, submittedAt: -1 },
+  { name: "idx_leaderboard" },
+);
+
+// 3. Student analytics
+resultSchema.index(
+  { studentId: 1, createdAt: -1 },
+  { name: "idx_student_analytics" },
+);
+
+// 4. Pass/Fail statistics
+resultSchema.index({ quizId: 1, isPassed: 1 }, { name: "idx_quiz_pass_stats" });
+
+// 5. Time-based analytics
+resultSchema.index(
+  { submittedAt: 1, quizId: 1 },
+  { name: "idx_time_analytics" },
+);
+
+// TTL index - optional: auto-delete old results after 1 year for storage optimization
+// Uncomment if needed: resultSchema.index({ createdAt: 1 }, { expireAfterSeconds: 31536000 });
 
 module.exports = mongoose.model("Result", resultSchema);

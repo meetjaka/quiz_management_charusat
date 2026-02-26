@@ -3,7 +3,11 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const { errorHandler, notFound } = require("./middleware/errorHandler");
-const { apiLimiter } = require("./middleware/rateLimiter");
+const {
+  apiLimiter,
+  authLimiter,
+  adminLimiter,
+} = require("./middleware/rateLimiter");
 const User = require("./models/User");
 
 // Load environment variables
@@ -14,20 +18,42 @@ connectDB();
 
 const app = express();
 
-// Middleware
+// ============================================
+// GLOBAL MIDDLEWARE
+// ============================================
+
+// CORS with production settings
 app.use(
   cors({
     origin: process.env.FRONTEND_URL || "http://localhost:3000",
     credentials: true,
-  })
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
 );
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-// Apply rate limiting to all routes
-app.use("/api/", apiLimiter);
+// Body parser - increased limit for bulk uploads
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
-// Seed default admin user if none exists
+// ============================================
+// HEALTH CHECK (No rate limiting)
+// ============================================
+app.get("/api/health", (req, res) => {
+  res.json({
+    message: "Server is running",
+    timestamp: new Date(),
+    mongodb: "Connected",
+    environment: process.env.NODE_ENV,
+  });
+});
+
+// Favicon
+app.get("/favicon.ico", (req, res) => res.status(204).end());
+
+// ============================================
+// SEED DEFAULT ADMIN
+// ============================================
 (async () => {
   try {
     const adminCount = await User.countDocuments({ role: "admin" });
@@ -44,7 +70,7 @@ app.use("/api/", apiLimiter);
           password: defaultAdminPassword,
           role: "admin",
           isActive: true,
-          isFirstLogin: false // Admin users don't need first-time login flow
+          isFirstLogin: false,
         });
         console.log(`✅ Seeded admin user: ${defaultAdminEmail}`);
         console.log(`   Password: ${defaultAdminPassword}`);
@@ -55,17 +81,22 @@ app.use("/api/", apiLimiter);
   }
 })();
 
-// Routes
-app.get("/api/health", (req, res) => {
-  res.json({
-    message: "Server is running",
-    timestamp: new Date(),
-    mongodb: "Connected",
-  });
-});
+// ============================================
+// APPLY RATE LIMITING BY ENDPOINT
+// ============================================
 
-// Handle favicon requests to prevent 404/403 errors
-app.get("/favicon.ico", (req, res) => res.status(204).end());
+// Auth routes - strict rate limiting
+app.use("/api/auth", authLimiter);
+
+// Admin routes - moderate rate limiting
+app.use("/api/admin", adminLimiter);
+
+// General API limiter for other routes (more lenient)
+app.use("/api/", apiLimiter);
+
+// ============================================
+// ROUTE HANDLERS
+// ============================================
 
 // Auth routes
 app.use("/api/auth", require("./routes/authRoutes"));
@@ -75,16 +106,62 @@ app.use("/api/admin", require("./routes/adminRoutes"));
 app.use("/api/groups", require("./routes/groupRoutes"));
 // Coordinator routes
 app.use("/api/coordinator", require("./routes/coordinatorRoutes"));
-// Student routes
+// Student routes (has its own rate limiters)
 app.use("/api/student", require("./routes/studentRoutes"));
+
+// ============================================
+// ERROR HANDLING
+// ============================================
+
 // 404 handler
 app.use(notFound);
 
-// Error handling middleware
+// Global error handler
 app.use(errorHandler);
 
+// ============================================
+// SERVER START
+// ============================================
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV}`);
+const server = app.listen(PORT, () => {
+  console.log(`
+╔════════════════════════════════════════════╗
+║   Quiz Management System - Production    ║
+║         ✅ Server Running                ║
+╚════════════════════════════════════════════╝
+  Port: ${PORT}
+  Environment: ${process.env.NODE_ENV}
+  MongoDB Connection Pool: 10-50
+  Rate Limiting: Enabled
+  CORS Origin: ${process.env.FRONTEND_URL || "http://localhost:3000"}
+  `);
 });
+
+// ============================================
+// GRACEFUL SHUTDOWN
+// ============================================
+
+process.on("SIGTERM", () => {
+  console.log("\n⚠️  SIGTERM received, shutting down gracefully...");
+  server.close(() => {
+    console.log("✅ Server closed");
+    process.exit(0);
+  });
+});
+
+process.on("SIGINT", () => {
+  console.log("\n⚠️  SIGINT received, shutting down gracefully...");
+  server.close(() => {
+    console.log("✅ Server closed");
+    process.exit(0);
+  });
+});
+
+// Unhandled rejection
+process.on("unhandledRejection", (err) => {
+  console.error("❌ Unhandled Rejection:", err);
+  // Don't exit - let server keep running
+});
+
+module.exports = app;
