@@ -1,5 +1,4 @@
-# Ignore frontend - it has separate deployment
-frontend/
+
 
 # Standard ignores
 node_modules
