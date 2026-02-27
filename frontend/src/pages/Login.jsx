@@ -220,7 +220,7 @@ const Login = () => {
             <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
               Demo Credentials
             </h4>
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <div className="flex items-center justify-between text-xs p-2 bg-white rounded border border-gray-200">
                 <span className="text-gray-600 font-medium">Admin Email:</span>
                 <code className="text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded font-mono">
@@ -233,7 +233,7 @@ const Login = () => {
                   Admin@123
                 </code>
               </div>
-            </div>
+            </div> */}
             <div className="mt-3 flex items-start gap-2 text-xs text-amber-600 bg-amber-50 p-2 rounded border border-amber-100">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
               <span>
