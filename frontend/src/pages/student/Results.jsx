@@ -50,7 +50,7 @@ const StudentResults = () => {
   return (
     <Layout title="My Results">
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-secondary mb-8">My Results</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">My Results</h1>
 
         {error && (
           <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
@@ -64,7 +64,7 @@ const StudentResults = () => {
             <p className="text-gray-500 mt-4">Loading results...</p>
           </div>
         ) : results.length === 0 ? (
-          <div className="bg-card rounded-lg shadow-lg p-12 text-center">
+          <div className="bg-white rounded-lg shadow-lg p-12 text-center">
             <svg
               className="mx-auto h-16 w-16 text-gray-400 mb-4"
               fill="none"
@@ -78,7 +78,7 @@ const StudentResults = () => {
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               />
             </svg>
-            <h3 className="text-lg font-medium text-secondary mb-2">
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
               No Results Yet
             </h3>
             <p className="text-gray-500 mb-6">
@@ -87,7 +87,7 @@ const StudentResults = () => {
             </p>
             <button
               onClick={() => navigate("/student/quizzes")}
-              className="bg-primary hover:bg-[#1d4ed8] text-white font-semibold py-2 px-6 rounded-lg transition"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition"
             >
               View Available Quizzes
             </button>
@@ -96,11 +96,11 @@ const StudentResults = () => {
           <div className="space-y-6">
             {/* Summary Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-card rounded-lg shadow-lg p-6">
+              <div className="bg-white rounded-lg shadow-lg p-6">
                 <div className="flex items-center">
-                  <div className="bg-primary/10 rounded-full p-3">
+                  <div className="bg-blue-100 rounded-full p-3">
                     <svg
-                      className="h-6 w-6 text-primary"
+                      className="h-6 w-6 text-blue-600"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -115,14 +115,14 @@ const StudentResults = () => {
                   </div>
                   <div className="ml-4">
                     <p className="text-sm text-gray-600">Total Quizzes</p>
-                    <p className="text-2xl font-bold text-secondary">
+                    <p className="text-2xl font-bold text-gray-900">
                       {results.length}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-card rounded-lg shadow-lg p-6">
+              <div className="bg-white rounded-lg shadow-lg p-6">
                 <div className="flex items-center">
                   <div className="bg-green-100 rounded-full p-3">
                     <svg
@@ -141,14 +141,14 @@ const StudentResults = () => {
                   </div>
                   <div className="ml-4">
                     <p className="text-sm text-gray-600">Passed</p>
-                    <p className="text-2xl font-bold text-secondary">
+                    <p className="text-2xl font-bold text-gray-900">
                       {results.filter((r) => r.isPassed).length}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-card rounded-lg shadow-lg p-6">
+              <div className="bg-white rounded-lg shadow-lg p-6">
                 <div className="flex items-center">
                   <div className="bg-yellow-100 rounded-full p-3">
                     <svg
@@ -167,7 +167,7 @@ const StudentResults = () => {
                   </div>
                   <div className="ml-4">
                     <p className="text-sm text-gray-600">Average Score</p>
-                    <p className="text-2xl font-bold text-secondary">
+                    <p className="text-2xl font-bold text-gray-900">
                       {results.length > 0
                         ? (
                             results.reduce((sum, r) => sum + r.percentage, 0) /
@@ -182,7 +182,7 @@ const StudentResults = () => {
             </div>
 
             {/* Results List */}
-            <div className="bg-card rounded-lg shadow-lg overflow-hidden">
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-gray-100 border-b">
@@ -211,11 +211,11 @@ const StudentResults = () => {
                     {results.map((result, index) => (
                       <tr
                         key={result._id}
-                        className={index % 2 === 0 ? "bg-card" : "bg-gray-50"}
+                        className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
                       >
                         <td className="px-6 py-4">
                           <div>
-                            <p className="text-sm font-medium text-secondary">
+                            <p className="text-sm font-medium text-gray-900">
                               {result.quizId?.title || "N/A"}
                             </p>
                             <p className="text-xs text-gray-500">
@@ -226,7 +226,7 @@ const StudentResults = () => {
                         <td className="px-6 py-4 text-sm text-gray-600">
                           {result.quizId?.subject || "N/A"}
                         </td>
-                        <td className="px-6 py-4 text-sm font-semibold text-secondary">
+                        <td className="px-6 py-4 text-sm font-semibold text-gray-900">
                           {result.totalScore}/{result.maxScore}
                         </td>
                         <td className="px-6 py-4">

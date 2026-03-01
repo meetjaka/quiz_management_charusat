@@ -152,7 +152,7 @@ const StudentSettings = () => {
       <div className="p-6 max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-secondary">Settings</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
           <p className="text-gray-600 mt-2">Manage your account preferences</p>
         </div>
 
@@ -181,8 +181,8 @@ const StudentSettings = () => {
         )}
 
         {/* Tabs */}
-        <div className="bg-card rounded-md subtle-shadow border border-border">
-          <div className="border-b border-border">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+          <div className="border-b border-gray-200">
             <nav className="flex space-x-8 px-6">
               {tabs.map((tab) => {
                 const IconComponent = tab.icon;
@@ -192,7 +192,7 @@ const StudentSettings = () => {
                     onClick={() => setActiveTab(tab.id)}
                     className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors ${
                       activeTab === tab.id
-                        ? "border-blue-500 text-primary"
+                        ? "border-blue-500 text-blue-600"
                         : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                     }`}
                   >
@@ -216,13 +216,13 @@ const StudentSettings = () => {
                     </div>
                     <button
                       type="button"
-                      className="absolute bottom-0 right-0 w-8 h-8 bg-card rounded-full border-2 border-border flex items-center justify-center hover:bg-gray-50 transition-colors"
+                      className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full border-2 border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors"
                     >
                       <Camera className="w-4 h-4 text-gray-600" />
                     </button>
                   </div>
                   <div>
-                    <h3 className="text-lg font-medium text-secondary">Profile Photo</h3>
+                    <h3 className="text-lg font-medium text-gray-900">Profile Photo</h3>
                     <p className="text-sm text-gray-500">Update your photo and personal details</p>
                   </div>
                 </div>
@@ -332,7 +332,7 @@ const StudentSettings = () => {
                         name="semester"
                         value={profileForm.semester}
                         onChange={handleProfileChange}
-                        className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none bg-card"
+                        className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none bg-white"
                       >
                         <option value="">Select Semester</option>
                         <option value="1">1st Semester</option>
@@ -470,7 +470,7 @@ const StudentSettings = () => {
 
                 {/* Password Requirements */}
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <h4 className="text-sm font-medium text-secondary mb-2">Password Requirements</h4>
+                  <h4 className="text-sm font-medium text-gray-900 mb-2">Password Requirements</h4>
                   <ul className="text-sm text-gray-600 space-y-1">
                     <li>• At least 6 characters long</li>
                     <li>• Mix of uppercase and lowercase letters recommended</li>

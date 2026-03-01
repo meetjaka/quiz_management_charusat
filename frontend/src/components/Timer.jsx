@@ -52,7 +52,7 @@ const Timer = ({ durationMinutes, onTimeUp, startTime }) => {
 
   return (
     <div className={`fixed top-4 right-4 z-50 ${isWarning ? 'animate-pulse' : ''}`}>
-      <div className={`bg-card rounded-lg shadow-lg p-4 border-2 ${
+      <div className={`bg-white rounded-lg shadow-lg p-4 border-2 ${
         isWarning ? 'border-red-500' : 'border-blue-500'
       }`}>
         <div className="flex items-center space-x-3">
@@ -67,7 +67,7 @@ const Timer = ({ durationMinutes, onTimeUp, startTime }) => {
         <div className="mt-2 w-full bg-gray-200 rounded-full h-2 overflow-hidden">
           <div
             className={`h-full transition-all duration-1000 ${
-              isWarning ? 'bg-red-500' : 'bg-primary/50'
+              isWarning ? 'bg-red-500' : 'bg-blue-500'
             }`}
             style={{ width: `${percentage}%` }}
           />

@@ -22,11 +22,11 @@ const Card = ({
 }) => {
   // Variant styles
   const variantStyles = {
-    default: 'bg-card rounded-md subtle-shadow border border-border p-6',
-    flat: 'bg-card rounded-lg border border-border p-6',
-    elevated: 'bg-card rounded-md shadow-lg border border-border/50 p-6',
-    interactive: 'bg-card rounded-md subtle-shadow border border-border p-6 cursor-pointer',
-    gradient: 'bg-gradient-to-br rounded-md p-6 text-white shadow-md',
+    default: 'bg-white rounded-xl shadow-sm border border-gray-200 p-6',
+    flat: 'bg-white rounded-lg border border-gray-200 p-6',
+    elevated: 'bg-white rounded-xl shadow-lg border border-gray-100 p-6',
+    interactive: 'bg-white rounded-xl shadow-sm border border-gray-200 p-6 cursor-pointer',
+    gradient: 'bg-gradient-to-br rounded-xl p-6 text-white shadow-md',
   };
 
   // Hover effects (GPU-accelerated)

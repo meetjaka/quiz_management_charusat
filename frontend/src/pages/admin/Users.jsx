@@ -446,7 +446,7 @@ const AdminUsers = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-secondary tracking-tight">
+            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
               User Management
             </h1>
             <p className="text-gray-500 mt-1">
@@ -456,7 +456,7 @@ const AdminUsers = () => {
           <div className="flex items-center gap-3">
             <Link
               to="/admin/bulk-users"
-              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all subtle-shadow bg-green-600 text-white hover:bg-green-700 shadow-green-200"
+              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm bg-green-600 text-white hover:bg-green-700 shadow-green-200"
             >
               <Users className="w-4 h-4" /> Bulk Create Users
             </Link>
@@ -464,10 +464,10 @@ const AdminUsers = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setShowAddForm(!showAddForm)}
-              className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all subtle-shadow ${
+              className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm ${
                 showAddForm
-                  ? "bg-card border border-gray-300 text-gray-700 hover:bg-gray-50"
-                  : "bg-primary text-white hover:bg-[#1d4ed8] shadow-blue-200"
+                  ? "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                  : "bg-blue-600 text-white hover:bg-blue-700 shadow-blue-200"
               }`}
             >
               {showAddForm ? (
@@ -489,7 +489,7 @@ const AdminUsers = () => {
                 fetchStats();
                 showToast.success("Data refreshed");
               }}
-              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all subtle-shadow bg-card border border-gray-300 text-gray-700 hover:bg-gray-50"
+              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
               title="Refresh data"
             >
               <svg
@@ -516,7 +516,7 @@ const AdminUsers = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className={`rounded-md p-4 flex items-center gap-3 ${
+            className={`rounded-xl p-4 flex items-center gap-3 ${
               error
                 ? "bg-red-50 border border-red-200"
                 : "bg-green-50 border border-green-200"
@@ -541,9 +541,9 @@ const AdminUsers = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="bg-card rounded-md subtle-shadow border border-border p-6"
+            className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
           >
-            <h2 className="text-lg font-bold text-secondary mb-6">
+            <h2 className="text-lg font-bold text-gray-900 mb-6">
               Add New User
             </h2>
             <p className="text-sm text-gray-600 mb-6">
@@ -604,18 +604,18 @@ const AdminUsers = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
                 <button
                   type="button"
                   onClick={() => setShowAddForm(false)}
-                  className="px-4 py-2 text-gray-700 bg-card border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                  className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={formLoading}
-                  className="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-[#1d4ed8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
                   {formLoading ? (
                     <>
@@ -640,8 +640,8 @@ const AdminUsers = () => {
             title="Students"
             value={stats.students}
             icon={GraduationCap}
-            color="text-primary"
-            bgColor="bg-primary/5"
+            color="text-blue-600"
+            bgColor="bg-blue-50"
             active={roleFilter === "student"}
             onClick={() => handleRoleChange("student")}
           />
@@ -666,7 +666,7 @@ const AdminUsers = () => {
         </div>
 
         {/* Search and Filter */}
-        <div className="bg-card rounded-md subtle-shadow border border-border p-4">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -696,7 +696,7 @@ const AdminUsers = () => {
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-primary/5 border border-blue-200 rounded-lg p-4 flex items-center justify-between"
+            className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-center justify-between"
           >
             <div className="flex items-center space-x-4">
               <span className="text-blue-800 font-medium">
@@ -705,7 +705,7 @@ const AdminUsers = () => {
               </span>
               <button
                 onClick={clearSelection}
-                className="text-primary hover:text-blue-800 text-sm"
+                className="text-blue-600 hover:text-blue-800 text-sm"
               >
                 Clear selection
               </button>
@@ -713,7 +713,7 @@ const AdminUsers = () => {
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => setShowMoveToGroupModal(true)}
-                className="inline-flex items-center px-3 py-2 text-sm bg-primary text-white rounded-lg hover:bg-[#1d4ed8]"
+                className="inline-flex items-center px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700"
               >
                 <ArrowRight className="w-4 h-4 mr-1" />
                 Move to Group
@@ -733,7 +733,7 @@ const AdminUsers = () => {
         <div className="flex justify-end space-x-2">
           <button
             onClick={expandAllGroups}
-            className="text-sm text-primary hover:text-blue-800"
+            className="text-sm text-blue-600 hover:text-blue-800"
           >
             Expand All
           </button>
@@ -751,7 +751,7 @@ const AdminUsers = () => {
             ([groupId, { groupInfo, users: groupUsers }]) => (
               <div
                 key={groupId}
-                className="bg-card rounded-md subtle-shadow border border-border overflow-hidden"
+                className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
               >
                 {/* Group Header */}
                 <div
@@ -760,14 +760,14 @@ const AdminUsers = () => {
                 >
                   <div className="flex items-center space-x-3">
                     <div
-                      className={`p-2 rounded-lg ${groupId === "no-group" ? "bg-gray-100" : "bg-primary/10"}`}
+                      className={`p-2 rounded-lg ${groupId === "no-group" ? "bg-gray-100" : "bg-blue-100"}`}
                     >
                       <Users
-                        className={`w-5 h-5 ${groupId === "no-group" ? "text-gray-600" : "text-primary"}`}
+                        className={`w-5 h-5 ${groupId === "no-group" ? "text-gray-600" : "text-blue-600"}`}
                       />
                     </div>
                     <div className="text-left">
-                      <h3 className="text-lg font-semibold text-secondary">
+                      <h3 className="text-lg font-semibold text-gray-900">
                         {groupInfo?.name || "Unknown Group"}
                       </h3>
                       <p className="text-sm text-gray-600">
@@ -831,10 +831,10 @@ const AdminUsers = () => {
 
                 {/* Group Users - Expanded View */}
                 {expandedGroups[groupId] && (
-                  <div className="border-t border-border">
+                  <div className="border-t border-gray-200">
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
-                        <thead className="bg-gray-50 border-b border-border">
+                        <thead className="bg-gray-50 border-b border-gray-200">
                           <tr>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                               <input
@@ -859,7 +859,7 @@ const AdminUsers = () => {
                                 checked={groupUsers.every((u) =>
                                   selectedUsers.includes(u._id),
                                 )}
-                                className="h-4 w-4 text-primary focus:ring-blue-500 border-gray-300 rounded"
+                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                               />
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
@@ -893,16 +893,16 @@ const AdminUsers = () => {
                                   type="checkbox"
                                   checked={selectedUsers.includes(user._id)}
                                   onChange={() => toggleUserSelection(user._id)}
-                                  className="h-4 w-4 text-primary focus:ring-blue-500 border-gray-300 rounded"
+                                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                                 />
                               </td>
                               <td className="px-6 py-4">
                                 <div>
-                                  <div className="font-medium text-secondary">
+                                  <div className="font-medium text-gray-900">
                                     {user.role === "student" ? (
                                       <Link
                                         to={`/admin/students/${user._id}`}
-                                        className="text-primary hover:underline"
+                                        className="text-blue-600 hover:underline"
                                       >
                                         {user.name}
                                       </Link>
@@ -934,7 +934,7 @@ const AdminUsers = () => {
                                 <div className="flex items-center gap-2">
                                   <button
                                     onClick={() => handleEditUser(user)}
-                                    className="p-1 text-primary hover:text-blue-800 transition-colors"
+                                    className="p-1 text-blue-600 hover:text-blue-800 transition-colors"
                                     title="Edit user"
                                   >
                                     <Edit className="w-4 h-4" />
@@ -962,9 +962,9 @@ const AdminUsers = () => {
           )}
 
           {Object.keys(groupedUsers).length === 0 && (
-            <div className="bg-card rounded-md subtle-shadow border border-border p-12 text-center">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
               <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-secondary mb-2">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
                 No users found
               </h3>
               <p className="text-gray-600">
@@ -976,10 +976,10 @@ const AdminUsers = () => {
 
         {/* Move to Group Modal */}
         {showMoveToGroupModal && (
-          <div className="fixed inset-0 bg-secondary/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-            <div className="bg-card rounded-lg shadow-xl max-w-md w-full">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
               <div className="flex items-center justify-between p-6 border-b">
-                <h3 className="text-lg font-medium text-secondary">
+                <h3 className="text-lg font-medium text-gray-900">
                   Move Users to Group
                 </h3>
                 <button
@@ -1012,14 +1012,14 @@ const AdminUsers = () => {
                 <div className="flex items-center justify-end space-x-3">
                   <button
                     onClick={() => setShowMoveToGroupModal(false)}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-card border border-gray-300 rounded-lg hover:bg-gray-50"
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleMoveToGroup}
                     disabled={!selectedGroupForMove}
-                    className="px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-lg hover:bg-[#1d4ed8] disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Move Users
                   </button>
@@ -1065,13 +1065,13 @@ const AdminUsers = () => {
               >
                 &#8203;
               </span>
-              <div className="inline-block align-bottom bg-card rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+              <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
                 <div className="sm:flex sm:items-start">
                   <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
                     <Trash2 className="h-6 w-6 text-red-600" />
                   </div>
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                    <h3 className="text-lg leading-6 font-medium text-secondary">
+                    <h3 className="text-lg leading-6 font-medium text-gray-900">
                       Delete Group: {deleteGroupDialog.group?.name}
                     </h3>
                     <div className="mt-2">
@@ -1095,10 +1095,10 @@ const AdminUsers = () => {
                               deleteUsers: false,
                             }))
                           }
-                          className="mt-1 h-4 w-4 text-primary focus:ring-blue-500"
+                          className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500"
                         />
                         <div>
-                          <span className="text-sm font-medium text-secondary">
+                          <span className="text-sm font-medium text-gray-900">
                             Delete group only
                           </span>
                           <p className="text-xs text-gray-500">
@@ -1147,7 +1147,7 @@ const AdminUsers = () => {
                   <button
                     type="button"
                     onClick={confirmDeleteGroup}
-                    className={`w-full inline-flex justify-center rounded-md border border-transparent subtle-shadow px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
+                    className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
                       deleteGroupDialog.deleteUsers
                         ? "bg-red-600 hover:bg-red-700 focus:ring-red-500"
                         : "bg-orange-600 hover:bg-orange-700 focus:ring-orange-500"
@@ -1166,7 +1166,7 @@ const AdminUsers = () => {
                         deleteUsers: false,
                       })
                     }
-                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 subtle-shadow px-4 py-2 bg-card text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:w-auto sm:text-sm"
+                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:w-auto sm:text-sm"
                   >
                     Cancel
                   </button>
@@ -1193,15 +1193,15 @@ const StatCard = ({
     onClick={onClick}
     whileHover={{ scale: 1.02 }}
     whileTap={{ scale: 0.98 }}
-    className={`bg-card p-6 rounded-md border-2 subtle-shadow hover:shadow-md transition-all text-left w-full ${
-      active ? "border-blue-500 ring-2 ring-blue-100" : "border-border"
+    className={`bg-white p-6 rounded-xl border-2 shadow-sm hover:shadow-md transition-all text-left w-full ${
+      active ? "border-blue-500 ring-2 ring-blue-100" : "border-gray-200"
     }`}
   >
     <div className="flex items-start justify-between">
       <div>
         <p className="text-sm font-medium text-gray-500">{title}</p>
         <div className="mt-2 flex items-baseline gap-2">
-          <span className="text-2xl font-bold text-secondary">{value}</span>
+          <span className="text-2xl font-bold text-gray-900">{value}</span>
         </div>
       </div>
       <div className={`p-3 rounded-lg ${bgColor}`}>
@@ -1215,12 +1215,12 @@ const RoleBadge = ({ role }) => {
   const styles = {
     admin: "bg-red-50 text-red-700 border-red-200",
     coordinator: "bg-purple-50 text-purple-700 border-purple-200",
-    student: "bg-primary/5 text-[#1d4ed8] border-blue-200",
+    student: "bg-blue-50 text-blue-700 border-blue-200",
   };
 
   return (
     <span
-      className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${styles[role] || "bg-gray-50 text-gray-700 border-border"} capitalize`}
+      className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${styles[role] || "bg-gray-50 text-gray-700 border-gray-200"} capitalize`}
     >
       {role}
     </span>
@@ -1232,7 +1232,7 @@ const StatusBadge = ({ active }) => (
     className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border ${
       active
         ? "bg-green-50 text-green-700 border-green-200"
-        : "bg-gray-50 text-gray-700 border-border"
+        : "bg-gray-50 text-gray-700 border-gray-200"
     }`}
   >
     {active ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}

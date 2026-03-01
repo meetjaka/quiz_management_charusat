@@ -34,14 +34,14 @@ const Button = ({
 
   // Variant styles (GPU-accelerated transitions only)
   const variantStyles = {
-    primary: 'bg-primary text-white hover:bg-[#1d4ed8] focus:ring-blue-500 active:scale-95 transition-all duration-200',
+    primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 active:scale-95 transition-all duration-200',
     secondary: 'bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-500 active:scale-95 transition-all duration-200',
     success: 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 active:scale-95 transition-all duration-200',
     danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 active:scale-95 transition-all duration-200',
     warning: 'bg-amber-600 text-white hover:bg-amber-700 focus:ring-amber-500 active:scale-95 transition-all duration-200',
     ghost: 'text-gray-700 hover:bg-gray-100 focus:ring-gray-500 transition-colors duration-200',
-    link: 'text-primary hover:text-[#1d4ed8] hover:underline focus:ring-blue-500 transition-colors duration-200',
-    icon: 'hover:bg-gray-100 text-gray-600 hover:text-secondary focus:ring-gray-500 transition-colors duration-200',
+    link: 'text-blue-600 hover:text-blue-700 hover:underline focus:ring-blue-500 transition-colors duration-200',
+    icon: 'hover:bg-gray-100 text-gray-600 hover:text-gray-900 focus:ring-gray-500 transition-colors duration-200',
   };
 
   // Size styles
@@ -49,7 +49,7 @@ const Button = ({
     sm: 'px-3 py-1.5 text-sm rounded-md',
     md: 'px-4 py-2 text-base rounded-lg',
     lg: 'px-6 py-3 text-lg rounded-lg',
-    xl: 'px-8 py-4 text-xl rounded-md',
+    xl: 'px-8 py-4 text-xl rounded-xl',
   };
 
   // Icon size styles
@@ -57,7 +57,7 @@ const Button = ({
     sm: 'p-1.5 rounded-md',
     md: 'p-2 rounded-lg',
     lg: 'p-3 rounded-lg',
-    xl: 'p-4 rounded-md',
+    xl: 'p-4 rounded-xl',
   };
 
   // Determine if this is an icon-only button

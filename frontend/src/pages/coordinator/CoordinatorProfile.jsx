@@ -110,7 +110,7 @@ const CoordinatorProfile = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-secondary">Coordinator Profile</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Coordinator Profile</h1>
           <p className="text-gray-600">Manage your profile and view your coordination activities</p>
         </div>
 
@@ -120,7 +120,7 @@ const CoordinatorProfile = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-card rounded-lg subtle-shadow border border-border p-6"
+              className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
             >
               {/* Profile Header */}
               <div className="flex items-center justify-between mb-6">
@@ -131,7 +131,7 @@ const CoordinatorProfile = () => {
                     </span>
                   </div>
                   <div>
-                    <h2 className="text-xl font-semibold text-secondary">{profile.fullName}</h2>
+                    <h2 className="text-xl font-semibold text-gray-900">{profile.fullName}</h2>
                     <p className="text-gray-600 flex items-center">
                       <FiUsers className="mr-1 h-4 w-4" />
                       Coordinator
@@ -144,7 +144,7 @@ const CoordinatorProfile = () => {
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                     isEditing
                       ? 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                      : 'bg-primary/10 text-[#1d4ed8] hover:bg-blue-200'
+                      : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
                   }`}
                 >
                   {isEditing ? (
@@ -310,7 +310,7 @@ const CoordinatorProfile = () => {
                 <div className="mt-6 flex items-center justify-end space-x-3">
                   <button
                     onClick={handleCancel}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-card border border-gray-300 rounded-lg hover:bg-gray-50"
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
                     disabled={loading}
                   >
                     Cancel
@@ -318,7 +318,7 @@ const CoordinatorProfile = () => {
                   <button
                     onClick={handleSave}
                     disabled={loading}
-                    className="px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-lg hover:bg-[#1d4ed8] disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
                   >
                     <FiSave className="mr-1 h-4 w-4" />
                     {loading ? 'Saving...' : 'Save Changes'}
@@ -333,9 +333,9 @@ const CoordinatorProfile = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="bg-card rounded-lg subtle-shadow border border-border p-6 mt-6"
+                className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mt-6"
               >
-                <h3 className="text-lg font-semibold text-secondary mb-4 flex items-center">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                   <FiUsers className="mr-2 h-5 w-5" />
                   My Groups
                 </h3>
@@ -344,7 +344,7 @@ const CoordinatorProfile = () => {
                     <div key={group._id} className="p-3 bg-gray-50 rounded-lg">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="font-medium text-secondary">{group.name}</p>
+                          <p className="font-medium text-gray-900">{group.name}</p>
                           <p className="text-sm text-gray-600 capitalize">{group.groupType}</p>
                         </div>
                         <span className="text-xs text-gray-500">{group.memberCount} members</span>
@@ -363,16 +363,16 @@ const CoordinatorProfile = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-card rounded-lg subtle-shadow border border-border p-6"
+              className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
             >
-              <h3 className="text-lg font-semibold text-secondary mb-4 flex items-center">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                 <FiFileText className="mr-2 h-5 w-5" />
                 Quiz Overview
               </h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600">Total Quizzes</span>
-                  <span className="font-semibold text-secondary">{stats.totalQuizzes}</span>
+                  <span className="font-semibold text-gray-900">{stats.totalQuizzes}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600">Active Quizzes</span>
@@ -380,11 +380,11 @@ const CoordinatorProfile = () => {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600">Total Students</span>
-                  <span className="font-semibold text-secondary">{stats.totalStudents}</span>
+                  <span className="font-semibold text-gray-900">{stats.totalStudents}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600">Avg. Score</span>
-                  <span className="font-semibold text-primary">{stats.averageScore.toFixed(1)}%</span>
+                  <span className="font-semibold text-blue-600">{stats.averageScore.toFixed(1)}%</span>
                 </div>
               </div>
             </motion.div>
@@ -395,9 +395,9 @@ const CoordinatorProfile = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="bg-card rounded-lg subtle-shadow border border-border p-6"
+                className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
               >
-                <h3 className="text-lg font-semibold text-secondary mb-4 flex items-center">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                   <FiTrendingUp className="mr-2 h-5 w-5" />
                   Recent Quizzes
                 </h3>
@@ -405,7 +405,7 @@ const CoordinatorProfile = () => {
                   {stats.recentQuizzes.slice(0, 5).map((quiz, index) => (
                     <div key={index} className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-medium text-secondary truncate" title={quiz.title}>
+                        <p className="text-sm font-medium text-gray-900 truncate" title={quiz.title}>
                           {quiz.title}
                         </p>
                         <p className="text-xs text-gray-500">
@@ -413,7 +413,7 @@ const CoordinatorProfile = () => {
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-medium text-secondary">{quiz.attempts || 0}</p>
+                        <p className="text-sm font-medium text-gray-900">{quiz.attempts || 0}</p>
                         <p className="text-xs text-gray-500">attempts</p>
                       </div>
                     </div>
@@ -427,9 +427,9 @@ const CoordinatorProfile = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-card rounded-lg subtle-shadow border border-border p-6"
+              className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
             >
-              <h3 className="text-lg font-semibold text-secondary mb-4">Account Information</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Account Information</h3>
               <div className="space-y-3 text-sm">
                 <div className="flex items-center">
                   <FiCalendar className="mr-2 h-4 w-4 text-gray-400" />

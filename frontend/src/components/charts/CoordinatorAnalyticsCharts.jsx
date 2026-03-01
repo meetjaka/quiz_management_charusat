@@ -23,27 +23,27 @@ const CoordinatorAnalyticsCharts = ({ analytics, quizzes }) => {
     <div className="space-y-8">
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-card rounded-lg shadow-lg p-6 border-l-4 border-blue-600">
+        <div className="bg-white rounded-lg shadow-lg p-6 border-l-4 border-blue-600">
           <div className="text-sm font-medium text-gray-600 mb-1">Total Quizzes</div>
-          <div className="text-3xl font-bold text-secondary">{analytics.quizzes?.total || 0}</div>
+          <div className="text-3xl font-bold text-gray-900">{analytics.quizzes?.total || 0}</div>
         </div>
-        <div className="bg-card rounded-lg shadow-lg p-6 border-l-4 border-green-600">
+        <div className="bg-white rounded-lg shadow-lg p-6 border-l-4 border-green-600">
           <div className="text-sm font-medium text-gray-600 mb-1">Published</div>
-          <div className="text-3xl font-bold text-secondary">{analytics.quizzes?.published || 0}</div>
+          <div className="text-3xl font-bold text-gray-900">{analytics.quizzes?.published || 0}</div>
         </div>
-        <div className="bg-card rounded-lg shadow-lg p-6 border-l-4 border-purple-600">
+        <div className="bg-white rounded-lg shadow-lg p-6 border-l-4 border-purple-600">
           <div className="text-sm font-medium text-gray-600 mb-1">Total Attempts</div>
-          <div className="text-3xl font-bold text-secondary">{analytics.attempts?.total || 0}</div>
+          <div className="text-3xl font-bold text-gray-900">{analytics.attempts?.total || 0}</div>
         </div>
-        <div className="bg-card rounded-lg shadow-lg p-6 border-l-4 border-yellow-600">
+        <div className="bg-white rounded-lg shadow-lg p-6 border-l-4 border-yellow-600">
           <div className="text-sm font-medium text-gray-600 mb-1">Avg Score</div>
-          <div className="text-3xl font-bold text-secondary">{Math.round(analytics.scores?.avgPercentage || 0)}%</div>
+          <div className="text-3xl font-bold text-gray-900">{Math.round(analytics.scores?.avgPercentage || 0)}%</div>
         </div>
       </div>
 
       {/* Pass/Fail Distribution */}
-      <div className="bg-card rounded-lg shadow-lg p-6">
-        <h3 className="text-xl font-bold text-secondary mb-4">Pass/Fail Distribution</h3>
+      <div className="bg-white rounded-lg shadow-lg p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-4">Pass/Fail Distribution</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
@@ -67,7 +67,7 @@ const CoordinatorAnalyticsCharts = ({ analytics, quizzes }) => {
           <div className="flex flex-col justify-center space-y-4">
             <div className="bg-green-50 rounded-lg p-4">
               <div className="text-sm font-medium text-green-600 mb-1">Passed</div>
-              <div className="text-2xl font-bold text-secondary">{passFailData[0].value}</div>
+              <div className="text-2xl font-bold text-gray-900">{passFailData[0].value}</div>
               <div className="text-sm text-gray-600 mt-1">
                 Pass Rate: {analytics.attempts?.total > 0 
                   ? ((passFailData[0].value / analytics.attempts.total) * 100).toFixed(1) 
@@ -76,7 +76,7 @@ const CoordinatorAnalyticsCharts = ({ analytics, quizzes }) => {
             </div>
             <div className="bg-red-50 rounded-lg p-4">
               <div className="text-sm font-medium text-red-600 mb-1">Failed</div>
-              <div className="text-2xl font-bold text-secondary">{passFailData[1].value}</div>
+              <div className="text-2xl font-bold text-gray-900">{passFailData[1].value}</div>
               <div className="text-sm text-gray-600 mt-1">
                 Fail Rate: {analytics.attempts?.total > 0 
                   ? ((passFailData[1].value / analytics.attempts.total) * 100).toFixed(1) 
@@ -89,8 +89,8 @@ const CoordinatorAnalyticsCharts = ({ analytics, quizzes }) => {
 
       {/* Quiz Performance Comparison */}
       {quizPerformance.length > 0 && (
-        <div className="bg-card rounded-lg shadow-lg p-6">
-          <h3 className="text-xl font-bold text-secondary mb-4">Quiz Performance Overview</h3>
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          <h3 className="text-xl font-bold text-gray-900 mb-4">Quiz Performance Overview</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={quizPerformance}>
               <CartesianGrid strokeDasharray="3 3" />

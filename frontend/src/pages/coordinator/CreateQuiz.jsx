@@ -468,29 +468,29 @@ const CreateQuizWizard = () => {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
             <span
-              className={`text-sm font-medium ${currentStep >= 1 ? "text-primary" : "text-gray-400"}`}
+              className={`text-sm font-medium ${currentStep >= 1 ? "text-blue-600" : "text-gray-400"}`}
             >
               Quiz Details
             </span>
             <span
-              className={`text-sm font-medium ${currentStep >= 2 ? "text-primary" : "text-gray-400"}`}
+              className={`text-sm font-medium ${currentStep >= 2 ? "text-blue-600" : "text-gray-400"}`}
             >
               Question Method
             </span>
             <span
-              className={`text-sm font-medium ${currentStep >= 3 ? "text-primary" : "text-gray-400"}`}
+              className={`text-sm font-medium ${currentStep >= 3 ? "text-blue-600" : "text-gray-400"}`}
             >
               Add Questions
             </span>
             <span
-              className={`text-sm font-medium ${currentStep >= 4 ? "text-primary" : "text-gray-400"}`}
+              className={`text-sm font-medium ${currentStep >= 4 ? "text-blue-600" : "text-gray-400"}`}
             >
               Assign Students
             </span>
           </div>
           <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
             <div
-              className="h-full bg-primary transition-all duration-300"
+              className="h-full bg-blue-600 transition-all duration-300"
               style={{ width: `${(currentStep / 4) * 100}%` }}
             />
           </div>
@@ -498,8 +498,8 @@ const CreateQuizWizard = () => {
 
         {/* Step 1: Quiz Details */}
         {currentStep === 1 && (
-          <div className="bg-card rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-secondary mb-6">
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
               Quiz Details
             </h2>
 
@@ -648,7 +648,7 @@ const CreateQuizWizard = () => {
                     onChange={(e) =>
                       handleQuizDataChange("shuffleQuestions", e.target.checked)
                     }
-                    className="h-4 w-4 text-primary focus:ring-blue-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
                   <span className="ml-2 text-sm text-gray-700">
                     Shuffle questions for each student
@@ -662,7 +662,7 @@ const CreateQuizWizard = () => {
                     onChange={(e) =>
                       handleQuizDataChange("shuffleOptions", e.target.checked)
                     }
-                    className="h-4 w-4 text-primary focus:ring-blue-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
                   <span className="ml-2 text-sm text-gray-700">
                     Shuffle answer options
@@ -681,7 +681,7 @@ const CreateQuizWizard = () => {
               </button>
               <button
                 onClick={handleNext}
-                className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-[#1d4ed8] transition-colors"
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 Next: Choose Question Method
                 <FiArrowRight className="inline ml-2" />
@@ -692,8 +692,8 @@ const CreateQuizWizard = () => {
 
         {/* Step 2: Choose Question Input Method */}
         {currentStep === 2 && (
-          <div className="bg-card rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-secondary mb-6">
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
               Choose Question Input Method
             </h2>
 
@@ -702,14 +702,14 @@ const CreateQuizWizard = () => {
               <div
                 className={`border-2 rounded-lg p-6 cursor-pointer transition-all ${
                   questionInputMethod === "manual"
-                    ? "border-blue-500 bg-primary/5"
-                    : "border-border hover:border-blue-300"
+                    ? "border-blue-500 bg-blue-50"
+                    : "border-gray-200 hover:border-blue-300"
                 }`}
                 onClick={() => setQuestionInputMethod("manual")}
               >
                 <div className="text-center">
-                  <FiEdit3 className="mx-auto text-4xl text-primary mb-4" />
-                  <h3 className="text-lg font-semibold text-secondary mb-2">
+                  <FiEdit3 className="mx-auto text-4xl text-blue-600 mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
                     Manual Entry
                   </h3>
                   <p className="text-sm text-gray-600 mb-4">
@@ -727,14 +727,14 @@ const CreateQuizWizard = () => {
               <div
                 className={`border-2 rounded-lg p-6 cursor-pointer transition-all ${
                   questionInputMethod === "json"
-                    ? "border-blue-500 bg-primary/5"
-                    : "border-border hover:border-blue-300"
+                    ? "border-blue-500 bg-blue-50"
+                    : "border-gray-200 hover:border-blue-300"
                 }`}
                 onClick={() => setQuestionInputMethod("json")}
               >
                 <div className="text-center">
                   <Sparkles className="mx-auto text-4xl text-green-600 mb-4" />
-                  <h3 className="text-lg font-semibold text-secondary mb-2">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
                     ChatGPT JSON
                   </h3>
                   <p className="text-sm text-gray-600 mb-4">
@@ -752,14 +752,14 @@ const CreateQuizWizard = () => {
               <div
                 className={`border-2 rounded-lg p-6 cursor-pointer transition-all ${
                   questionInputMethod === "excel"
-                    ? "border-blue-500 bg-primary/5"
-                    : "border-border hover:border-blue-300"
+                    ? "border-blue-500 bg-blue-50"
+                    : "border-gray-200 hover:border-blue-300"
                 }`}
                 onClick={() => setQuestionInputMethod("excel")}
               >
                 <div className="text-center">
                   <Upload className="mx-auto text-4xl text-orange-600 mb-4" />
-                  <h3 className="text-lg font-semibold text-secondary mb-2">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
                     Excel Upload
                   </h3>
                   <p className="text-sm text-gray-600 mb-4">
@@ -785,7 +785,7 @@ const CreateQuizWizard = () => {
               <button
                 onClick={handleNext}
                 disabled={!questionInputMethod}
-                className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-[#1d4ed8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Next: Add Questions
                 <FiArrowRight className="inline ml-2" />
@@ -799,9 +799,9 @@ const CreateQuizWizard = () => {
           <div className="space-y-4">
             {/* Manual Questions */}
             {questionInputMethod === "manual" && (
-              <div className="bg-card rounded-lg shadow-lg p-6">
+              <div className="bg-white rounded-lg shadow-lg p-6">
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold text-secondary">
+                  <h2 className="text-2xl font-bold text-gray-900">
                     Add Questions Manually
                   </h2>
                   <div className="text-sm text-gray-600">
@@ -817,7 +817,7 @@ const CreateQuizWizard = () => {
                 {questions.map((question, qIndex) => (
                   <div
                     key={qIndex}
-                    className="mb-6 pb-6 border-b border-border last:border-0"
+                    className="mb-6 pb-6 border-b border-gray-200 last:border-0"
                   >
                     <div className="flex justify-between items-start mb-4">
                       <h3 className="text-lg font-semibold text-gray-800">
@@ -918,7 +918,7 @@ const CreateQuizWizard = () => {
                                       optIndex,
                                     )
                                   }
-                                  className="h-4 w-4 text-primary focus:ring-blue-500"
+                                  className="h-4 w-4 text-blue-600 focus:ring-blue-500"
                                 />
                                 <input
                                   type="text"
@@ -947,7 +947,7 @@ const CreateQuizWizard = () => {
 
                 <button
                   onClick={addQuestion}
-                  className="w-full py-3 border-2 border-dashed border-gray-300 text-gray-600 rounded-lg hover:border-blue-500 hover:text-primary transition-colors"
+                  className="w-full py-3 border-2 border-dashed border-gray-300 text-gray-600 rounded-lg hover:border-blue-500 hover:text-blue-600 transition-colors"
                 >
                   <FiPlus className="inline mr-2" />
                   Add Another Question
@@ -957,16 +957,16 @@ const CreateQuizWizard = () => {
 
             {/* JSON Input */}
             {questionInputMethod === "json" && (
-              <div className="bg-card rounded-lg shadow-lg p-6">
+              <div className="bg-white rounded-lg shadow-lg p-6">
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold text-secondary">
+                  <h2 className="text-2xl font-bold text-gray-900">
                     Paste JSON from ChatGPT
                   </h2>
                   <a
                     href="/coordinator/quiz-format-guide"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-[#1d4ed8] transition-colors text-sm"
+                    className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
                   >
                     <FileJson className="w-4 h-4" />
                     View Guide
@@ -993,7 +993,7 @@ const CreateQuizWizard = () => {
 
                 {parsedJsonData && (
                   <div className="bg-gray-50 rounded-lg p-4">
-                    <h3 className="font-semibold text-secondary mb-2">
+                    <h3 className="font-semibold text-gray-900 mb-2">
                       ✅ Successfully parsed {parsedJsonData.questions.length}{" "}
                       questions
                     </h3>
@@ -1011,8 +1011,8 @@ const CreateQuizWizard = () => {
 
             {/* Excel Upload */}
             {questionInputMethod === "excel" && (
-              <div className="bg-card rounded-lg shadow-lg p-6">
-                <h2 className="text-2xl font-bold text-secondary mb-6">
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">
                   Upload Excel File
                 </h2>
 
@@ -1030,7 +1030,7 @@ const CreateQuizWizard = () => {
                     />
                     <label
                       htmlFor="excel-upload"
-                      className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-[#1d4ed8] transition-colors cursor-pointer"
+                      className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
                     >
                       <FiUpload className="w-4 h-4" />
                       Choose Excel File
@@ -1043,7 +1043,7 @@ const CreateQuizWizard = () => {
                   </div>
                 </div>
 
-                <div className="bg-primary/5 rounded-lg p-4 mb-4">
+                <div className="bg-blue-50 rounded-lg p-4 mb-4">
                   <h3 className="font-semibold text-blue-900 mb-2">
                     Excel Format Requirements:
                   </h3>
@@ -1082,7 +1082,7 @@ const CreateQuizWizard = () => {
               </button>
               <button
                 onClick={handleNext}
-                className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-[#1d4ed8] transition-colors"
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 Next: Assign Students
                 <FiArrowRight className="inline ml-2" />
@@ -1093,17 +1093,17 @@ const CreateQuizWizard = () => {
 
         {/* Step 4: Assign Students */}
         {currentStep === 4 && (
-          <div className="bg-card rounded-lg shadow-lg p-6">
+          <div className="bg-white rounded-lg shadow-lg p-6">
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-secondary">
+                <h2 className="text-2xl font-bold text-gray-900">
                   Assign Students
                 </h2>
                 <p className="text-gray-600 mt-1">
                   Select students who can take this quiz
                 </p>
               </div>
-              <div className="text-sm text-gray-600 bg-primary/5 px-4 py-2 rounded-lg">
+              <div className="text-sm text-gray-600 bg-blue-50 px-4 py-2 rounded-lg">
                 <FiUsers className="inline mr-2" />
                 {selectedStudents.length} student(s) selected
               </div>
@@ -1150,7 +1150,7 @@ const CreateQuizWizard = () => {
                 </p>
               </div>
             ) : (
-              <div className="border border-border rounded-lg overflow-hidden max-h-96 overflow-y-auto">
+              <div className="border border-gray-200 rounded-lg overflow-hidden max-h-96 overflow-y-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50 sticky top-0">
                     <tr>
@@ -1171,14 +1171,14 @@ const CreateQuizWizard = () => {
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-card divide-y divide-gray-200">
+                  <tbody className="bg-white divide-y divide-gray-200">
                     {getFilteredStudents().map((student) => (
                       <tr
                         key={student._id}
                         onClick={() => handleStudentSelect(student._id)}
                         className={`cursor-pointer hover:bg-gray-50 transition-colors ${
                           selectedStudents.includes(student._id)
-                            ? "bg-primary/5"
+                            ? "bg-blue-50"
                             : ""
                         }`}
                       >
@@ -1187,11 +1187,11 @@ const CreateQuizWizard = () => {
                             type="checkbox"
                             checked={selectedStudents.includes(student._id)}
                             onChange={() => handleStudentSelect(student._id)}
-                            className="h-4 w-4 text-primary focus:ring-blue-500 border-gray-300 rounded"
+                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                             onClick={(e) => e.stopPropagation()}
                           />
                         </td>
-                        <td className="px-4 py-3 text-sm font-medium text-secondary">
+                        <td className="px-4 py-3 text-sm font-medium text-gray-900">
                           {student.fullName}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-600">

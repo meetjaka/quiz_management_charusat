@@ -99,7 +99,7 @@ const AdminProfile = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-secondary">Admin Profile</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Admin Profile</h1>
           <p className="text-gray-600">Manage your administrative profile and view system overview</p>
         </div>
 
@@ -109,7 +109,7 @@ const AdminProfile = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-card rounded-lg subtle-shadow border border-border p-6"
+              className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
             >
               {/* Profile Header */}
               <div className="flex items-center justify-between mb-6">
@@ -120,7 +120,7 @@ const AdminProfile = () => {
                     </span>
                   </div>
                   <div>
-                    <h2 className="text-xl font-semibold text-secondary">{profile.fullName}</h2>
+                    <h2 className="text-xl font-semibold text-gray-900">{profile.fullName}</h2>
                     <p className="text-gray-600 flex items-center">
                       <FiShield className="mr-1 h-4 w-4" />
                       Administrator
@@ -132,7 +132,7 @@ const AdminProfile = () => {
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                     isEditing
                       ? 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                      : 'bg-primary/10 text-[#1d4ed8] hover:bg-blue-200'
+                      : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
                   }`}
                 >
                   {isEditing ? (
@@ -248,7 +248,7 @@ const AdminProfile = () => {
                 <div className="mt-6 flex items-center justify-end space-x-3">
                   <button
                     onClick={handleCancel}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-card border border-gray-300 rounded-lg hover:bg-gray-50"
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
                     disabled={loading}
                   >
                     Cancel
@@ -256,7 +256,7 @@ const AdminProfile = () => {
                   <button
                     onClick={handleSave}
                     disabled={loading}
-                    className="px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-lg hover:bg-[#1d4ed8] disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
                   >
                     <FiSave className="mr-1 h-4 w-4" />
                     {loading ? 'Saving...' : 'Save Changes'}
@@ -273,21 +273,21 @@ const AdminProfile = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-card rounded-lg subtle-shadow border border-border p-6"
+              className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
             >
-              <h3 className="text-lg font-semibold text-secondary mb-4">System Overview</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">System Overview</h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600">Total Users</span>
-                  <span className="font-semibold text-secondary">{stats.totalUsers}</span>
+                  <span className="font-semibold text-gray-900">{stats.totalUsers}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600">Total Groups</span>
-                  <span className="font-semibold text-secondary">{stats.totalGroups}</span>
+                  <span className="font-semibold text-gray-900">{stats.totalGroups}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600">Total Quizzes</span>
-                  <span className="font-semibold text-secondary">{stats.totalQuizzes}</span>
+                  <span className="font-semibold text-gray-900">{stats.totalQuizzes}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600">Active Quizzes</span>
@@ -301,9 +301,9 @@ const AdminProfile = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-card rounded-lg subtle-shadow border border-border p-6"
+              className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
             >
-              <h3 className="text-lg font-semibold text-secondary mb-4">Account Information</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Account Information</h3>
               <div className="space-y-3 text-sm">
                 <div className="flex items-center">
                   <FiCalendar className="mr-2 h-4 w-4 text-gray-400" />

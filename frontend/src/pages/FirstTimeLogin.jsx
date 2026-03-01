@@ -181,7 +181,7 @@ const FirstTimeLogin = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-card rounded-2xl shadow-2xl max-w-2xl w-full p-8"
+        className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8"
       >
         {/* Header */}
         <div className="text-center mb-8">
@@ -193,7 +193,7 @@ const FirstTimeLogin = () => {
           >
             <FiUser className="text-white text-2xl" />
           </motion.div>
-          <h1 className="text-3xl font-bold text-secondary mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Welcome to Quiz System!
           </h1>
           <p className="text-gray-600">
@@ -207,19 +207,19 @@ const FirstTimeLogin = () => {
             <div
               className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                 step >= 1
-                  ? "bg-primary text-white"
+                  ? "bg-blue-600 text-white"
                   : "bg-gray-200 text-gray-500"
               }`}
             >
               1
             </div>
             <div
-              className={`w-16 h-1 ${step >= 2 ? "bg-primary" : "bg-gray-200"}`}
+              className={`w-16 h-1 ${step >= 2 ? "bg-blue-600" : "bg-gray-200"}`}
             ></div>
             <div
               className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                 step >= 2
-                  ? "bg-primary text-white"
+                  ? "bg-blue-600 text-white"
                   : "bg-gray-200 text-gray-500"
               }`}
             >
@@ -234,7 +234,7 @@ const FirstTimeLogin = () => {
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.3 }}
           >
-            <h2 className="text-xl font-semibold text-secondary mb-6 text-center">
+            <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">
               Profile Information
             </h2>
 
@@ -326,7 +326,7 @@ const FirstTimeLogin = () => {
                           name="semester"
                           value={formData.semester}
                           onChange={handleInputChange}
-                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-card"
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
                           required
                         >
                           <option value="">Select Semester</option>
@@ -387,7 +387,7 @@ const FirstTimeLogin = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleProfileNext}
-                className="w-full bg-primary text-white py-3 px-4 rounded-lg hover:bg-[#1d4ed8] transition-colors font-medium"
+                className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium"
               >
                 Next: Set Password
               </motion.button>
@@ -401,7 +401,7 @@ const FirstTimeLogin = () => {
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.3 }}
           >
-            <h2 className="text-xl font-semibold text-secondary mb-6 text-center">
+            <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">
               Set Your Password
             </h2>
 
@@ -486,7 +486,7 @@ const FirstTimeLogin = () => {
 
               {/* Password Requirements */}
               <div className="bg-gray-50 rounded-lg p-4">
-                <h4 className="text-sm font-medium text-secondary mb-2">
+                <h4 className="text-sm font-medium text-gray-900 mb-2">
                   Password Requirements
                 </h4>
                 <ul className="text-sm text-gray-600 space-y-1">

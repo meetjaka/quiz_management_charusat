@@ -226,11 +226,11 @@ const QuizAttempt = () => {
       />
 
       {/* Fixed Header */}
-      <div className="bg-card shadow-md border-b border-border sticky top-0 z-10">
+      <div className="bg-white shadow-md border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-xl font-bold text-secondary">{quiz?.title}</h1>
+              <h1 className="text-xl font-bold text-gray-900">{quiz?.title}</h1>
               <p className="text-sm text-gray-600">
                 Question {currentQuestion + 1} of {questions.length}
               </p>
@@ -259,14 +259,14 @@ const QuizAttempt = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Question Panel */}
           <div className="lg:col-span-3">
-            <div className="bg-card rounded-lg shadow-lg p-6">
+            <div className="bg-white rounded-lg shadow-lg p-6">
               {/* Question Text */}
               <div className="mb-6">
                 <div className="flex items-start">
-                  <span className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">
                     {currentQuestion + 1}
                   </span>
-                  <p className="text-lg text-secondary flex-1">
+                  <p className="text-lg text-gray-900 flex-1">
                     {currentQ?.questionText}
                   </p>
                 </div>
@@ -281,8 +281,8 @@ const QuizAttempt = () => {
                       key={option._id}
                       className={`flex items-start p-4 border-2 rounded-lg cursor-pointer transition-all ${
                         answers[currentQ?._id] === option._id
-                          ? "border-blue-500 bg-primary/5"
-                          : "border-border hover:border-blue-300 hover:bg-gray-50"
+                          ? "border-blue-500 bg-blue-50"
+                          : "border-gray-200 hover:border-blue-300 hover:bg-gray-50"
                       }`}
                     >
                       <input
@@ -293,13 +293,13 @@ const QuizAttempt = () => {
                         onChange={() =>
                           handleAnswerChange(currentQ?._id, option._id)
                         }
-                        className="mt-1 h-4 w-4 text-primary focus:ring-blue-500"
+                        className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500"
                       />
                       <div className="ml-3">
                         <span className="font-semibold text-gray-700 mr-2">
                           {label}.
                         </span>
-                        <span className="text-secondary">{option.text}</span>
+                        <span className="text-gray-900">{option.text}</span>
                       </div>
                     </label>
                   );
@@ -307,7 +307,7 @@ const QuizAttempt = () => {
               </div>
 
               {/* Navigation Buttons */}
-              <div className="flex justify-between items-center pt-6 border-t border-border">
+              <div className="flex justify-between items-center pt-6 border-t border-gray-200">
                 <button
                   onClick={() =>
                     setCurrentQuestion((prev) => Math.max(0, prev - 1))
@@ -333,7 +333,7 @@ const QuizAttempt = () => {
                         Math.min(questions.length - 1, prev + 1),
                       )
                     }
-                    className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-[#1d4ed8]"
+                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                   >
                     Next →
                   </button>
@@ -344,8 +344,8 @@ const QuizAttempt = () => {
 
           {/* Question Navigator */}
           <div className="lg:col-span-1">
-            <div className="bg-card rounded-lg shadow-lg p-4 sticky top-24">
-              <h3 className="font-bold text-secondary mb-4">
+            <div className="bg-white rounded-lg shadow-lg p-4 sticky top-24">
+              <h3 className="font-bold text-gray-900 mb-4">
                 Question Navigator
               </h3>
               <div className="grid grid-cols-4 gap-2">
@@ -355,7 +355,7 @@ const QuizAttempt = () => {
                     onClick={() => setCurrentQuestion(index)}
                     className={`w-full aspect-square rounded-lg font-semibold text-sm transition-all ${
                       index === currentQuestion
-                        ? "bg-primary text-white ring-2 ring-blue-400"
+                        ? "bg-blue-600 text-white ring-2 ring-blue-400"
                         : answers[q._id]
                           ? "bg-green-100 text-green-800 hover:bg-green-200"
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -375,7 +375,7 @@ const QuizAttempt = () => {
                   <span className="text-gray-600">Not Answered</span>
                 </div>
                 <div className="flex items-center">
-                  <div className="w-4 h-4 bg-primary rounded mr-2"></div>
+                  <div className="w-4 h-4 bg-blue-600 rounded mr-2"></div>
                   <span className="text-gray-600">Current</span>
                 </div>
               </div>

@@ -315,7 +315,7 @@ const AdminQuizzes = () => {
             className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8"
           >
             <div>
-              <h1 className="text-2xl font-bold text-secondary tracking-tight">
+              <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
                 Quiz Management
               </h1>
               <p className="text-gray-500 mt-1 text-sm">
@@ -327,10 +327,10 @@ const AdminQuizzes = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setShowCreateForm(!showCreateForm)}
-              className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all subtle-shadow ${
+              className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm ${
                 showCreateForm
-                  ? "bg-card border border-gray-300 text-gray-700 hover:bg-gray-50"
-                  : "bg-primary text-white hover:bg-[#1d4ed8] shadow-blue-200"
+                  ? "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                  : "bg-blue-600 text-white hover:bg-blue-700 shadow-blue-200"
               }`}
             >
               {showCreateForm ? (
@@ -378,22 +378,22 @@ const AdminQuizzes = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 20 }}
-                className="bg-card rounded-md subtle-shadow border border-border overflow-hidden mb-8"
+                className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8"
               >
                 {/* Stepper Header */}
-                <div className="border-b border-border/50 p-6 bg-gray-50/50">
+                <div className="border-b border-gray-100 p-6 bg-gray-50/50">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div
-                        className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold ${creationStep >= 1 ? "bg-primary text-white" : "bg-gray-200 text-gray-500"}`}
+                        className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold ${creationStep >= 1 ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-500"}`}
                       >
                         1
                       </div>
                       <div
-                        className={`h-1 w-12 rounded ${creationStep >= 2 ? "bg-primary" : "bg-gray-200"}`}
+                        className={`h-1 w-12 rounded ${creationStep >= 2 ? "bg-blue-600" : "bg-gray-200"}`}
                       />
                       <div
-                        className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold ${creationStep >= 2 ? "bg-primary text-white" : "bg-gray-200 text-gray-500"}`}
+                        className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold ${creationStep >= 2 ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-500"}`}
                       >
                         2
                       </div>
@@ -417,7 +417,7 @@ const AdminQuizzes = () => {
                             name="title"
                             value={formData.title}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-card focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
+                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
                             placeholder="e.g. Mid-Semester Java Exam"
                           />
                         </div>
@@ -431,7 +431,7 @@ const AdminQuizzes = () => {
                             name="department"
                             value={formData.department}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-card focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
+                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
                             placeholder="e.g. Computer Science"
                           />
                         </div>
@@ -445,7 +445,7 @@ const AdminQuizzes = () => {
                             name="semester"
                             value={formData.semester}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-card focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
+                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
                             placeholder="e.g. 5"
                           />
                         </div>
@@ -459,7 +459,7 @@ const AdminQuizzes = () => {
                             name="subject"
                             value={formData.subject}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-card focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
+                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
                             placeholder="e.g. Database Systems"
                           />
                         </div>
@@ -473,7 +473,7 @@ const AdminQuizzes = () => {
                             name="batch"
                             value={formData.batch}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-card focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
+                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
                             placeholder="e.g. 2024"
                           />
                         </div>
@@ -488,7 +488,7 @@ const AdminQuizzes = () => {
                             name="duration"
                             value={formData.duration}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-card focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
+                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
                             placeholder="60"
                             min="1"
                           />
@@ -503,7 +503,7 @@ const AdminQuizzes = () => {
                             name="startTime"
                             value={formData.startTime}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-card focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
+                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
                           />
                         </div>
 
@@ -516,7 +516,7 @@ const AdminQuizzes = () => {
                             name="endTime"
                             value={formData.endTime}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-card focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
+                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
                           />
                         </div>
 
@@ -529,7 +529,7 @@ const AdminQuizzes = () => {
                             name="passingMarks"
                             value={formData.passingMarks}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-card focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
+                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
                             placeholder="Auto-calculated if empty"
                           />
                         </div>
@@ -544,7 +544,7 @@ const AdminQuizzes = () => {
                           value={formData.description}
                           onChange={handleInputChange}
                           rows="3"
-                          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-card focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
+                          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
                           placeholder="Instructions for students..."
                         />
                       </div>
@@ -554,7 +554,7 @@ const AdminQuizzes = () => {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           type="submit"
-                          className="bg-primary hover:bg-[#1d4ed8] text-white px-8 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors subtle-shadow"
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors shadow-sm"
                         >
                           Next Step <ChevronRight className="w-4 h-4" />
                         </motion.button>
@@ -566,20 +566,20 @@ const AdminQuizzes = () => {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <button
                           onClick={() => setCreationMethod("manual")}
-                          className={`p-4 rounded-md border-2 flex flex-col items-center gap-3 transition-all ${
+                          className={`p-4 rounded-xl border-2 flex flex-col items-center gap-3 transition-all ${
                             creationMethod === "manual"
-                              ? "border-blue-600 bg-primary/5/50"
-                              : "border-border hover:border-blue-300 hover:bg-gray-50"
+                              ? "border-blue-600 bg-blue-50/50"
+                              : "border-gray-200 hover:border-blue-300 hover:bg-gray-50"
                           }`}
                         >
                           <div
-                            className={`p-3 rounded-full ${creationMethod === "manual" ? "bg-primary/10 text-primary" : "bg-gray-100 text-gray-500"}`}
+                            className={`p-3 rounded-full ${creationMethod === "manual" ? "bg-blue-100 text-blue-600" : "bg-gray-100 text-gray-500"}`}
                           >
                             <Edit3 className="w-6 h-6" />
                           </div>
                           <div className="text-center">
                             <h3
-                              className={`font-semibold ${creationMethod === "manual" ? "text-blue-900" : "text-secondary"}`}
+                              className={`font-semibold ${creationMethod === "manual" ? "text-blue-900" : "text-gray-900"}`}
                             >
                               Manual Entry
                             </h3>
@@ -591,20 +591,20 @@ const AdminQuizzes = () => {
 
                         <button
                           onClick={() => setCreationMethod("excel")}
-                          className={`p-4 rounded-md border-2 flex flex-col items-center gap-3 transition-all ${
+                          className={`p-4 rounded-xl border-2 flex flex-col items-center gap-3 transition-all ${
                             creationMethod === "excel"
-                              ? "border-blue-600 bg-primary/5/50"
-                              : "border-border hover:border-blue-300 hover:bg-gray-50"
+                              ? "border-blue-600 bg-blue-50/50"
+                              : "border-gray-200 hover:border-blue-300 hover:bg-gray-50"
                           }`}
                         >
                           <div
-                            className={`p-3 rounded-full ${creationMethod === "excel" ? "bg-primary/10 text-primary" : "bg-gray-100 text-gray-500"}`}
+                            className={`p-3 rounded-full ${creationMethod === "excel" ? "bg-blue-100 text-blue-600" : "bg-gray-100 text-gray-500"}`}
                           >
                             <FileText className="w-6 h-6" />
                           </div>
                           <div className="text-center">
                             <h3
-                              className={`font-semibold ${creationMethod === "excel" ? "text-blue-900" : "text-secondary"}`}
+                              className={`font-semibold ${creationMethod === "excel" ? "text-blue-900" : "text-gray-900"}`}
                             >
                               Excel Upload
                             </h3>
@@ -616,7 +616,7 @@ const AdminQuizzes = () => {
                       </div>
 
                       {creationMethod === "excel" ? (
-                        <div className="bg-gray-50 rounded-md p-8 border-2 border-dashed border-gray-300 text-center">
+                        <div className="bg-gray-50 rounded-xl p-8 border-2 border-dashed border-gray-300 text-center">
                           <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                           <label className="block">
                             <span className="sr-only">Choose file</span>
@@ -624,7 +624,7 @@ const AdminQuizzes = () => {
                               type="file"
                               accept=".xlsx,.xls"
                               onChange={handleFileChange}
-                              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/5 file:text-[#1d4ed8] hover:file:bg-primary/10 cursor-pointer"
+                              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
                             />
                           </label>
                           <p className="text-xs text-gray-500 mt-4">
@@ -637,7 +637,7 @@ const AdminQuizzes = () => {
                           {questions.map((q, index) => (
                             <div
                               key={index}
-                              className="bg-gray-50 rounded-md p-6 border border-border relative group"
+                              className="bg-gray-50 rounded-xl p-6 border border-gray-200 relative group"
                             >
                               <button
                                 onClick={() => removeQuestion(index)}
@@ -646,7 +646,7 @@ const AdminQuizzes = () => {
                                 <Trash2 className="w-4 h-4" />
                               </button>
 
-                              <h4 className="text-sm font-bold text-secondary mb-4 flex items-center gap-2">
+                              <h4 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
                                 <span className="bg-gray-200 text-gray-700 w-6 h-6 rounded flex items-center justify-center text-xs">
                                   {index + 1}
                                 </span>
@@ -732,17 +732,17 @@ const AdminQuizzes = () => {
 
                           <button
                             onClick={addQuestion}
-                            className="w-full py-3 border-2 border-dashed border-gray-300 rounded-md text-gray-500 hover:border-blue-500 hover:text-primary hover:bg-primary/5 transition-all text-sm font-medium flex items-center justify-center gap-2"
+                            className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-all text-sm font-medium flex items-center justify-center gap-2"
                           >
                             <Plus className="w-4 h-4" /> Add Another Question
                           </button>
                         </div>
                       )}
 
-                      <div className="flex items-center justify-between pt-6 border-t border-border/50">
+                      <div className="flex items-center justify-between pt-6 border-t border-gray-100">
                         <button
                           onClick={() => setCreationStep(1)}
-                          className="text-gray-600 hover:text-secondary text-sm font-medium flex items-center gap-2"
+                          className="text-gray-600 hover:text-gray-900 text-sm font-medium flex items-center gap-2"
                         >
                           <ArrowLeft className="w-4 h-4" /> Back to Details
                         </button>
@@ -756,7 +756,7 @@ const AdminQuizzes = () => {
                               questions.length === 0) ||
                             (creationMethod === "excel" && !excelFile)
                           }
-                          className="bg-green-600 hover:bg-green-700 text-white px-8 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 subtle-shadow disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="bg-green-600 hover:bg-green-700 text-white px-8 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {loading ? (
                             <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -777,10 +777,10 @@ const AdminQuizzes = () => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="bg-card rounded-md subtle-shadow border border-border overflow-hidden"
+            className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
           >
-            <div className="p-6 border-b border-border/50 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-secondary">All Quizzes</h2>
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+              <h2 className="text-lg font-bold text-gray-900">All Quizzes</h2>
               <div className="flex gap-2">
                 <span className="text-xs font-medium px-2.5 py-1 bg-gray-100 text-gray-600 rounded-full">
                   Total: {quizzes.length}
@@ -819,7 +819,7 @@ const AdminQuizzes = () => {
                         className="hover:bg-gray-50/80 transition-colors"
                       >
                         <td className="px-6 py-4">
-                          <div className="font-semibold text-secondary">
+                          <div className="font-semibold text-gray-900">
                             {quiz.title}
                           </div>
                           <div className="text-xs text-gray-500">
@@ -853,7 +853,7 @@ const AdminQuizzes = () => {
                             <span
                               className={`px-2 py-0.5 rounded-full text-xs font-medium border ${
                                 quiz.isPublished
-                                  ? "bg-primary/5 text-[#1d4ed8] border-blue-100"
+                                  ? "bg-blue-50 text-blue-700 border-blue-100"
                                   : "bg-amber-50 text-amber-700 border-amber-100"
                               }`}
                             >
@@ -865,7 +865,7 @@ const AdminQuizzes = () => {
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => handleViewQuestions(quiz)}
-                              className="p-2 text-gray-500 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors"
+                              className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                               title="View Questions"
                             >
                               <Eye className="w-4 h-4" />
@@ -890,7 +890,7 @@ const AdminQuizzes = () => {
                               className={`p-2 rounded-lg transition-colors ${
                                 quiz.isPublished
                                   ? "text-gray-400 hover:bg-gray-100"
-                                  : "text-primary hover:bg-primary/5"
+                                  : "text-blue-600 hover:bg-blue-50"
                               }`}
                               title={quiz.isPublished ? "Unpublish" : "Publish"}
                             >
@@ -929,12 +929,12 @@ const AdminQuizzes = () => {
                   initial={{ opacity: 0, scale: 0.95, y: 20 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                  className="relative w-full max-w-3xl max-h-[85vh] bg-card rounded-2xl shadow-xl overflow-hidden flex flex-col"
+                  className="relative w-full max-w-3xl max-h-[85vh] bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div className="px-6 py-4 border-b border-border/50 flex items-center justify-between bg-gray-50/50">
+                  <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
                     <div>
-                      <h3 className="text-lg font-bold text-secondary">
+                      <h3 className="text-lg font-bold text-gray-900">
                         {selectedQuiz.title}
                       </h3>
                       <p className="text-xs text-gray-500">
@@ -962,17 +962,17 @@ const AdminQuizzes = () => {
                       quizQuestions.map((q, idx) => (
                         <div
                           key={idx}
-                          className="bg-card border border-border rounded-md p-5 subtle-shadow"
+                          className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm"
                         >
                           <div className="flex justify-between items-start mb-4">
-                            <span className="bg-primary/5 text-[#1d4ed8] text-xs font-bold px-2.5 py-1 rounded">
+                            <span className="bg-blue-50 text-blue-700 text-xs font-bold px-2.5 py-1 rounded">
                               Q{idx + 1}
                             </span>
                             <span className="text-xs font-medium text-gray-500">
                               {q.marks} Marks
                             </span>
                           </div>
-                          <p className="text-secondary font-medium mb-4">
+                          <p className="text-gray-900 font-medium mb-4">
                             {q.questionText}
                           </p>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -988,7 +988,7 @@ const AdminQuizzes = () => {
                                       className={`px-4 py-3 rounded-lg border text-sm flex items-center justify-between ${
                                         opt.isCorrect
                                           ? "bg-green-50 border-green-200 text-green-900"
-                                          : "bg-gray-50 border-border/50 text-gray-600"
+                                          : "bg-gray-50 border-gray-100 text-gray-600"
                                       }`}
                                     >
                                       <div className="flex items-center gap-3">
@@ -1013,7 +1013,7 @@ const AdminQuizzes = () => {
                                       className={`px-4 py-3 rounded-lg border text-sm flex items-center justify-between ${
                                         q.correctAnswer === key
                                           ? "bg-green-50 border-green-200 text-green-900"
-                                          : "bg-gray-50 border-border/50 text-gray-600"
+                                          : "bg-gray-50 border-gray-100 text-gray-600"
                                       }`}
                                     >
                                       <div className="flex items-center gap-3">
@@ -1036,10 +1036,10 @@ const AdminQuizzes = () => {
                     )}
                   </div>
 
-                  <div className="p-4 border-t border-border/50 bg-gray-50/50 flex justify-end">
+                  <div className="p-4 border-t border-gray-100 bg-gray-50/50 flex justify-end">
                     <button
                       onClick={closeQuestionsModal}
-                      className="px-4 py-2 bg-card border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 subtle-shadow"
+                      className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 shadow-sm"
                     >
                       Close Viewer
                     </button>

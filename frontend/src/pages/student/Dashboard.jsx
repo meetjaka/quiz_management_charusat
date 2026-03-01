@@ -73,7 +73,7 @@ const StudentDashboard = () => {
       <Layout title="Dashboard">
         <div className="flex h-[80vh] items-center justify-center">
           <div className="flex flex-col items-center gap-4">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+            <div className="h-10 w-10 animate-spin rounded-full border-4 border-green-600 border-t-transparent"></div>
             <p className="text-sm font-medium text-gray-500">Loading dashboard...</p>
           </div>
         </div>
@@ -87,25 +87,25 @@ const StudentDashboard = () => {
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 5 },
+    hidden: { opacity: 0, y: 10 },
     visible: { opacity: 1, y: 0 }
   };
 
   return (
     <Layout title="Student Dashboard">
-      <motion.div
+      <motion.div 
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="space-y-8 max-w-7xl mx-auto"
+        className="space-y-8"
       >
         {/* Welcome Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-semibold text-secondary tracking-tight">Dashboard Overview</h1>
-            <p className="text-gray-500 mt-1 text-sm">Track your quiz performance and progress</p>
+            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Dashboard Overview</h1>
+            <p className="text-gray-500 mt-1">Track your quiz performance and progress</p>
           </div>
-          <div className="text-xs font-medium text-gray-500 bg-card px-3 py-1.5 rounded-md border border-border subtle-shadow">
+          <div className="text-sm text-gray-500 bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
             {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </div>
         </div>
@@ -115,24 +115,24 @@ const StudentDashboard = () => {
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
-            className="rounded-md border border-warning/20 bg-warning/5 p-4"
+            className="rounded-xl border border-yellow-200 bg-yellow-50 p-4"
           >
             <div className="flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
+              <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
               <div className="flex-1">
-                <h3 className="text-sm font-semibold text-warning mb-2">
+                <h3 className="text-sm font-semibold text-yellow-800 mb-2">
                   No Quizzes Available
                 </h3>
-                <p className="text-sm text-gray-600 mb-3">
+                <p className="text-sm text-yellow-700 mb-3">
                   Quizzes are matched based on your profile details. Make sure your information is correct:
                 </p>
-                <div className="bg-card rounded-md p-3 space-y-1.5 text-sm border border-border">
+                <div className="bg-white/60 rounded-lg p-3 space-y-1.5 text-sm">
                   <p className="text-gray-700"><strong>Department:</strong> {userProfile.department || "Not set"}</p>
                   <p className="text-gray-700"><strong>Semester:</strong> {userProfile.semester || "Not set"}</p>
                   <p className="text-gray-700"><strong>Batch:</strong> {userProfile.batch || "Not set"}</p>
                   <p className="text-gray-700"><strong>Enrollment:</strong> {userProfile.enrollmentNumber || "Not set"}</p>
                 </div>
-                <p className="mt-3 text-xs text-gray-500">
+                <p className="mt-3 text-xs text-yellow-700">
                   <strong>Note:</strong> Your profile details must <strong>exactly match</strong> the quiz settings. Contact your admin if issues persist.
                 </p>
               </div>
@@ -146,15 +146,15 @@ const StudentDashboard = () => {
             title="Available Quizzes"
             value={stats.availableQuizzes}
             icon={FileText}
-            color="text-primary"
-            bg="bg-primary/10"
+            color="text-blue-600"
+            bg="bg-blue-50"
           />
           <StatCard
             title="Completed"
             value={stats.completedQuizzes}
             icon={CheckCircle2}
-            color="text-emerald-600"
-            bg="bg-emerald-50"
+            color="text-green-600"
+            bg="bg-green-50"
           />
           <StatCard
             title="Average Score"
@@ -171,86 +171,85 @@ const StudentDashboard = () => {
             bg="bg-purple-50"
           />
         </div>
-
         {/* Quick Actions */}
         <motion.div variants={itemVariants}>
-          <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Quick Actions</h3>
+          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Quick Actions</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <QuickActionCard
               title="Start a Quiz"
               description="View available quizzes"
               icon={Play}
               link="/student/quizzes"
-              color="text-primary"
-              bg="bg-primary/5"
+              color="text-blue-600"
+              bg="bg-blue-50"
             />
             <QuickActionCard
               title="View Results"
               description="Check your performance"
               icon={BarChart3}
               link="/student/results"
-              color="text-emerald-600"
-              bg="bg-emerald-50"
+              color="text-green-600"
+              bg="bg-green-50"
             />
           </div>
         </motion.div>
 
         {/* Recent Results */}
-        <motion.div variants={itemVariants} className="bg-card rounded-md border border-border overflow-hidden subtle-shadow">
-          <div className="p-5 border-b border-border/50">
-            <h2 className="text-base font-semibold text-secondary">Recent Results</h2>
+        <motion.div variants={itemVariants} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="p-6 border-b border-gray-100">
+            <h2 className="text-lg font-bold text-gray-900">Recent Results</h2>
           </div>
-          <div className="p-0">
+          <div className="p-6">
             {recentResults.length === 0 ? (
               <div className="text-center py-12">
-                <FileText className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-sm font-semibold text-secondary">No results yet</h3>
-                <p className="mt-1 text-sm text-gray-500 mb-6 max-w-xs mx-auto">
+                <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-sm font-semibold text-gray-900">No results yet</h3>
+                <p className="mt-1 text-sm text-gray-500 mb-6">
                   Start taking quizzes to see your results here.
                 </p>
                 <Link
                   to="/student/quizzes"
-                  className="inline-flex items-center gap-2 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-[#1d4ed8] focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-primary/50 transition-all subtle-shadow active:scale-[0.98]"
+                  className="inline-flex items-center gap-2 px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 shadow-sm transition-colors"
                 >
-                  <Play className="w-4 h-4 fill-white" />
+                  <Play className="w-4 h-4" />
                   View Available Quizzes
                 </Link>
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm">
-                  <thead className="bg-gray-50/50 text-gray-500 font-medium border-b border-border/50">
+                <table className="w-full text-sm text-left">
+                  <thead className="text-xs text-gray-500 uppercase bg-gray-50 border-b border-gray-200">
                     <tr>
-                      <th className="px-5 py-3 font-medium text-xs uppercase tracking-wider">Quiz</th>
-                      <th className="px-5 py-3 font-medium text-xs uppercase tracking-wider">Score</th>
-                      <th className="px-5 py-3 font-medium text-xs uppercase tracking-wider">Status</th>
-                      <th className="px-5 py-3 font-medium text-xs uppercase tracking-wider">Date</th>
+                      <th className="px-6 py-3 font-medium">Quiz</th>
+                      <th className="px-6 py-3 font-medium">Score</th>
+                      <th className="px-6 py-3 font-medium">Status</th>
+                      <th className="px-6 py-3 font-medium">Date</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="divide-y divide-gray-100">
                     {recentResults.map((result) => (
-                      <tr key={result._id} className="hover:bg-gray-50/50 transition-colors border-b border-border/30 last:border-0">
-                        <td className="px-5 py-3.5 font-medium text-secondary">
+                      <tr key={result._id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-6 py-4 font-medium text-gray-900">
                           {result.quizId?.title || "N/A"}
                         </td>
-                        <td className="px-5 py-3.5 text-gray-600">
-                          {result.totalScore}/{result.quizId?.totalMarks || 0} <span className="text-gray-400">({result.percentage.toFixed(1)}%)</span>
+                        <td className="px-6 py-4 text-gray-600">
+                          {result.totalScore}/{result.quizId?.totalMarks || 0} (
+                          {result.percentage.toFixed(1)}%)
                         </td>
-                        <td className="px-5 py-3.5">
+                        <td className="px-6 py-4">
                           <span
-                            className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium border ${result.isPassed
-                                ? "bg-success/10 text-success border-success/20"
-                                : "bg-danger/10 text-danger border-danger/20"
-                              }`}
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                              result.isPassed
+                                ? "bg-green-50 text-green-700 border-green-200"
+                                : "bg-red-50 text-red-700 border-red-200"
+                            }`}
                           >
                             {result.isPassed ? "Passed" : "Failed"}
                           </span>
                         </td>
-                        <td className="px-5 py-3.5 text-gray-500 text-xs">
-                          <div className="flex items-center gap-1.5 focus:outline-none">
-                            <Calendar className="w-3.5 h-3.5 text-gray-400" />
-                            {new Date(result.createdAt).toLocaleDateString()}
-                          </div>
+                        <td className="px-6 py-4 text-gray-600 flex items-center gap-2">
+                          <Calendar className="w-4 h-4 text-gray-400" />
+                          {new Date(result.createdAt).toLocaleDateString()}
                         </td>
                       </tr>
                     ))}
@@ -266,18 +265,18 @@ const StudentDashboard = () => {
 };
 
 const StatCard = ({ title, value, icon: Icon, color, bg }) => (
-  <motion.div
-    variants={{ hidden: { opacity: 0, scale: 0.98 }, visible: { opacity: 1, scale: 1 } }}
-    className="bg-card p-4 rounded-md border border-border subtle-shadow hover:shadow-md transition-all h-full"
+  <motion.div 
+    variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
+    className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all h-full"
   >
-    <div className="flex justify-between items-start mb-3">
-      <div className={`p-2 rounded-md ${bg}`}>
-        <Icon className={`w-4 h-4 ${color}`} />
+    <div className="flex justify-between items-start mb-4">
+      <div className={`p-2.5 rounded-lg ${bg}`}>
+        <Icon className={`w-5 h-5 ${color}`} />
       </div>
     </div>
     <div>
-      <h3 className="text-xl font-bold text-secondary">{value}</h3>
-      <p className="text-xs font-medium text-gray-500 mt-0.5">{title}</p>
+      <h3 className="text-2xl font-bold text-gray-900">{value}</h3>
+      <p className="text-sm font-medium text-gray-500 mt-1">{title}</p>
     </div>
   </motion.div>
 );
@@ -285,18 +284,18 @@ const StatCard = ({ title, value, icon: Icon, color, bg }) => (
 const QuickActionCard = ({ title, description, icon: Icon, link, color, bg }) => (
   <Link to={link}>
     <motion.div
-      whileHover={{ scale: 1.01 }}
-      whileTap={{ scale: 0.99 }}
-      className="flex items-center p-4 bg-card border border-border rounded-md transition-all hover:shadow-md subtle-shadow group group-hover:bg-gray-50/50"
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      className="flex items-center p-5 bg-white border border-gray-200 rounded-xl transition-all hover:shadow-sm group"
     >
-      <div className={`p-2 rounded-md ${bg} group-hover:scale-110 transition-transform`}>
-        <Icon className={`w-5 h-5 ${color}`} />
+      <div className={`p-3 rounded-full ${bg}`}>
+        <Icon className={`w-6 h-6 ${color}`} />
       </div>
       <div className="ml-4 flex-1">
-        <p className="font-medium text-sm text-secondary group-hover:text-primary transition-colors">{title}</p>
-        <p className="text-xs text-gray-500">{description}</p>
+        <p className="font-semibold text-gray-900">{title}</p>
+        <p className="text-sm text-gray-600">{description}</p>
       </div>
-      <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-primary group-hover:translate-x-1 transition-all" />
+      <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-gray-600 group-hover:translate-x-1 transition-all" />
     </motion.div>
   </Link>
 );

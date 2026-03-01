@@ -29,15 +29,15 @@ const Unauthorized = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}>
-          <h1 className="text-4xl font-bold text-secondary mb-4">Access Denied</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Access Denied</h1>
           <p className="text-lg text-gray-600 mb-6">
             You don't have permission to access this page.
           </p>
           
           {user && (
-            <div className="inline-block bg-card rounded-lg px-4 py-2 subtle-shadow border border-border mb-8">
+            <div className="inline-block bg-white rounded-lg px-4 py-2 shadow-sm border border-gray-200 mb-8">
               <p className="text-sm text-gray-500">
-                Logged in as: <span className="font-semibold text-secondary capitalize">{user.role}</span>
+                Logged in as: <span className="font-semibold text-gray-900 capitalize">{user.role}</span>
               </p>
             </div>
           )}
@@ -52,7 +52,7 @@ const Unauthorized = () => {
             
             <button
               onClick={() => window.history.back()}
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-card text-gray-700 border-2 border-gray-300 rounded-lg font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all active:scale-95">
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-gray-700 border-2 border-gray-300 rounded-lg font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all active:scale-95">
               <ArrowLeft className="w-5 h-5" />
               Go Back
             </button>

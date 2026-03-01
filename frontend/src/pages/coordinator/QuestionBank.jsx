@@ -101,20 +101,20 @@ const QuestionBank = () => {
           <div>
             <button
               onClick={() => navigate(-1)}
-              className="flex items-center text-gray-600 hover:text-secondary mb-4 transition-colors"
+              className="flex items-center text-gray-600 hover:text-gray-900 mb-4 transition-colors"
             >
               <FiArrowLeft className="mr-2" />
               Back
             </button>
-            <h1 className="text-3xl font-bold text-secondary flex items-center">
-              <FiBook className="mr-3 text-primary" />
+            <h1 className="text-3xl font-bold text-gray-900 flex items-center">
+              <FiBook className="mr-3 text-blue-600" />
               Question Bank
             </h1>
             <p className="text-gray-600 mt-1">Manage reusable questions for your quizzes</p>
           </div>
           <button
             onClick={() => setShowAddDialog(true)}
-            className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-[#1d4ed8] transition-colors flex items-center"
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
           >
             <FiPlus className="mr-2" />
             Add Question
@@ -122,7 +122,7 @@ const QuestionBank = () => {
         </div>
 
         {/* Filters */}
-        <div className="bg-card rounded-lg shadow-md p-4 mb-6">
+        <div className="bg-white rounded-lg shadow-md p-4 mb-6">
           <div className="flex items-center space-x-4">
             <FiFilter className="text-gray-500 text-xl" />
             <input
@@ -159,12 +159,12 @@ const QuestionBank = () => {
             <p className="mt-4 text-gray-600">Loading questions...</p>
           </div>
         ) : questions.length === 0 ? (
-          <div className="bg-card rounded-lg shadow-md p-12 text-center">
+          <div className="bg-white rounded-lg shadow-md p-12 text-center">
             <FiBook className="mx-auto text-6xl text-gray-300 mb-4" />
             <p className="text-gray-600">No questions in your bank yet</p>
             <button
               onClick={() => setShowAddDialog(true)}
-              className="mt-4 px-6 py-2 bg-primary text-white rounded-lg hover:bg-[#1d4ed8] transition-colors"
+              className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               Add Your First Question
             </button>
@@ -172,15 +172,15 @@ const QuestionBank = () => {
         ) : (
           <div className="space-y-4">
             {questions.map((question, index) => (
-              <div key={question._id} className="bg-card rounded-lg shadow-md p-6">
+              <div key={question._id} className="bg-white rounded-lg shadow-md p-6">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <div className="flex items-start space-x-3 mb-3">
-                      <span className="bg-primary/10 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full">
+                      <span className="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full">
                         {index + 1}
                       </span>
                       <div className="flex-1">
-                        <p className="text-lg text-secondary font-medium">{question.questionText}</p>
+                        <p className="text-lg text-gray-900 font-medium">{question.questionText}</p>
                         <div className="flex items-center space-x-4 mt-2">
                           <span className="text-sm text-gray-600">
                             <span className="font-semibold">Subject:</span> {question.subject}
@@ -234,10 +234,10 @@ const QuestionBank = () => {
 
         {/* Add Question Dialog */}
         {showAddDialog && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-secondary/40 backdrop-blur-sm p-4">
-            <div className="bg-card rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
               <div className="p-6">
-                <h3 className="text-2xl font-bold text-secondary mb-6">Add Question to Bank</h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-6">Add Question to Bank</h3>
 
                 <div className="space-y-4">
                   <div>
@@ -312,7 +312,7 @@ const QuestionBank = () => {
                               name="correct-answer"
                               checked={newQuestion.correctAnswer === idx}
                               onChange={() => setNewQuestion({ ...newQuestion, correctAnswer: idx })}
-                              className="h-4 w-4 text-primary"
+                              className="h-4 w-4 text-blue-600"
                             />
                             <input
                               type="text"
@@ -341,7 +341,7 @@ const QuestionBank = () => {
                   </button>
                   <button
                     onClick={handleAddQuestion}
-                    className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-[#1d4ed8]"
+                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                   >
                     Add to Bank
                   </button>

@@ -45,7 +45,7 @@ const StudentQuizzes = () => {
   return (
     <Layout title="Available Quizzes">
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-secondary mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">
           Available Quizzes
         </h1>
 
@@ -70,7 +70,7 @@ const StudentQuizzes = () => {
             {quizzes.map((quiz) => (
               <div
                 key={quiz._id}
-                className="bg-card rounded-lg shadow-lg hover:shadow-xl transition overflow-hidden"
+                className="bg-white rounded-lg shadow-lg hover:shadow-xl transition overflow-hidden"
               >
                 <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-4 text-white">
                   <h2 className="text-lg font-bold mb-2">{quiz.title}</h2>
@@ -81,19 +81,19 @@ const StudentQuizzes = () => {
                   <div className="space-y-3 mb-6">
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600 text-sm">Department:</span>
-                      <span className="font-semibold text-secondary">
+                      <span className="font-semibold text-gray-900">
                         {quiz.department}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600 text-sm">Semester:</span>
-                      <span className="font-semibold text-secondary">
+                      <span className="font-semibold text-gray-900">
                         {quiz.semester}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600 text-sm">Duration:</span>
-                      <span className="font-semibold text-secondary">
+                      <span className="font-semibold text-gray-900">
                         {quiz.duration} mins
                       </span>
                     </div>
@@ -101,7 +101,7 @@ const StudentQuizzes = () => {
                       <span className="text-gray-600 text-sm">
                         Total Marks:
                       </span>
-                      <span className="font-semibold text-secondary">
+                      <span className="font-semibold text-gray-900">
                         {quiz.totalMarks}
                       </span>
                     </div>
@@ -141,7 +141,7 @@ const StudentQuizzes = () => {
                       className={`w-full py-2 px-4 rounded-lg font-semibold transition ${
                         quiz.hasAttempted || startingQuiz
                           ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-                          : "bg-primary hover:bg-[#1d4ed8] text-white"
+                          : "bg-blue-600 hover:bg-blue-700 text-white"
                       }`}
                     >
                       {startingQuiz
