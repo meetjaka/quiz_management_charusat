@@ -41,7 +41,7 @@ const GroupStudents = () => {
           <li key={student._id}>
             <Link
               to={`/admin/students/${student._id}`}
-              className="text-blue-600 hover:underline"
+              className="text-primary hover:underline"
             >
               {student.fullName || student.email}
             </Link>

@@ -100,14 +100,14 @@ const StudentDetails = ({ id: propId, forceId }) => {
 
   return (
     <div className="p-0 md:p-6">
-      <div className="bg-white rounded-xl shadow-lg border border-blue-100 p-6 mb-6 flex flex-col md:flex-row items-center gap-6">
+      <div className="bg-card rounded-md shadow-lg border border-blue-100 p-6 mb-6 flex flex-col md:flex-row items-center gap-6">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
             {student.fullName?.charAt(0)?.toUpperCase() ||
               student.email?.charAt(0)?.toUpperCase()}
           </div>
           <div>
-            <div className="text-xl md:text-2xl font-bold text-gray-900">
+            <div className="text-xl md:text-2xl font-bold text-secondary">
               {student.fullName || (
                 <span className="italic text-gray-400">No Name</span>
               )}
@@ -132,13 +132,13 @@ const StudentDetails = ({ id: propId, forceId }) => {
           </div>
         </div>
       </div>
-      <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+      <div className="bg-card rounded-md shadow-lg border border-border/50 p-6">
         <h3 className="text-xl font-semibold mb-4 text-blue-800">
           Quiz Attempts
         </h3>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 text-sm">
-            <thead className="bg-blue-50">
+            <thead className="bg-primary/5">
               <tr>
                 <th className="px-6 py-3 text-left font-semibold text-gray-700 uppercase tracking-wider">
                   Quiz Title
@@ -157,13 +157,13 @@ const StudentDetails = ({ id: propId, forceId }) => {
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-100">
+            <tbody className="bg-card divide-y divide-gray-100">
               {quizzes.map((quiz) => (
                 <tr
                   key={quiz.quizId}
-                  className="hover:bg-blue-50 transition-colors"
+                  className="hover:bg-primary/5 transition-colors"
                 >
-                  <td className="px-6 py-3 font-medium text-gray-900">
+                  <td className="px-6 py-3 font-medium text-secondary">
                     {quiz.title}
                   </td>
                   <td className="px-6 py-3 text-gray-700">
@@ -196,7 +196,7 @@ const StudentDetails = ({ id: propId, forceId }) => {
                   <td className="px-6 py-3">
                     {quiz.attemptId ? (
                       <button
-                        className="text-blue-600 hover:underline font-medium"
+                        className="text-primary hover:underline font-medium"
                         onClick={() => openEditModal(quiz)}
                       >
                         Edit Marks
@@ -214,8 +214,8 @@ const StudentDetails = ({ id: propId, forceId }) => {
 
       {/* Edit Marks Modal */}
       {editModal.open && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 min-w-[300px]">
+        <div className="fixed inset-0 flex items-center justify-center bg-secondary/40 backdrop-blur-sm z-50">
+          <div className="bg-card rounded-lg shadow-lg p-6 min-w-[300px]">
             <h4 className="text-lg font-bold mb-2">
               Edit Marks for {editModal.quiz.title}
             </h4>
@@ -232,7 +232,7 @@ const StudentDetails = ({ id: propId, forceId }) => {
               <div className="flex gap-2">
                 <button
                   type="submit"
-                  className="bg-blue-600 text-white px-4 py-1 rounded disabled:opacity-50"
+                  className="bg-primary text-white px-4 py-1 rounded disabled:opacity-50"
                   disabled={markLoading}
                 >
                   {markLoading ? "Saving..." : "Save"}

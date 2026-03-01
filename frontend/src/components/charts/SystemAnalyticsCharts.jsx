@@ -30,8 +30,8 @@ const SystemAnalyticsCharts = ({ analytics }) => {
   return (
     <div className="space-y-8">
       {/* User Distribution */}
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        <h3 className="text-xl font-bold text-gray-900 mb-4">User Distribution</h3>
+      <div className="bg-card rounded-lg shadow-lg p-6">
+        <h3 className="text-xl font-bold text-secondary mb-4">User Distribution</h3>
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
             <Pie
@@ -62,8 +62,8 @@ const SystemAnalyticsCharts = ({ analytics }) => {
       </div>
 
       {/* Quiz Status Distribution */}
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        <h3 className="text-xl font-bold text-gray-900 mb-4">Quiz Status Distribution</h3>
+      <div className="bg-card rounded-lg shadow-lg p-6">
+        <h3 className="text-xl font-bold text-secondary mb-4">Quiz Status Distribution</h3>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={quizStatus}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -77,8 +77,8 @@ const SystemAnalyticsCharts = ({ analytics }) => {
       </div>
 
       {/* Attempt Statistics */}
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        <h3 className="text-xl font-bold text-gray-900 mb-4">Quiz Attempt Status</h3>
+      <div className="bg-card rounded-lg shadow-lg p-6">
+        <h3 className="text-xl font-bold text-secondary mb-4">Quiz Attempt Status</h3>
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
             <Pie
@@ -102,17 +102,17 @@ const SystemAnalyticsCharts = ({ analytics }) => {
 
       {/* Statistics Summary */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-blue-50 rounded-lg p-6 border-l-4 border-blue-600">
-          <div className="text-sm font-medium text-blue-600 mb-1">Total Users</div>
-          <div className="text-3xl font-bold text-gray-900">{analytics.users?.total || 0}</div>
+        <div className="bg-primary/5 rounded-lg p-6 border-l-4 border-blue-600">
+          <div className="text-sm font-medium text-primary mb-1">Total Users</div>
+          <div className="text-3xl font-bold text-secondary">{analytics.users?.total || 0}</div>
         </div>
         <div className="bg-green-50 rounded-lg p-6 border-l-4 border-green-600">
           <div className="text-sm font-medium text-green-600 mb-1">Total Quizzes</div>
-          <div className="text-3xl font-bold text-gray-900">{analytics.quizzes?.total || 0}</div>
+          <div className="text-3xl font-bold text-secondary">{analytics.quizzes?.total || 0}</div>
         </div>
         <div className="bg-purple-50 rounded-lg p-6 border-l-4 border-purple-600">
           <div className="text-sm font-medium text-purple-600 mb-1">Total Attempts</div>
-          <div className="text-3xl font-bold text-gray-900">{analytics.attempts?.total || 0}</div>
+          <div className="text-3xl font-bold text-secondary">{analytics.attempts?.total || 0}</div>
         </div>
       </div>
     </div>

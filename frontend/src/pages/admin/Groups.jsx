@@ -61,7 +61,7 @@ const Groups = () => {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold">Groups</h2>
         <button
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition-all"
+          className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg shadow hover:bg-[#1d4ed8] transition-all"
           onClick={() => navigate("/admin/dashboard")}
         >
           <LayoutDashboard className="w-5 h-5" />
@@ -70,7 +70,7 @@ const Groups = () => {
       </div>
       <div className="flex gap-6 flex-col md:flex-row">
         {/* Group List */}
-        <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-0 w-full md:w-1/3 min-w-[250px] overflow-hidden">
+        <div className="bg-card rounded-md shadow-lg border border-border/50 p-0 w-full md:w-1/3 min-w-[250px] overflow-hidden">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
@@ -82,14 +82,14 @@ const Groups = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-100">
+            <tbody className="bg-card divide-y divide-gray-100">
               {groups.map((group) => (
                 <tr
                   key={group._id}
-                  className={`hover:bg-blue-50 transition-colors cursor-pointer ${selectedGroup?._id === group._id ? "bg-blue-100" : ""}`}
+                  className={`hover:bg-primary/5 transition-colors cursor-pointer ${selectedGroup?._id === group._id ? "bg-primary/10" : ""}`}
                   onClick={() => handleGroupClick(group)}
                 >
-                  <td className="px-6 py-3 font-medium text-gray-900">
+                  <td className="px-6 py-3 font-medium text-secondary">
                     {group.name}
                   </td>
                   <td className="px-6 py-3 text-gray-700">{group.groupType}</td>
@@ -102,10 +102,10 @@ const Groups = () => {
         {/* Students List and Back Arrow */}
         <div className="flex-1">
           {selectedGroup && (
-            <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 mb-6 min-h-[200px]">
+            <div className="bg-card rounded-md shadow-lg border border-border/50 p-6 mb-6 min-h-[200px]">
               <div className="flex items-center mb-4">
                 <button
-                  className="mr-2 text-gray-600 hover:text-blue-600 p-2 rounded-full border border-gray-200 hover:border-blue-400"
+                  className="mr-2 text-gray-600 hover:text-primary p-2 rounded-full border border-border hover:border-blue-400"
                   onClick={() => {
                     setSelectedGroup(null);
                     setGroupStudents([]);
@@ -143,7 +143,7 @@ const Groups = () => {
                   {groupStudents.map((student) => (
                     <li key={student._id}>
                       <button
-                        className={`text-blue-600 hover:underline text-left ${selectedStudent?._id === student._id ? "font-bold" : ""}`}
+                        className={`text-primary hover:underline text-left ${selectedStudent?._id === student._id ? "font-bold" : ""}`}
                         onClick={() => handleStudentClick(student)}
                       >
                         {student.fullName || student.email}
@@ -157,7 +157,7 @@ const Groups = () => {
 
           {/* Student Details */}
           {selectedStudent && (
-            <div className="bg-white rounded-xl shadow-lg border border-blue-100 p-6 mt-4">
+            <div className="bg-card rounded-md shadow-lg border border-blue-100 p-6 mt-4">
               <StudentDetails id={selectedStudent._id} forceId />
             </div>
           )}

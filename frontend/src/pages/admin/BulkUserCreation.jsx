@@ -244,8 +244,8 @@ const BulkUserCreation = () => {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                <FiUsers className="text-blue-600" />
+              <h1 className="text-3xl font-bold text-secondary flex items-center gap-3">
+                <FiUsers className="text-primary" />
                 User Management
               </h1>
               <p className="text-gray-600 mt-2">
@@ -254,7 +254,7 @@ const BulkUserCreation = () => {
             </div>
             <button
               onClick={() => navigate("/admin/users")}
-              className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+              className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg subtle-shadow bg-card text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
             >
               <FiArrowLeft className="mr-2 h-4 w-4" />
               Back to Users
@@ -264,13 +264,13 @@ const BulkUserCreation = () => {
 
         {/* Tab Navigation */}
         <div className="mb-6">
-          <div className="border-b border-gray-200">
+          <div className="border-b border-border">
             <nav className="-mb-px flex space-x-8">
               <button
                 onClick={() => setActiveTab("excel")}
                 className={`py-2 px-1 border-b-2 font-medium text-sm ${
                   activeTab === "excel"
-                    ? "border-blue-500 text-blue-600"
+                    ? "border-blue-500 text-primary"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
@@ -281,7 +281,7 @@ const BulkUserCreation = () => {
                 onClick={() => setActiveTab("manual")}
                 className={`py-2 px-1 border-b-2 font-medium text-sm ${
                   activeTab === "manual"
-                    ? "border-blue-500 text-blue-600"
+                    ? "border-blue-500 text-primary"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
@@ -296,7 +296,7 @@ const BulkUserCreation = () => {
         {activeTab === "excel" && (
           <div className="space-y-6">
             {/* Instructions */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <div className="bg-primary/5 border border-blue-200 rounded-lg p-6">
               <h3 className="text-lg font-semibold text-blue-900 mb-3">
                 Excel Upload Instructions
               </h3>
@@ -313,7 +313,7 @@ const BulkUserCreation = () => {
                   </li>
                   <li>
                     <strong>Password:</strong> If left blank, default password{" "}
-                    <code className="bg-blue-100 px-2 py-1 rounded text-blue-900 font-mono">
+                    <code className="bg-primary/10 px-2 py-1 rounded text-blue-900 font-mono">
                       Password@123
                     </code>{" "}
                     will be used
@@ -338,8 +338,8 @@ const BulkUserCreation = () => {
             </div>
 
             {/* Template Download */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="bg-card rounded-lg shadow p-6">
+              <h3 className="text-lg font-semibold text-secondary mb-4">
                 Step 1: Download Template
               </h3>
               <button
@@ -352,8 +352,8 @@ const BulkUserCreation = () => {
             </div>
 
             {/* File Upload */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="bg-card rounded-lg shadow p-6">
+              <h3 className="text-lg font-semibold text-secondary mb-4">
                 Step 2: Upload Completed File
               </h3>
 
@@ -367,7 +367,7 @@ const BulkUserCreation = () => {
                 />
                 <label
                   htmlFor="excel-upload"
-                  className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors cursor-pointer w-fit"
+                  className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-[#1d4ed8] transition-colors cursor-pointer w-fit"
                 >
                   <FiUpload className="w-4 h-4" />
                   Choose Excel File
@@ -400,7 +400,7 @@ const BulkUserCreation = () => {
                           setSelectedGroupId("");
                         }
                       }}
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mr-2"
+                      className="h-4 w-4 text-primary focus:ring-blue-500 border-gray-300 rounded mr-2"
                     />
                     <span className="text-sm text-gray-700">
                       Create new group for these users
@@ -409,7 +409,7 @@ const BulkUserCreation = () => {
                 </div>
 
                 {createGroupWithBulk ? (
-                  <div className="space-y-3 p-3 bg-blue-50 rounded-lg">
+                  <div className="space-y-3 p-3 bg-primary/5 rounded-lg">
                     <div>
                       <input
                         type="text"
@@ -491,7 +491,7 @@ const BulkUserCreation = () => {
               <button
                 onClick={handleExcelUpload}
                 disabled={!excelFile || uploading}
-                className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-[#1d4ed8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <FiUsers className="w-4 h-4" />
                 {uploading ? "Creating Users..." : "Create Users"}
@@ -500,7 +500,7 @@ const BulkUserCreation = () => {
 
             {/* Upload Result */}
             {uploadResult && (
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="bg-card rounded-lg shadow p-6">
                 <h3 className="text-lg font-semibold text-green-900 mb-4">
                   ✅ Upload Successful!
                 </h3>
@@ -526,7 +526,7 @@ const BulkUserCreation = () => {
                       {uploadResult.data.totalCreated}
                     </p>
                   </div>
-                  <div className="bg-blue-50 p-3 rounded-lg">
+                  <div className="bg-primary/5 p-3 rounded-lg">
                     <p className="text-blue-800 font-medium">
                       Students: {uploadResult.data.summary.students}
                     </p>
@@ -542,8 +542,8 @@ const BulkUserCreation = () => {
 
         {/* Manual Creation Tab */}
         {activeTab === "manual" && (
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">
+          <div className="bg-card rounded-lg shadow p-6">
+            <h3 className="text-lg font-semibold text-secondary mb-6">
               Create Single User Account
             </h3>
 
@@ -708,7 +708,7 @@ const BulkUserCreation = () => {
 
               {/* Password Section */}
               <div className="border-t pt-6">
-                <h4 className="text-lg font-medium text-gray-900 mb-4">
+                <h4 className="text-lg font-medium text-secondary mb-4">
                   Password Settings
                 </h4>
 
@@ -719,7 +719,7 @@ const BulkUserCreation = () => {
                       name="generatePassword"
                       checked={formData.generatePassword}
                       onChange={handleInputChange}
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      className="h-4 w-4 text-primary focus:ring-blue-500 border-gray-300 rounded"
                     />
                     <span className="ml-2 text-sm text-gray-700">
                       Auto-generate password
@@ -773,7 +773,7 @@ const BulkUserCreation = () => {
                 <button
                   type="submit"
                   disabled={creating}
-                  className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-[#1d4ed8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <FiUserPlus className="w-4 h-4" />
                   {creating ? "Creating User..." : "Create User"}
@@ -831,10 +831,10 @@ const CreateGroupModal = ({ onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+    <div className="fixed inset-0 bg-secondary/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div className="bg-card rounded-lg shadow-xl max-w-md w-full">
         <div className="flex items-center justify-between p-6 border-b">
-          <h3 className="text-lg font-medium text-gray-900">
+          <h3 className="text-lg font-medium text-secondary">
             Create New Group
           </h3>
           <button
@@ -902,14 +902,14 @@ const CreateGroupModal = ({ onClose, onSuccess }) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-card border border-gray-300 rounded-lg hover:bg-gray-50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-lg hover:bg-[#1d4ed8] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Creating..." : "Create Group"}
             </button>

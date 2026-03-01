@@ -384,8 +384,8 @@ const CoordinatorQuizzes = () => {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-              <ClipboardList className="w-7 h-7 text-blue-600" />
+            <h1 className="text-2xl font-bold text-secondary flex items-center gap-2">
+              <ClipboardList className="w-7 h-7 text-primary" />
               My Quizzes
             </h1>
             <p className="text-gray-600 mt-1">
@@ -395,14 +395,14 @@ const CoordinatorQuizzes = () => {
           <div className="flex space-x-3">
             <button
               onClick={() => navigate("/coordinator/question-bank")}
-              className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-card border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
             >
               <BookOpen className="w-4 h-4" />
               Question Bank
             </button>
             <button
               onClick={() => navigate("/coordinator/quizzes/create")}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-[#1d4ed8] transition-colors flex items-center gap-2"
             >
               <Plus className="w-4 h-4" />
               Create New Quiz
@@ -418,11 +418,11 @@ const CoordinatorQuizzes = () => {
 
         {/* Results Modal */}
         {showResults && selectedQuiz && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="p-6 border-b border-gray-200">
+          <div className="fixed inset-0 bg-secondary/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-card rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6 border-b border-border">
                 <div className="flex justify-between items-center">
-                  <h2 className="text-xl font-bold text-gray-900">
+                  <h2 className="text-xl font-bold text-secondary">
                     Results: {selectedQuiz.title}
                   </h2>
                   <button
@@ -479,7 +479,7 @@ const CoordinatorQuizzes = () => {
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
+                      <tbody className="bg-card divide-y divide-gray-200">
                         {results
                           .slice()
                           .sort(
@@ -505,23 +505,23 @@ const CoordinatorQuizzes = () => {
 
                             return (
                               <tr key={result._id}>
-                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                <td className="px-4 py-3 whitespace-nowrap text-sm text-secondary">
                                   #{index + 1}
                                 </td>
                                 <td className="px-4 py-3 whitespace-nowrap">
-                                  <div className="text-sm font-medium text-gray-900">
+                                  <div className="text-sm font-medium text-secondary">
                                     {result.studentId?.fullName || "N/A"}
                                   </div>
                                 </td>
-                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                <td className="px-4 py-3 whitespace-nowrap text-sm text-secondary">
                                   {result.studentId?.studentId ||
                                     result.studentId?.enrollmentNumber ||
                                     "Not Provided"}
                                 </td>
-                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                <td className="px-4 py-3 whitespace-nowrap text-sm text-secondary">
                                   {result.totalScore}/{maxScore || "-"}
                                 </td>
-                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                <td className="px-4 py-3 whitespace-nowrap text-sm text-secondary">
                                   {percentage.toFixed(2)}%
                                 </td>
                                 <td className="px-4 py-3 whitespace-nowrap">
@@ -549,12 +549,12 @@ const CoordinatorQuizzes = () => {
 
         {/* Assigned Students Modal */}
         {showAssignedStudents && selectedQuiz && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-              <div className="p-6 border-b border-gray-200">
+          <div className="fixed inset-0 bg-secondary/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-card rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+              <div className="p-6 border-b border-border">
                 <div className="flex justify-between items-center">
                   <div>
-                    <h2 className="text-xl font-bold text-gray-900">
+                    <h2 className="text-xl font-bold text-secondary">
                       Assigned Students
                     </h2>
                     <p className="text-sm text-gray-500 mt-1">
@@ -584,7 +584,7 @@ const CoordinatorQuizzes = () => {
                         setShowAssignedStudents(false);
                         openAddStudentsModal(selectedQuiz);
                       }}
-                      className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 mx-auto"
+                      className="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-[#1d4ed8] transition-colors flex items-center gap-2 mx-auto"
                     >
                       <UserPlus className="w-4 h-4" />
                       Add Students
@@ -600,7 +600,7 @@ const CoordinatorQuizzes = () => {
                           className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
                         >
                           <div>
-                            <p className="font-medium text-gray-900">
+                            <p className="font-medium text-secondary">
                               {assignment.studentId?.fullName}
                             </p>
                             <p className="text-sm text-gray-500">
@@ -628,13 +628,13 @@ const CoordinatorQuizzes = () => {
                   </div>
                 )}
               </div>
-              <div className="p-4 border-t border-gray-200 bg-gray-50">
+              <div className="p-4 border-t border-border bg-gray-50">
                 <button
                   onClick={() => {
                     setShowAssignedStudents(false);
                     openAddStudentsModal(selectedQuiz);
                   }}
-                  className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                  className="w-full px-4 py-2 bg-primary text-white rounded-lg hover:bg-[#1d4ed8] transition-colors flex items-center justify-center gap-2"
                 >
                   <UserPlus className="w-4 h-4" />
                   Add More Students
@@ -646,12 +646,12 @@ const CoordinatorQuizzes = () => {
 
         {/* Add Students Modal */}
         {showAddStudents && selectedQuiz && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-              <div className="p-6 border-b border-gray-200">
+          <div className="fixed inset-0 bg-secondary/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-card rounded-lg max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+              <div className="p-6 border-b border-border">
                 <div className="flex justify-between items-center">
                   <div>
-                    <h2 className="text-xl font-bold text-gray-900">
+                    <h2 className="text-xl font-bold text-secondary">
                       Add Students to Quiz
                     </h2>
                     <p className="text-sm text-gray-500 mt-1">
@@ -685,7 +685,7 @@ const CoordinatorQuizzes = () => {
                   />
                 </div>
               </div>
-              <div className="p-4 border-b border-gray-200 bg-gray-50 flex flex-wrap items-center justify-between gap-3">
+              <div className="p-4 border-b border-border bg-gray-50 flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <input
                     type="checkbox"
@@ -707,7 +707,7 @@ const CoordinatorQuizzes = () => {
                       );
                     }}
                     onChange={toggleSelectAll}
-                    className="w-4 h-4 text-blue-600 rounded"
+                    className="w-4 h-4 text-primary rounded"
                   />
                   <label htmlFor="selectAll" className="text-sm text-gray-700">
                     Select All (
@@ -731,7 +731,7 @@ const CoordinatorQuizzes = () => {
                   <select
                     value={batchFilter}
                     onChange={(e) => setBatchFilter(e.target.value)}
-                    className="border border-gray-300 rounded-md text-sm px-2 py-1 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="border border-gray-300 rounded-md text-sm px-2 py-1 bg-card focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="all">All batches</option>
                     {Array.from(
@@ -776,10 +776,10 @@ const CoordinatorQuizzes = () => {
                           key={student._id}
                           className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${
                             isAssigned
-                              ? "bg-gray-100 border-gray-200 opacity-60"
+                              ? "bg-gray-100 border-border opacity-60"
                               : isSelected
-                                ? "bg-blue-50 border-blue-300"
-                                : "bg-white border-gray-200 hover:bg-gray-50"
+                                ? "bg-primary/5 border-blue-300"
+                                : "bg-card border-border hover:bg-gray-50"
                           }`}
                         >
                           <input
@@ -787,10 +787,10 @@ const CoordinatorQuizzes = () => {
                             checked={isSelected}
                             disabled={isAssigned}
                             onChange={() => toggleStudentSelection(student._id)}
-                            className="w-4 h-4 text-blue-600 rounded"
+                            className="w-4 h-4 text-primary rounded"
                           />
                           <div className="flex-1">
-                            <p className="font-medium text-gray-900">
+                            <p className="font-medium text-secondary">
                               {student.fullName}
                             </p>
                             <p className="text-sm text-gray-500">
@@ -812,7 +812,7 @@ const CoordinatorQuizzes = () => {
                   </div>
                 )}
               </div>
-              <div className="p-4 border-t border-gray-200 bg-gray-50 flex gap-3">
+              <div className="p-4 border-t border-border bg-gray-50 flex gap-3">
                 <button
                   onClick={() => {
                     setShowAddStudents(false);
@@ -830,7 +830,7 @@ const CoordinatorQuizzes = () => {
                   className={`flex-1 px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-2 ${
                     selectedStudents.length === 0 || assigningStudents
                       ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      : "bg-blue-600 text-white hover:bg-blue-700"
+                      : "bg-primary text-white hover:bg-[#1d4ed8]"
                   }`}
                 >
                   {assigningStudents ? (
@@ -851,7 +851,7 @@ const CoordinatorQuizzes = () => {
         )}
 
         {/* Quizzes List */}
-        <div className="bg-white rounded-lg shadow">
+        <div className="bg-card rounded-lg shadow">
           {quizzes.length === 0 ? (
             <div className="p-12 text-center">
               <ClipboardList className="w-16 h-16 text-gray-300 mx-auto mb-4" />
@@ -884,7 +884,7 @@ const CoordinatorQuizzes = () => {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-card divide-y divide-gray-200">
                   {quizzes.map((quiz) => {
                     const status = getQuizStatus(quiz);
                     const isExpanded = expandedQuizId === quiz._id;
@@ -895,7 +895,7 @@ const CoordinatorQuizzes = () => {
                           onClick={() => toggleQuizExpand(quiz._id)}
                         >
                           <td className="px-6 py-4">
-                            <div className="text-sm font-medium text-gray-900">
+                            <div className="text-sm font-medium text-secondary">
                               {quiz.title}
                             </div>
                             <div className="text-sm text-gray-500">
@@ -904,7 +904,7 @@ const CoordinatorQuizzes = () => {
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">
+                            <div className="text-sm text-secondary">
                               {new Date(quiz.startTime).toLocaleString()}
                             </div>
                             <div className="text-sm text-gray-500">
@@ -912,7 +912,7 @@ const CoordinatorQuizzes = () => {
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">
+                            <div className="text-sm text-secondary">
                               {quiz.totalQuestions} questions
                             </div>
                             <div className="text-sm text-gray-500">
@@ -957,7 +957,7 @@ const CoordinatorQuizzes = () => {
                           <tr>
                             <td colSpan="5" className="px-6 py-4 bg-gray-50">
                               <div className="border-l-4 border-blue-500 pl-4">
-                                <h4 className="font-semibold text-gray-900 mb-3">
+                                <h4 className="font-semibold text-secondary mb-3">
                                   Quick Actions
                                 </h4>
 
@@ -986,13 +986,13 @@ const CoordinatorQuizzes = () => {
                                 )}
 
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                  <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                  <div className="bg-card p-4 rounded-lg border border-border">
                                     <div className="flex justify-between items-center">
                                       <div>
                                         <p className="text-sm text-gray-600 mb-1">
                                           Status
                                         </p>
-                                        <p className="font-medium text-gray-900">
+                                        <p className="font-medium text-secondary">
                                           {quiz.status === "published"
                                             ? quiz.isActive
                                               ? "Published & Active"
@@ -1019,7 +1019,7 @@ const CoordinatorQuizzes = () => {
                                       )}
                                     </div>
                                   </div>
-                                  <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                  <div className="bg-card p-4 rounded-lg border border-border">
                                     <p className="text-sm text-gray-600 mb-2">
                                       Start Time
                                     </p>
@@ -1054,7 +1054,7 @@ const CoordinatorQuizzes = () => {
                                       onClick={(e) => e.stopPropagation()}
                                     />
                                   </div>
-                                  <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                  <div className="bg-card p-4 rounded-lg border border-border">
                                     <p className="text-sm text-gray-600 mb-2">
                                       End Time
                                     </p>
@@ -1087,7 +1087,7 @@ const CoordinatorQuizzes = () => {
                                       onClick={(e) => e.stopPropagation()}
                                     />
                                   </div>
-                                  <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                  <div className="bg-card p-4 rounded-lg border border-border">
                                     <p className="text-sm text-gray-600 mb-2">
                                       Duration (minutes)
                                     </p>
@@ -1107,15 +1107,15 @@ const CoordinatorQuizzes = () => {
                                       min="1"
                                     />
                                   </div>
-                                  <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                  <div className="bg-card p-4 rounded-lg border border-border">
                                     <p className="text-sm text-gray-600 mb-1">
                                       Total Marks
                                     </p>
-                                    <p className="font-medium text-gray-900">
+                                    <p className="font-medium text-secondary">
                                       {quiz.totalMarks}
                                     </p>
                                   </div>
-                                  <div className="bg-white p-4 rounded-lg border border-gray-200 flex items-center justify-center">
+                                  <div className="bg-card p-4 rounded-lg border border-border flex items-center justify-center">
                                     <button
                                       onClick={(e) => {
                                         e.stopPropagation();
@@ -1123,7 +1123,7 @@ const CoordinatorQuizzes = () => {
                                           `/coordinator/quizzes/edit/${quiz._id}`,
                                         );
                                       }}
-                                      className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                                      className="w-full px-4 py-2 bg-primary text-white rounded-lg hover:bg-[#1d4ed8] transition-colors flex items-center justify-center gap-2"
                                     >
                                       <Edit2 className="w-4 h-4" />
                                       Edit Quiz
@@ -1132,8 +1132,8 @@ const CoordinatorQuizzes = () => {
                                 </div>
 
                                 {/* Student Assignment Section */}
-                                <div className="mt-4 pt-4 border-t border-gray-200">
-                                  <h4 className="font-semibold text-gray-900 mb-3">
+                                <div className="mt-4 pt-4 border-t border-border">
+                                  <h4 className="font-semibold text-secondary mb-3">
                                     Student Assignment
                                   </h4>
                                   <div className="flex gap-3 flex-wrap">
@@ -1143,7 +1143,7 @@ const CoordinatorQuizzes = () => {
                                         setSelectedQuiz(quiz);
                                         fetchAssignedStudents(quiz._id);
                                       }}
-                                      className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
+                                      className="px-4 py-2 bg-card border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
                                     >
                                       <Users className="w-4 h-4" />
                                       View Assigned (

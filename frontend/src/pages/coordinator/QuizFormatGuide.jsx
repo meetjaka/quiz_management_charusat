@@ -139,14 +139,14 @@ Return ONLY valid JSON, no extra text or explanations. Generate 10-15 questions 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <button
           onClick={() => navigate('/coordinator/dashboard')}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
+          className="flex items-center gap-2 text-gray-600 hover:text-secondary mb-4 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Dashboard
         </button>
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-            <BookOpen className="w-8 h-8 text-blue-600" />
+          <h1 className="text-3xl font-bold text-secondary flex items-center gap-2">
+            <BookOpen className="w-8 h-8 text-primary" />
             Generate Quiz from ChatGPT
           </h1>
           <p className="text-gray-600 mt-2">Follow these steps to quickly generate quizzes using AI</p>
@@ -154,25 +154,25 @@ Return ONLY valid JSON, no extra text or explanations. Generate 10-15 questions 
         
         {/* Step-by-Step Guide */}
         <div className="bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-600 rounded-lg p-6 mb-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <CheckCircle className="w-6 h-6 text-blue-600" />
+          <h2 className="text-xl font-bold text-secondary mb-4 flex items-center gap-2">
+            <CheckCircle className="w-6 h-6 text-primary" />
             How to Use:
           </h2>
           <ol className="space-y-3">
             <li className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
+              <span className="flex-shrink-0 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
               <span className="font-medium text-gray-700">Copy the prompt below using the copy button</span>
             </li>
             <li className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
+              <span className="flex-shrink-0 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
               <span className="font-medium text-gray-700">Go to ChatGPT (chatgpt.com or app)</span>
             </li>
             <li className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">3</span>
+              <span className="flex-shrink-0 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">3</span>
               <span className="font-medium text-gray-700">Upload your chapter PDF or paste text content</span>
             </li>
             <li className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">4</span>
+              <span className="flex-shrink-0 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">4</span>
               <div className="flex-1">
                 <span className="font-medium text-gray-700">Paste the prompt and ask ChatGPT to generate questions from your content</span>
                 <div className="mt-1 text-sm text-gray-600">
@@ -181,15 +181,15 @@ Return ONLY valid JSON, no extra text or explanations. Generate 10-15 questions 
               </div>
             </li>
             <li className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">5</span>
+              <span className="flex-shrink-0 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">5</span>
               <span className="font-medium text-gray-700">ChatGPT will generate questions in our format</span>
             </li>
             <li className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">6</span>
+              <span className="flex-shrink-0 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">6</span>
               <span className="font-medium text-gray-700">Copy the JSON code from ChatGPT</span>
             </li>
             <li className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">7</span>
+              <span className="flex-shrink-0 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">7</span>
               <span className="font-medium text-gray-700">Come back here and paste in the JSON Generator!</span>
             </li>
           </ol>
@@ -197,7 +197,7 @@ Return ONLY valid JSON, no extra text or explanations. Generate 10-15 questions 
 
         {/* Customization Guide */}
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-3">📝 Optional: Customize Your Quiz</h2>
+          <h2 className="text-lg font-bold text-secondary mb-3">📝 Optional: Customize Your Quiz</h2>
           <p className="text-sm text-gray-700 mb-3">You can add these specifications with the prompt according to your preference:</p>
           
           <div className="space-y-4">
@@ -242,21 +242,21 @@ Return ONLY valid JSON, no extra text or explanations. Generate 10-15 questions 
         </div>
 
         {/* Prompt to Copy */}
-        <div className="bg-white border border-gray-200 rounded-lg shadow-md p-6 mb-6">
+        <div className="bg-card border border-border rounded-lg shadow-md p-6 mb-6">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-              <FileJson className="w-5 h-5 text-blue-600" />
+            <h3 className="text-lg font-bold text-secondary flex items-center gap-2">
+              <FileJson className="w-5 h-5 text-primary" />
               Step 1: Copy This Prompt
             </h3>
             <button
               onClick={() => copyToClipboard(promptForChatGPT)}
-              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-[#1d4ed8] transition-colors"
             >
               <Copy className="w-4 h-4" />
               Copy Prompt
             </button>
           </div>
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 max-h-96 overflow-y-auto">
+          <div className="bg-gray-50 border border-border rounded-lg p-4 max-h-96 overflow-y-auto">
             <pre className="text-sm text-gray-800 whitespace-pre-wrap font-mono">
               {promptForChatGPT}
             </pre>
@@ -264,9 +264,9 @@ Return ONLY valid JSON, no extra text or explanations. Generate 10-15 questions 
         </div>
 
         {/* Example Output */}
-        <div className="bg-white border border-gray-200 rounded-lg shadow-md p-6 mb-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">📄 Example: What ChatGPT Will Give You</h3>
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 max-h-96 overflow-y-auto">
+        <div className="bg-card border border-border rounded-lg shadow-md p-6 mb-6">
+          <h3 className="text-lg font-bold text-secondary mb-4">📄 Example: What ChatGPT Will Give You</h3>
+          <div className="bg-gray-50 border border-border rounded-lg p-4 max-h-96 overflow-y-auto">
             <pre className="text-sm text-gray-800 font-mono">
               {exampleJSON}
             </pre>
@@ -301,8 +301,8 @@ Return ONLY valid JSON, no extra text or explanations. Generate 10-15 questions 
         </div>
 
         {/* Next Step Button */}
-        <div className="bg-white border border-gray-200 rounded-lg shadow-md p-6">
-          <h3 className="font-bold text-gray-900 mb-3">Ready to Generate Your Quiz?</h3>
+        <div className="bg-card border border-border rounded-lg shadow-md p-6">
+          <h3 className="font-bold text-secondary mb-3">Ready to Generate Your Quiz?</h3>
           <p className="text-gray-600 mb-4">Once you have the JSON from ChatGPT, proceed to the generator.</p>
           <a
             href="/coordinator/json-generator"

@@ -22,7 +22,7 @@ export const Skeleton = ({ className = '', ...props }) => {
 // Card Skeleton
 export const CardSkeleton = () => {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 animate-pulse">
+    <div className="bg-card rounded-md subtle-shadow border border-border p-6 animate-pulse">
       <div className="space-y-3">
         <Skeleton className="h-4 w-3/4" />
         <Skeleton className="h-8 w-1/2" />
@@ -38,7 +38,7 @@ export const CardSkeleton = () => {
 // Stat Card Skeleton
 export const StatCardSkeleton = () => {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 animate-pulse">
+    <div className="bg-card rounded-md subtle-shadow border border-border p-6 animate-pulse">
       <div className="flex items-center justify-between mb-4">
         <Skeleton className="h-12 w-12 rounded-lg" />
         <Skeleton className="h-6 w-16 rounded-full" />
@@ -52,7 +52,7 @@ export const StatCardSkeleton = () => {
 // Table Skeleton
 export const TableSkeleton = ({ rows = 5, columns = 4 }) => {
   return (
-    <div className="overflow-x-auto rounded-lg border border-gray-200">
+    <div className="overflow-x-auto rounded-lg border border-border">
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
@@ -63,7 +63,7 @@ export const TableSkeleton = ({ rows = 5, columns = 4 }) => {
             ))}
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="bg-card divide-y divide-gray-200">
           {Array.from({ length: rows }).map((_, rowIndex) => (
             <tr key={rowIndex}>
               {Array.from({ length: columns }).map((_, colIndex) => (

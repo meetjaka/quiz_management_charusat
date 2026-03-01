@@ -83,10 +83,10 @@ const CoordinatorDashboard = () => {
         {/* Welcome Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Dashboard Overview</h1>
+            <h1 className="text-2xl font-bold text-secondary tracking-tight">Dashboard Overview</h1>
             <p className="text-gray-500 mt-1">Manage your assigned quizzes and monitor student performance</p>
           </div>
-          <div className="text-sm text-gray-500 bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
+          <div className="text-sm text-gray-500 bg-card px-4 py-2 rounded-lg border border-border subtle-shadow">
             {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </div>
         </div>
@@ -96,7 +96,7 @@ const CoordinatorDashboard = () => {
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
-            className="rounded-xl border border-red-100 bg-red-50 p-4 flex items-center gap-3"
+            className="rounded-md border border-red-100 bg-red-50 p-4 flex items-center gap-3"
           >
             <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
             <span className="text-sm font-medium text-red-800">{error}</span>
@@ -110,8 +110,8 @@ const CoordinatorDashboard = () => {
               title="Total Quizzes"
               value={stats.quizzes?.total || 0}
               icon={FileText}
-              color="text-blue-600"
-              bg="bg-blue-50"
+              color="text-primary"
+              bg="bg-primary/5"
             />
             <StatCard
               title="Published Quizzes"
@@ -139,8 +139,8 @@ const CoordinatorDashboard = () => {
               description="Manually create a quiz"
               icon={Plus}
               link="/coordinator/quizzes/create"
-              color="text-blue-600"
-              bg="bg-blue-50"
+              color="text-primary"
+              bg="bg-primary/5"
             />
             <QuickActionCard
               title="Generate from ChatGPT"
@@ -171,8 +171,8 @@ const CoordinatorDashboard = () => {
               description="Manage your assigned quizzes"
               icon={FileText}
               link="/coordinator/quizzes"
-              color="text-blue-600"
-              bg="bg-blue-50"
+              color="text-primary"
+              bg="bg-primary/5"
             />
             <QuickActionCard
               title="View Analytics"
@@ -186,10 +186,10 @@ const CoordinatorDashboard = () => {
         </motion.div>
 
         {/* Recent Quizzes */}
-        <motion.div variants={itemVariants} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-            <h2 className="text-lg font-bold text-gray-900">Assigned Quizzes</h2>
-            <Link to="/coordinator/quizzes" className="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1">
+        <motion.div variants={itemVariants} className="bg-card rounded-md subtle-shadow border border-border overflow-hidden">
+          <div className="p-6 border-b border-border/50 flex justify-between items-center">
+            <h2 className="text-lg font-bold text-secondary">Assigned Quizzes</h2>
+            <Link to="/coordinator/quizzes" className="text-sm font-medium text-primary hover:text-[#1d4ed8] flex items-center gap-1">
               View All <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -204,11 +204,11 @@ const CoordinatorDashboard = () => {
                 {quizzes.slice(0, 5).map((quiz) => (
                   <div
                     key={quiz._id}
-                    className="border border-gray-200 rounded-xl p-5 hover:bg-gray-50 transition-all"
+                    className="border border-border rounded-md p-5 hover:bg-gray-50 transition-all"
                   >
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
-                        <h3 className="font-bold text-gray-900 text-lg mb-2">
+                        <h3 className="font-bold text-secondary text-lg mb-2">
                           {quiz.title}
                         </h3>
                         <p className="text-sm text-gray-600 mb-3">
@@ -236,7 +236,7 @@ const CoordinatorDashboard = () => {
                             Active
                           </span>
                         ) : (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border bg-gray-50 text-gray-700 border-gray-200">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border bg-gray-50 text-gray-700 border-border">
                             Inactive
                           </span>
                         )}
@@ -256,7 +256,7 @@ const CoordinatorDashboard = () => {
 const StatCard = ({ title, value, icon: Icon, color, bg }) => (
   <motion.div 
     variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
-    className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all h-full"
+    className="bg-card p-5 rounded-md border border-border subtle-shadow hover:shadow-md transition-all h-full"
   >
     <div className="flex justify-between items-start mb-4">
       <div className={`p-2.5 rounded-lg ${bg}`}>
@@ -264,7 +264,7 @@ const StatCard = ({ title, value, icon: Icon, color, bg }) => (
       </div>
     </div>
     <div>
-      <h3 className="text-2xl font-bold text-gray-900">{value}</h3>
+      <h3 className="text-2xl font-bold text-secondary">{value}</h3>
       <p className="text-sm font-medium text-gray-500 mt-1">{title}</p>
     </div>
   </motion.div>
@@ -275,7 +275,7 @@ const QuickActionCard = ({ title, description, icon: Icon, link, color, bg, badg
     <motion.div
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      className="flex items-center p-5 bg-white border border-gray-200 rounded-xl transition-all hover:shadow-sm group relative"
+      className="flex items-center p-5 bg-card border border-border rounded-md transition-all hover:subtle-shadow group relative"
     >
       {badge && (
         <span className="absolute top-2 right-2 text-xs font-bold text-green-600 bg-green-100 px-2 py-0.5 rounded-full">
@@ -286,7 +286,7 @@ const QuickActionCard = ({ title, description, icon: Icon, link, color, bg, badg
         <Icon className={`w-6 h-6 ${color}`} />
       </div>
       <div className="ml-4 flex-1">
-        <p className="font-semibold text-gray-900">{title}</p>
+        <p className="font-semibold text-secondary">{title}</p>
         <p className="text-sm text-gray-600">{description}</p>
       </div>
       <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-gray-600 group-hover:translate-x-1 transition-all" />

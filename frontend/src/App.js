@@ -270,7 +270,13 @@ function App() {
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
-        <ToastContainer />
+        <ToastContainer
+          position="bottom-right"
+          theme="light"
+          toastClassName="bg-card text-secondary border border-border subtle-shadow rounded-md font-sans text-sm"
+          hideProgressBar={true}
+          autoClose={3000}
+        />
       </AuthProvider>
     </Router>
   );

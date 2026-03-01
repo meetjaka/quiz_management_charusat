@@ -149,7 +149,7 @@ const CoordinatorSettings = () => {
       <div className="p-6 max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
+          <h1 className="text-3xl font-bold text-secondary">Settings</h1>
           <p className="text-gray-600 mt-2">Manage your account preferences</p>
         </div>
 
@@ -178,8 +178,8 @@ const CoordinatorSettings = () => {
         )}
 
         {/* Tabs */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-          <div className="border-b border-gray-200">
+        <div className="bg-card rounded-md subtle-shadow border border-border">
+          <div className="border-b border-border">
             <nav className="flex space-x-8 px-6">
               {tabs.map((tab) => {
                 const IconComponent = tab.icon;
@@ -189,7 +189,7 @@ const CoordinatorSettings = () => {
                     onClick={() => setActiveTab(tab.id)}
                     className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors ${
                       activeTab === tab.id
-                        ? "border-blue-500 text-blue-600"
+                        ? "border-blue-500 text-primary"
                         : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                     }`}
                   >
@@ -208,18 +208,18 @@ const CoordinatorSettings = () => {
                 {/* Profile Picture Section */}
                 <div className="flex items-center space-x-6">
                   <div className="relative">
-                    <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center">
-                      <User className="w-12 h-12 text-blue-600" />
+                    <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center">
+                      <User className="w-12 h-12 text-primary" />
                     </div>
                     <button
                       type="button"
-                      className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full border-2 border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                      className="absolute bottom-0 right-0 w-8 h-8 bg-card rounded-full border-2 border-border flex items-center justify-center hover:bg-gray-50 transition-colors"
                     >
                       <Camera className="w-4 h-4 text-gray-600" />
                     </button>
                   </div>
                   <div>
-                    <h3 className="text-lg font-medium text-gray-900">Profile Photo</h3>
+                    <h3 className="text-lg font-medium text-secondary">Profile Photo</h3>
                     <p className="text-sm text-gray-500">Update your photo and personal details</p>
                   </div>
                 </div>
@@ -338,7 +338,7 @@ const CoordinatorSettings = () => {
                     whileTap={{ scale: 0.98 }}
                     type="submit"
                     disabled={loading}
-                    className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-lg hover:bg-[#1d4ed8] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {loading ? (
                       <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -438,7 +438,7 @@ const CoordinatorSettings = () => {
 
                 {/* Password Requirements */}
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <h4 className="text-sm font-medium text-gray-900 mb-2">Password Requirements</h4>
+                  <h4 className="text-sm font-medium text-secondary mb-2">Password Requirements</h4>
                   <ul className="text-sm text-gray-600 space-y-1">
                     <li>• At least 6 characters long</li>
                     <li>• Mix of uppercase and lowercase letters recommended</li>
@@ -453,7 +453,7 @@ const CoordinatorSettings = () => {
                     whileTap={{ scale: 0.98 }}
                     type="submit"
                     disabled={loading}
-                    className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-lg hover:bg-[#1d4ed8] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {loading ? (
                       <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />

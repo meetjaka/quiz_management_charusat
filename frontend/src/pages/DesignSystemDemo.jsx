@@ -237,13 +237,13 @@ const DesignSystemDemo = () => {
         </section>
 
         {/* Performance Note */}
-        <Card className="bg-blue-50 border-blue-200">
+        <Card className="bg-primary/5 border-blue-200">
           <h3 className={theme.typography.h4 + ' text-blue-900 mb-2'}>
             ⚡ Performance Optimized
           </h3>
           <p className="text-blue-800">
-            All animations use only <code className="bg-blue-100 px-2 py-1 rounded">transform</code> and{' '}
-            <code className="bg-blue-100 px-2 py-1 rounded">opacity</code> properties for GPU acceleration.
+            All animations use only <code className="bg-primary/10 px-2 py-1 rounded">transform</code> and{' '}
+            <code className="bg-primary/10 px-2 py-1 rounded">opacity</code> properties for GPU acceleration.
             This ensures smooth 60fps animations without CPU overhead.
           </p>
         </Card>
