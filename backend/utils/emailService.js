@@ -19,7 +19,7 @@ const createTransporter = () => {
   } else {
     // Development - use Gmail or Ethereal
     // For Gmail, enable "Less secure app access" or use App Password
-    return nodemailer.createTransporter({
+    return nodemailer.createTransport({
       service: "gmail",
       auth: {
         user: process.env.EMAIL_USER || "your-email@gmail.com",
