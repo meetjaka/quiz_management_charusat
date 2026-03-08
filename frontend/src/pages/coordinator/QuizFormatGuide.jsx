@@ -135,75 +135,75 @@ Return ONLY valid JSON, no extra text or explanations. Generate 10-15 questions 
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-secondary-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <button
           onClick={() => navigate('/coordinator/dashboard')}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
+          className="flex items-center gap-2 text-secondary-600 hover:text-secondary-900 mb-4 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Dashboard
         </button>
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-            <BookOpen className="w-8 h-8 text-blue-600" />
+          <h1 className="text-3xl font-bold text-secondary-900 flex items-center gap-2">
+            <BookOpen className="w-8 h-8 text-brand-600" />
             Generate Quiz from ChatGPT
           </h1>
-          <p className="text-gray-600 mt-2">Follow these steps to quickly generate quizzes using AI</p>
+          <p className="text-secondary-600 mt-2">Follow these steps to quickly generate quizzes using AI</p>
         </div>
         
         {/* Step-by-Step Guide */}
-        <div className="bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-600 rounded-lg p-6 mb-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <CheckCircle className="w-6 h-6 text-blue-600" />
+        <div className="bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-brand-600 rounded-lg p-6 mb-6">
+          <h2 className="text-xl font-bold text-secondary-900 mb-4 flex items-center gap-2">
+            <CheckCircle className="w-6 h-6 text-brand-600" />
             How to Use:
           </h2>
           <ol className="space-y-3">
             <li className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
-              <span className="font-medium text-gray-700">Copy the prompt below using the copy button</span>
+              <span className="flex-shrink-0 w-6 h-6 bg-brand-600 text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
+              <span className="font-medium text-secondary-700">Copy the prompt below using the copy button</span>
             </li>
             <li className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
-              <span className="font-medium text-gray-700">Go to ChatGPT (chatgpt.com or app)</span>
+              <span className="flex-shrink-0 w-6 h-6 bg-brand-600 text-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
+              <span className="font-medium text-secondary-700">Go to ChatGPT (chatgpt.com or app)</span>
             </li>
             <li className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">3</span>
-              <span className="font-medium text-gray-700">Upload your chapter PDF or paste text content</span>
+              <span className="flex-shrink-0 w-6 h-6 bg-brand-600 text-white rounded-full flex items-center justify-center text-sm font-bold">3</span>
+              <span className="font-medium text-secondary-700">Upload your chapter PDF or paste text content</span>
             </li>
             <li className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">4</span>
+              <span className="flex-shrink-0 w-6 h-6 bg-brand-600 text-white rounded-full flex items-center justify-center text-sm font-bold">4</span>
               <div className="flex-1">
-                <span className="font-medium text-gray-700">Paste the prompt and ask ChatGPT to generate questions from your content</span>
-                <div className="mt-1 text-sm text-gray-600">
+                <span className="font-medium text-secondary-700">Paste the prompt and ask ChatGPT to generate questions from your content</span>
+                <div className="mt-1 text-sm text-secondary-600">
                   Note: Quiz details (title, marks, duration) will be collected separately in the quiz creation form.
                 </div>
               </div>
             </li>
             <li className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">5</span>
-              <span className="font-medium text-gray-700">ChatGPT will generate questions in our format</span>
+              <span className="flex-shrink-0 w-6 h-6 bg-brand-600 text-white rounded-full flex items-center justify-center text-sm font-bold">5</span>
+              <span className="font-medium text-secondary-700">ChatGPT will generate questions in our format</span>
             </li>
             <li className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">6</span>
-              <span className="font-medium text-gray-700">Copy the JSON code from ChatGPT</span>
+              <span className="flex-shrink-0 w-6 h-6 bg-brand-600 text-white rounded-full flex items-center justify-center text-sm font-bold">6</span>
+              <span className="font-medium text-secondary-700">Copy the JSON code from ChatGPT</span>
             </li>
             <li className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">7</span>
-              <span className="font-medium text-gray-700">Come back here and paste in the JSON Generator!</span>
+              <span className="flex-shrink-0 w-6 h-6 bg-brand-600 text-white rounded-full flex items-center justify-center text-sm font-bold">7</span>
+              <span className="font-medium text-secondary-700">Come back here and paste in the JSON Generator!</span>
             </li>
           </ol>
         </div>
 
         {/* Customization Guide */}
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-3">📝 Optional: Customize Your Quiz</h2>
-          <p className="text-sm text-gray-700 mb-3">You can add these specifications with the prompt according to your preference:</p>
+        <div className="bg-warning-50 border border-warning-200 rounded-lg p-6 mb-6">
+          <h2 className="text-lg font-bold text-secondary-900 mb-3">📝 Optional: Customize Your Quiz</h2>
+          <p className="text-sm text-secondary-700 mb-3">You can add these specifications with the prompt according to your preference:</p>
           
           <div className="space-y-4">
             <div>
-              <h3 className="font-semibold text-gray-800 mb-2">Question Types:</h3>
-              <ul className="text-sm text-gray-700 space-y-1 ml-4 list-disc">
+              <h3 className="font-semibold text-secondary-800 mb-2">Question Types:</h3>
+              <ul className="text-sm text-secondary-700 space-y-1 ml-4 list-disc">
                 <li><strong>"mcq"</strong> = Single correct answer (2-6 options flexible)</li>
                 <li><strong>"mcq_multiple"</strong> = Multiple correct answers (3-8 options flexible)</li>
                 <li><strong>"true_false"</strong> = True or False (exactly 2 options)</li>
@@ -212,8 +212,8 @@ Return ONLY valid JSON, no extra text or explanations. Generate 10-15 questions 
             </div>
 
             <div>
-              <h3 className="font-semibold text-gray-800 mb-2">Question Formatting:</h3>
-              <ul className="text-sm text-gray-700 space-y-1 ml-4 list-disc">
+              <h3 className="font-semibold text-secondary-800 mb-2">Question Formatting:</h3>
+              <ul className="text-sm text-secondary-700 space-y-1 ml-4 list-disc">
                 <li>For MCQ: Provide 2-6 options (flexible, not fixed to 4), mark EXACTLY ONE as correct</li>
                 <li>For Multiple Answer: Use "mcq_multiple", provide 3-8 options, mark ALL correct answers</li>
                 <li>For Multi-select: Add "(Select all that apply)" in question text</li>
@@ -222,8 +222,8 @@ Return ONLY valid JSON, no extra text or explanations. Generate 10-15 questions 
             </div>
 
             <div>
-              <h3 className="font-semibold text-gray-800 mb-2">Difficulty & Marks:</h3>
-              <ul className="text-sm text-gray-700 space-y-1 ml-4 list-disc">
+              <h3 className="font-semibold text-secondary-800 mb-2">Difficulty & Marks:</h3>
+              <ul className="text-sm text-secondary-700 space-y-1 ml-4 list-disc">
                 <li><strong>Easy</strong> = 1 mark</li>
                 <li><strong>Medium</strong> = 2-3 marks</li>
                 <li><strong>Hard</strong> = 4-5 marks</li>
@@ -231,8 +231,8 @@ Return ONLY valid JSON, no extra text or explanations. Generate 10-15 questions 
             </div>
 
             <div>
-              <h3 className="font-semibold text-gray-800 mb-2">Number of Options:</h3>
-              <ul className="text-sm text-gray-700 space-y-1 ml-4 list-disc">
+              <h3 className="font-semibold text-secondary-800 mb-2">Number of Options:</h3>
+              <ul className="text-sm text-secondary-700 space-y-1 ml-4 list-disc">
                 <li>Not restricted to 4 options - use 2-3 for simpler questions</li>
                 <li>Use 4-6 for complex questions</li>
                 <li>Adjust based on question complexity</li>
@@ -242,41 +242,41 @@ Return ONLY valid JSON, no extra text or explanations. Generate 10-15 questions 
         </div>
 
         {/* Prompt to Copy */}
-        <div className="bg-white border border-gray-200 rounded-lg shadow-md p-6 mb-6">
+        <div className="bg-white border border-secondary-200 rounded-lg shadow-card-hover p-6 mb-6">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-              <FileJson className="w-5 h-5 text-blue-600" />
+            <h3 className="text-lg font-bold text-secondary-900 flex items-center gap-2">
+              <FileJson className="w-5 h-5 text-brand-600" />
               Step 1: Copy This Prompt
             </h3>
             <button
               onClick={() => copyToClipboard(promptForChatGPT)}
-              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              className="flex items-center gap-2 bg-brand-600 text-white px-4 py-2 rounded-lg hover:bg-brand-700 transition-colors"
             >
               <Copy className="w-4 h-4" />
               Copy Prompt
             </button>
           </div>
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 max-h-96 overflow-y-auto">
-            <pre className="text-sm text-gray-800 whitespace-pre-wrap font-mono">
+          <div className="bg-secondary-50 border border-secondary-200 rounded-lg p-4 max-h-96 overflow-y-auto">
+            <pre className="text-sm text-secondary-800 whitespace-pre-wrap font-mono">
               {promptForChatGPT}
             </pre>
           </div>
         </div>
 
         {/* Example Output */}
-        <div className="bg-white border border-gray-200 rounded-lg shadow-md p-6 mb-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">📄 Example: What ChatGPT Will Give You</h3>
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 max-h-96 overflow-y-auto">
-            <pre className="text-sm text-gray-800 font-mono">
+        <div className="bg-white border border-secondary-200 rounded-lg shadow-card-hover p-6 mb-6">
+          <h3 className="text-lg font-bold text-secondary-900 mb-4">📄 Example: What ChatGPT Will Give You</h3>
+          <div className="bg-secondary-50 border border-secondary-200 rounded-lg p-4 max-h-96 overflow-y-auto">
+            <pre className="text-sm text-secondary-800 font-mono">
               {exampleJSON}
             </pre>
           </div>
         </div>
 
         {/* Important Notes */}
-        <div className="bg-yellow-50 border-l-4 border-yellow-500 rounded-lg p-6 mb-6">
-          <h3 className="font-bold text-yellow-900 mb-3">⚠️ Important Notes:</h3>
-          <ul className="space-y-2 text-sm text-yellow-800">
+        <div className="bg-warning-50 border-l-4 border-warning-500 rounded-lg p-6 mb-6">
+          <h3 className="font-bold text-warning-900 mb-3">⚠️ Important Notes:</h3>
+          <ul className="space-y-2 text-sm text-warning-800">
             <li className="flex gap-2">
               <span>•</span>
               <span>Make sure ChatGPT returns ONLY the JSON code</span>
@@ -301,12 +301,12 @@ Return ONLY valid JSON, no extra text or explanations. Generate 10-15 questions 
         </div>
 
         {/* Next Step Button */}
-        <div className="bg-white border border-gray-200 rounded-lg shadow-md p-6">
-          <h3 className="font-bold text-gray-900 mb-3">Ready to Generate Your Quiz?</h3>
-          <p className="text-gray-600 mb-4">Once you have the JSON from ChatGPT, proceed to the generator.</p>
+        <div className="bg-white border border-secondary-200 rounded-lg shadow-card-hover p-6">
+          <h3 className="font-bold text-secondary-900 mb-3">Ready to Generate Your Quiz?</h3>
+          <p className="text-secondary-600 mb-4">Once you have the JSON from ChatGPT, proceed to the generator.</p>
           <a
             href="/coordinator/json-generator"
-            className="inline-flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors font-medium"
+            className="inline-flex items-center gap-2 bg-success-600 text-white px-6 py-3 rounded-lg hover:bg-success-700 transition-colors font-medium"
           >
             <FileJson className="w-5 h-5" />
             Go to JSON Generator

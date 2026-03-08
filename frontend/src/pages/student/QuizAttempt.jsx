@@ -162,8 +162,8 @@ const QuizAttempt = () => {
       <Layout title="Quiz Attempt">
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            <p className="mt-4 text-gray-600">Loading quiz...</p>
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-brand-600"></div>
+            <p className="mt-4 text-secondary-600">Loading quiz...</p>
           </div>
         </div>
       </Layout>
@@ -174,12 +174,12 @@ const QuizAttempt = () => {
     return (
       <Layout title="Quiz Attempt">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-            <h2 className="text-xl font-bold text-red-800 mb-2">Error</h2>
-            <p className="text-red-700">{error}</p>
+          <div className="bg-danger-50 border border-danger-200 rounded-lg p-6">
+            <h2 className="text-xl font-bold text-danger-800 mb-2">Error</h2>
+            <p className="text-danger-700">{error}</p>
             <button
               onClick={() => navigate("/student/quizzes")}
-              className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+              className="mt-4 px-4 py-2 bg-danger-600 text-white rounded-lg hover:bg-danger-700"
             >
               Back to Quizzes
             </button>
@@ -193,7 +193,7 @@ const QuizAttempt = () => {
     return (
       <Layout title="Quiz Attempt">
         <div className="text-center py-12">
-          <p className="text-gray-600">No questions available</p>
+          <p className="text-secondary-600">No questions available</p>
         </div>
       </Layout>
     );
@@ -226,27 +226,27 @@ const QuizAttempt = () => {
       />
 
       {/* Fixed Header */}
-      <div className="bg-white shadow-md border-b border-gray-200 sticky top-0 z-10">
+      <div className="bg-white shadow-card-hover border-b border-secondary-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-xl font-bold text-gray-900">{quiz?.title}</h1>
-              <p className="text-sm text-gray-600">
+              <h1 className="text-xl font-bold text-secondary-900">{quiz?.title}</h1>
+              <p className="text-sm text-secondary-600">
                 Question {currentQuestion + 1} of {questions.length}
               </p>
             </div>
             <div className="flex items-center space-x-6">
               {tabSwitchCount > 0 && (
                 <div className="text-right">
-                  <p className="text-sm text-red-600">Tab Switches</p>
-                  <p className="text-2xl font-bold text-red-600">
+                  <p className="text-sm text-danger-600">Tab Switches</p>
+                  <p className="text-2xl font-bold text-danger-600">
                     {tabSwitchCount}
                   </p>
                 </div>
               )}
               <div className="text-right">
-                <p className="text-sm text-gray-600">Answered</p>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="text-sm text-secondary-600">Answered</p>
+                <p className="text-2xl font-bold text-success-600">
                   {getAnsweredCount()}/{questions.length}
                 </p>
               </div>
@@ -259,14 +259,14 @@ const QuizAttempt = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Question Panel */}
           <div className="lg:col-span-3">
-            <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="bg-white rounded-lg shadow-card-hover p-6">
               {/* Question Text */}
               <div className="mb-6">
                 <div className="flex items-start">
-                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">
+                  <span className="bg-brand-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">
                     {currentQuestion + 1}
                   </span>
-                  <p className="text-lg text-gray-900 flex-1">
+                  <p className="text-lg text-secondary-900 flex-1">
                     {currentQ?.questionText}
                   </p>
                 </div>
@@ -281,8 +281,8 @@ const QuizAttempt = () => {
                       key={option._id}
                       className={`flex items-start p-4 border-2 rounded-lg cursor-pointer transition-all ${
                         answers[currentQ?._id] === option._id
-                          ? "border-blue-500 bg-blue-50"
-                          : "border-gray-200 hover:border-blue-300 hover:bg-gray-50"
+                          ? "border-brand-500 bg-brand-50"
+                          : "border-secondary-200 hover:border-brand-300 hover:bg-secondary-50"
                       }`}
                     >
                       <input
@@ -293,13 +293,13 @@ const QuizAttempt = () => {
                         onChange={() =>
                           handleAnswerChange(currentQ?._id, option._id)
                         }
-                        className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500"
+                        className="mt-1 h-4 w-4 text-brand-600 focus:ring-brand-500"
                       />
                       <div className="ml-3">
-                        <span className="font-semibold text-gray-700 mr-2">
+                        <span className="font-semibold text-secondary-700 mr-2">
                           {label}.
                         </span>
-                        <span className="text-gray-900">{option.text}</span>
+                        <span className="text-secondary-900">{option.text}</span>
                       </div>
                     </label>
                   );
@@ -307,13 +307,13 @@ const QuizAttempt = () => {
               </div>
 
               {/* Navigation Buttons */}
-              <div className="flex justify-between items-center pt-6 border-t border-gray-200">
+              <div className="flex justify-between items-center pt-6 border-t border-secondary-200">
                 <button
                   onClick={() =>
                     setCurrentQuestion((prev) => Math.max(0, prev - 1))
                   }
                   disabled={currentQuestion === 0}
-                  className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-6 py-2 bg-secondary-200 text-secondary-700 rounded-lg hover:bg-secondary-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   ← Previous
                 </button>
@@ -322,7 +322,7 @@ const QuizAttempt = () => {
                   <button
                     onClick={() => handleSubmit(false)}
                     disabled={submitting}
-                    className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+                    className="px-6 py-2 bg-success-600 text-white rounded-lg hover:bg-success-700 disabled:opacity-50"
                   >
                     {submitting ? "Submitting..." : "Submit Quiz"}
                   </button>
@@ -333,7 +333,7 @@ const QuizAttempt = () => {
                         Math.min(questions.length - 1, prev + 1),
                       )
                     }
-                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    className="px-6 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700"
                   >
                     Next →
                   </button>
@@ -344,8 +344,8 @@ const QuizAttempt = () => {
 
           {/* Question Navigator */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-lg p-4 sticky top-24">
-              <h3 className="font-bold text-gray-900 mb-4">
+            <div className="bg-white rounded-lg shadow-card-hover p-4 sticky top-24">
+              <h3 className="font-bold text-secondary-900 mb-4">
                 Question Navigator
               </h3>
               <div className="grid grid-cols-4 gap-2">
@@ -355,10 +355,10 @@ const QuizAttempt = () => {
                     onClick={() => setCurrentQuestion(index)}
                     className={`w-full aspect-square rounded-lg font-semibold text-sm transition-all ${
                       index === currentQuestion
-                        ? "bg-blue-600 text-white ring-2 ring-blue-400"
+                        ? "bg-brand-600 text-white ring-2 ring-brand-400"
                         : answers[q._id]
-                          ? "bg-green-100 text-green-800 hover:bg-green-200"
-                          : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                          ? "bg-success-100 text-success-800 hover:bg-success-200"
+                          : "bg-secondary-100 text-secondary-600 hover:bg-secondary-200"
                     }`}
                   >
                     {index + 1}
@@ -367,16 +367,16 @@ const QuizAttempt = () => {
               </div>
               <div className="mt-4 space-y-2 text-xs">
                 <div className="flex items-center">
-                  <div className="w-4 h-4 bg-green-100 rounded mr-2"></div>
-                  <span className="text-gray-600">Answered</span>
+                  <div className="w-4 h-4 bg-success-100 rounded mr-2"></div>
+                  <span className="text-secondary-600">Answered</span>
                 </div>
                 <div className="flex items-center">
-                  <div className="w-4 h-4 bg-gray-100 rounded mr-2"></div>
-                  <span className="text-gray-600">Not Answered</span>
+                  <div className="w-4 h-4 bg-secondary-100 rounded mr-2"></div>
+                  <span className="text-secondary-600">Not Answered</span>
                 </div>
                 <div className="flex items-center">
-                  <div className="w-4 h-4 bg-blue-600 rounded mr-2"></div>
-                  <span className="text-gray-600">Current</span>
+                  <div className="w-4 h-4 bg-brand-600 rounded mr-2"></div>
+                  <span className="text-secondary-600">Current</span>
                 </div>
               </div>
             </div>

@@ -28,7 +28,7 @@ const GroupStudents = () => {
   }, [groupId]);
 
   if (loading) return <div>Loading...</div>;
-  if (error) return <div className="text-red-500">{error}</div>;
+  if (error) return <div className="text-danger-500">{error}</div>;
 
   return (
     <div className="p-6">
@@ -41,7 +41,7 @@ const GroupStudents = () => {
           <li key={student._id}>
             <Link
               to={`/admin/students/${student._id}`}
-              className="text-blue-600 hover:underline"
+              className="text-brand-600 hover:underline"
             >
               {student.fullName || student.email}
             </Link>

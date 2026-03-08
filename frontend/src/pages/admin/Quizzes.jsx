@@ -306,7 +306,7 @@ const AdminQuizzes = () => {
 
   return (
     <Layout title="Quiz Management">
-      <div className="min-h-screen bg-gray-50/50 pb-12">
+      <div className="min-h-screen bg-secondary-50/50 pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <motion.div
@@ -315,10 +315,10 @@ const AdminQuizzes = () => {
             className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8"
           >
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+              <h1 className="text-2xl font-bold text-secondary-900 tracking-tight mb-1">
                 Quiz Management
               </h1>
-              <p className="text-gray-500 mt-1 text-sm">
+              <p className="text-secondary-500 mt-1 text-sm">
                 Create, manage and monitor student assessments
               </p>
             </div>
@@ -327,11 +327,10 @@ const AdminQuizzes = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setShowCreateForm(!showCreateForm)}
-              className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm ${
-                showCreateForm
-                  ? "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
-                  : "bg-blue-600 text-white hover:bg-blue-700 shadow-blue-200"
-              }`}
+              className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-card ${showCreateForm
+                  ? "bg-white border border-secondary-300 text-secondary-700 hover:bg-secondary-50"
+                  : "bg-brand-600 text-white hover:bg-brand-700 shadow-blue-200"
+                }`}
             >
               {showCreateForm ? (
                 <>
@@ -352,7 +351,7 @@ const AdminQuizzes = () => {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
-                className="mb-6 rounded-lg bg-red-50 border border-red-200 p-4 flex items-center gap-3 text-red-700"
+                className="mb-6 rounded-lg bg-danger-50 border border-danger-200 p-4 flex items-center gap-3 text-danger-700"
               >
                 <AlertCircle className="w-5 h-5 flex-shrink-0" />
                 <span className="text-sm font-medium">{error}</span>
@@ -363,7 +362,7 @@ const AdminQuizzes = () => {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
-                className="mb-6 rounded-lg bg-green-50 border border-green-200 p-4 flex items-center gap-3 text-green-700"
+                className="mb-6 rounded-lg bg-success-50 border border-success-200 p-4 flex items-center gap-3 text-success-700"
               >
                 <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
                 <span className="text-sm font-medium">{success}</span>
@@ -378,27 +377,27 @@ const AdminQuizzes = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 20 }}
-                className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8"
+                className="bg-white rounded-xl shadow-card border border-secondary-200 overflow-hidden mb-8"
               >
                 {/* Stepper Header */}
-                <div className="border-b border-gray-100 p-6 bg-gray-50/50">
+                <div className="border-b border-secondary-100 p-6 bg-secondary-50/50">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div
-                        className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold ${creationStep >= 1 ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-500"}`}
+                        className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold ${creationStep >= 1 ? "bg-brand-600 text-white" : "bg-secondary-200 text-secondary-500"}`}
                       >
                         1
                       </div>
                       <div
-                        className={`h-1 w-12 rounded ${creationStep >= 2 ? "bg-blue-600" : "bg-gray-200"}`}
+                        className={`h-1 w-12 rounded ${creationStep >= 2 ? "bg-brand-600" : "bg-secondary-200"}`}
                       />
                       <div
-                        className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold ${creationStep >= 2 ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-500"}`}
+                        className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold ${creationStep >= 2 ? "bg-brand-600 text-white" : "bg-secondary-200 text-secondary-500"}`}
                       >
                         2
                       </div>
                     </div>
-                    <span className="text-sm font-medium text-gray-600">
+                    <span className="text-sm font-medium text-secondary-600">
                       {creationStep === 1 ? "Quiz Details" : "Questions"}
                     </span>
                   </div>
@@ -409,63 +408,63 @@ const AdminQuizzes = () => {
                     <form onSubmit={handleNextStep} className="space-y-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-1">
-                          <label className="text-sm font-medium text-gray-700">
-                            Quiz Title <span className="text-red-500">*</span>
+                          <label className="text-sm font-medium text-secondary-700">
+                            Quiz Title <span className="text-danger-500">*</span>
                           </label>
                           <input
                             type="text"
                             name="title"
                             value={formData.title}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
+                            className="w-full px-4 py-2.5 rounded-lg border border-secondary-300 bg-secondary-50 focus:bg-white focus:ring-2 focus:ring-brand-100 focus:border-brand-500 transition-all text-sm"
                             placeholder="e.g. Mid-Semester Java Exam"
                           />
                         </div>
 
                         <div className="space-y-1">
-                          <label className="text-sm font-medium text-gray-700">
-                            Department <span className="text-red-500">*</span>
+                          <label className="text-sm font-medium text-secondary-700">
+                            Department <span className="text-danger-500">*</span>
                           </label>
                           <input
                             type="text"
                             name="department"
                             value={formData.department}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
+                            className="w-full px-4 py-2.5 rounded-lg border border-secondary-300 bg-secondary-50 focus:bg-white focus:ring-2 focus:ring-brand-100 focus:border-brand-500 transition-all text-sm"
                             placeholder="e.g. Computer Science"
                           />
                         </div>
 
                         <div className="space-y-1">
-                          <label className="text-sm font-medium text-gray-700">
-                            Semester <span className="text-red-500">*</span>
+                          <label className="text-sm font-medium text-secondary-700">
+                            Semester <span className="text-danger-500">*</span>
                           </label>
                           <input
                             type="text"
                             name="semester"
                             value={formData.semester}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
+                            className="w-full px-4 py-2.5 rounded-lg border border-secondary-300 bg-secondary-50 focus:bg-white focus:ring-2 focus:ring-brand-100 focus:border-brand-500 transition-all text-sm"
                             placeholder="e.g. 5"
                           />
                         </div>
 
                         <div className="space-y-1">
-                          <label className="text-sm font-medium text-gray-700">
-                            Subject <span className="text-red-500">*</span>
+                          <label className="text-sm font-medium text-secondary-700">
+                            Subject <span className="text-danger-500">*</span>
                           </label>
                           <input
                             type="text"
                             name="subject"
                             value={formData.subject}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
+                            className="w-full px-4 py-2.5 rounded-lg border border-secondary-300 bg-secondary-50 focus:bg-white focus:ring-2 focus:ring-brand-100 focus:border-brand-500 transition-all text-sm"
                             placeholder="e.g. Database Systems"
                           />
                         </div>
 
                         <div className="space-y-1">
-                          <label className="text-sm font-medium text-gray-700">
+                          <label className="text-sm font-medium text-secondary-700">
                             Batch
                           </label>
                           <input
@@ -473,55 +472,55 @@ const AdminQuizzes = () => {
                             name="batch"
                             value={formData.batch}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
+                            className="w-full px-4 py-2.5 rounded-lg border border-secondary-300 bg-secondary-50 focus:bg-white focus:ring-2 focus:ring-brand-100 focus:border-brand-500 transition-all text-sm"
                             placeholder="e.g. 2024"
                           />
                         </div>
 
                         <div className="space-y-1">
-                          <label className="text-sm font-medium text-gray-700">
+                          <label className="text-sm font-medium text-secondary-700">
                             Duration (mins){" "}
-                            <span className="text-red-500">*</span>
+                            <span className="text-danger-500">*</span>
                           </label>
                           <input
                             type="number"
                             name="duration"
                             value={formData.duration}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
+                            className="w-full px-4 py-2.5 rounded-lg border border-secondary-300 bg-secondary-50 focus:bg-white focus:ring-2 focus:ring-brand-100 focus:border-brand-500 transition-all text-sm"
                             placeholder="60"
                             min="1"
                           />
                         </div>
 
                         <div className="space-y-1">
-                          <label className="text-sm font-medium text-gray-700">
-                            Start Time <span className="text-red-500">*</span>
+                          <label className="text-sm font-medium text-secondary-700">
+                            Start Time <span className="text-danger-500">*</span>
                           </label>
                           <input
                             type="datetime-local"
                             name="startTime"
                             value={formData.startTime}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
+                            className="w-full px-4 py-2.5 rounded-lg border border-secondary-300 bg-secondary-50 focus:bg-white focus:ring-2 focus:ring-brand-100 focus:border-brand-500 transition-all text-sm"
                           />
                         </div>
 
                         <div className="space-y-1">
-                          <label className="text-sm font-medium text-gray-700">
-                            End Time <span className="text-red-500">*</span>
+                          <label className="text-sm font-medium text-secondary-700">
+                            End Time <span className="text-danger-500">*</span>
                           </label>
                           <input
                             type="datetime-local"
                             name="endTime"
                             value={formData.endTime}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
+                            className="w-full px-4 py-2.5 rounded-lg border border-secondary-300 bg-secondary-50 focus:bg-white focus:ring-2 focus:ring-brand-100 focus:border-brand-500 transition-all text-sm"
                           />
                         </div>
 
                         <div className="space-y-1">
-                          <label className="text-sm font-medium text-gray-700">
+                          <label className="text-sm font-medium text-secondary-700">
                             Passing Marks
                           </label>
                           <input
@@ -529,14 +528,14 @@ const AdminQuizzes = () => {
                             name="passingMarks"
                             value={formData.passingMarks}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
+                            className="w-full px-4 py-2.5 rounded-lg border border-secondary-300 bg-secondary-50 focus:bg-white focus:ring-2 focus:ring-brand-100 focus:border-brand-500 transition-all text-sm"
                             placeholder="Auto-calculated if empty"
                           />
                         </div>
                       </div>
 
                       <div className="space-y-1">
-                        <label className="text-sm font-medium text-gray-700">
+                        <label className="text-sm font-medium text-secondary-700">
                           Description
                         </label>
                         <textarea
@@ -544,7 +543,7 @@ const AdminQuizzes = () => {
                           value={formData.description}
                           onChange={handleInputChange}
                           rows="3"
-                          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm"
+                          className="w-full px-4 py-2.5 rounded-lg border border-secondary-300 bg-secondary-50 focus:bg-white focus:ring-2 focus:ring-brand-100 focus:border-brand-500 transition-all text-sm"
                           placeholder="Instructions for students..."
                         />
                       </div>
@@ -554,7 +553,7 @@ const AdminQuizzes = () => {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           type="submit"
-                          className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors shadow-sm"
+                          className="bg-brand-600 hover:bg-brand-700 text-white px-8 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors shadow-card"
                         >
                           Next Step <ChevronRight className="w-4 h-4" />
                         </motion.button>
@@ -566,24 +565,23 @@ const AdminQuizzes = () => {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <button
                           onClick={() => setCreationMethod("manual")}
-                          className={`p-4 rounded-xl border-2 flex flex-col items-center gap-3 transition-all ${
-                            creationMethod === "manual"
-                              ? "border-blue-600 bg-blue-50/50"
-                              : "border-gray-200 hover:border-blue-300 hover:bg-gray-50"
-                          }`}
+                          className={`p-4 rounded-xl border-2 flex flex-col items-center gap-3 transition-all ${creationMethod === "manual"
+                              ? "border-brand-600 bg-brand-50/50"
+                              : "border-secondary-200 hover:border-brand-300 hover:bg-secondary-50"
+                            }`}
                         >
                           <div
-                            className={`p-3 rounded-full ${creationMethod === "manual" ? "bg-blue-100 text-blue-600" : "bg-gray-100 text-gray-500"}`}
+                            className={`p-3 rounded-full ${creationMethod === "manual" ? "bg-brand-100 text-brand-600" : "bg-secondary-100 text-secondary-500"}`}
                           >
                             <Edit3 className="w-6 h-6" />
                           </div>
                           <div className="text-center">
                             <h3
-                              className={`font-semibold ${creationMethod === "manual" ? "text-blue-900" : "text-gray-900"}`}
+                              className={`font-semibold ${creationMethod === "manual" ? "text-brand-900" : "text-secondary-900"}`}
                             >
                               Manual Entry
                             </h3>
-                            <p className="text-xs text-gray-500 mt-1">
+                            <p className="text-xs text-secondary-500 mt-1">
                               Add questions one by one
                             </p>
                           </div>
@@ -591,24 +589,23 @@ const AdminQuizzes = () => {
 
                         <button
                           onClick={() => setCreationMethod("excel")}
-                          className={`p-4 rounded-xl border-2 flex flex-col items-center gap-3 transition-all ${
-                            creationMethod === "excel"
-                              ? "border-blue-600 bg-blue-50/50"
-                              : "border-gray-200 hover:border-blue-300 hover:bg-gray-50"
-                          }`}
+                          className={`p-4 rounded-xl border-2 flex flex-col items-center gap-3 transition-all ${creationMethod === "excel"
+                              ? "border-brand-600 bg-brand-50/50"
+                              : "border-secondary-200 hover:border-brand-300 hover:bg-secondary-50"
+                            }`}
                         >
                           <div
-                            className={`p-3 rounded-full ${creationMethod === "excel" ? "bg-blue-100 text-blue-600" : "bg-gray-100 text-gray-500"}`}
+                            className={`p-3 rounded-full ${creationMethod === "excel" ? "bg-brand-100 text-brand-600" : "bg-secondary-100 text-secondary-500"}`}
                           >
                             <FileText className="w-6 h-6" />
                           </div>
                           <div className="text-center">
                             <h3
-                              className={`font-semibold ${creationMethod === "excel" ? "text-blue-900" : "text-gray-900"}`}
+                              className={`font-semibold ${creationMethod === "excel" ? "text-brand-900" : "text-secondary-900"}`}
                             >
                               Excel Upload
                             </h3>
-                            <p className="text-xs text-gray-500 mt-1">
+                            <p className="text-xs text-secondary-500 mt-1">
                               Bulk import from .xlsx file
                             </p>
                           </div>
@@ -616,18 +613,18 @@ const AdminQuizzes = () => {
                       </div>
 
                       {creationMethod === "excel" ? (
-                        <div className="bg-gray-50 rounded-xl p-8 border-2 border-dashed border-gray-300 text-center">
-                          <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                        <div className="bg-secondary-50 rounded-xl p-8 border-2 border-dashed border-secondary-300 text-center">
+                          <Upload className="w-12 h-12 text-secondary-400 mx-auto mb-4" />
                           <label className="block">
                             <span className="sr-only">Choose file</span>
                             <input
                               type="file"
                               accept=".xlsx,.xls"
                               onChange={handleFileChange}
-                              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
+                              className="block w-full text-sm text-secondary-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 cursor-pointer"
                             />
                           </label>
-                          <p className="text-xs text-gray-500 mt-4">
+                          <p className="text-xs text-secondary-500 mt-4">
                             Supported formats: .xlsx, .xls. Ensure columns:
                             Question, Option A, B, C, D, Correct Answer, Marks
                           </p>
@@ -637,17 +634,17 @@ const AdminQuizzes = () => {
                           {questions.map((q, index) => (
                             <div
                               key={index}
-                              className="bg-gray-50 rounded-xl p-6 border border-gray-200 relative group"
+                              className="bg-secondary-50 rounded-xl p-6 border border-secondary-200 relative group"
                             >
                               <button
                                 onClick={() => removeQuestion(index)}
-                                className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors"
+                                className="absolute top-4 right-4 text-secondary-400 hover:text-danger-500 transition-colors"
                               >
                                 <Trash2 className="w-4 h-4" />
                               </button>
 
-                              <h4 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
-                                <span className="bg-gray-200 text-gray-700 w-6 h-6 rounded flex items-center justify-center text-xs">
+                              <h4 className="text-sm font-bold text-secondary-900 mb-4 flex items-center gap-2">
+                                <span className="bg-secondary-200 text-secondary-700 w-6 h-6 rounded flex items-center justify-center text-xs">
                                   {index + 1}
                                 </span>
                                 Question Details
@@ -665,13 +662,13 @@ const AdminQuizzes = () => {
                                       e.target.value,
                                     )
                                   }
-                                  className="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+                                  className="w-full px-4 py-2 rounded-lg border border-secondary-300 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none"
                                 />
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                   {["A", "B", "C", "D"].map((opt) => (
                                     <div key={opt} className="relative">
-                                      <span className="absolute left-3 top-2.5 text-xs font-bold text-gray-500">
+                                      <span className="absolute left-3 top-2.5 text-xs font-bold text-secondary-500">
                                         {opt}
                                       </span>
                                       <input
@@ -685,7 +682,7 @@ const AdminQuizzes = () => {
                                             e.target.value,
                                           )
                                         }
-                                        className="w-full pl-8 pr-4 py-2 rounded-lg border border-gray-300 text-sm focus:border-blue-500 outline-none"
+                                        className="w-full pl-8 pr-4 py-2 rounded-lg border border-secondary-300 text-sm focus:border-brand-500 outline-none"
                                       />
                                     </div>
                                   ))}
@@ -701,7 +698,7 @@ const AdminQuizzes = () => {
                                         e.target.value,
                                       )
                                     }
-                                    className="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm outline-none"
+                                    className="w-full px-4 py-2 rounded-lg border border-secondary-300 text-sm outline-none"
                                   >
                                     <option value="">
                                       Select Correct Answer
@@ -723,7 +720,7 @@ const AdminQuizzes = () => {
                                         e.target.value,
                                       )
                                     }
-                                    className="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm outline-none"
+                                    className="w-full px-4 py-2 rounded-lg border border-secondary-300 text-sm outline-none"
                                   />
                                 </div>
                               </div>
@@ -732,17 +729,17 @@ const AdminQuizzes = () => {
 
                           <button
                             onClick={addQuestion}
-                            className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-all text-sm font-medium flex items-center justify-center gap-2"
+                            className="w-full py-3 border-2 border-dashed border-secondary-300 rounded-xl text-secondary-500 hover:border-brand-500 hover:text-brand-600 hover:bg-brand-50 transition-all text-sm font-medium flex items-center justify-center gap-2"
                           >
                             <Plus className="w-4 h-4" /> Add Another Question
                           </button>
                         </div>
                       )}
 
-                      <div className="flex items-center justify-between pt-6 border-t border-gray-100">
+                      <div className="flex items-center justify-between pt-6 border-t border-secondary-100">
                         <button
                           onClick={() => setCreationStep(1)}
-                          className="text-gray-600 hover:text-gray-900 text-sm font-medium flex items-center gap-2"
+                          className="text-secondary-600 hover:text-secondary-900 text-sm font-medium flex items-center gap-2"
                         >
                           <ArrowLeft className="w-4 h-4" /> Back to Details
                         </button>
@@ -756,7 +753,7 @@ const AdminQuizzes = () => {
                               questions.length === 0) ||
                             (creationMethod === "excel" && !excelFile)
                           }
-                          className="bg-green-600 hover:bg-green-700 text-white px-8 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="bg-success-600 hover:bg-success-700 text-white px-8 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 shadow-card disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {loading ? (
                             <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -777,60 +774,60 @@ const AdminQuizzes = () => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
+            className="bg-white rounded-xl shadow-card border border-secondary-200 overflow-hidden"
           >
-            <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-gray-900">All Quizzes</h2>
+            <div className="p-6 border-b border-secondary-100 flex items-center justify-between">
+              <h2 className="text-lg font-bold text-secondary-900">All Quizzes</h2>
               <div className="flex gap-2">
-                <span className="text-xs font-medium px-2.5 py-1 bg-gray-100 text-gray-600 rounded-full">
+                <span className="text-xs font-medium px-2.5 py-1 bg-secondary-100 text-secondary-600 rounded-full">
                   Total: {quizzes.length}
                 </span>
               </div>
             </div>
 
             {loading && !showCreateForm ? (
-              <div className="p-12 text-center text-gray-500">
-                <div className="animate-spin h-8 w-8 border-2 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+              <div className="p-12 text-center text-secondary-500">
+                <div className="animate-spin h-8 w-8 border-2 border-brand-600 border-t-transparent rounded-full mx-auto mb-4"></div>
                 Loading quizzes...
               </div>
             ) : quizzes.length === 0 ? (
-              <div className="p-16 text-center text-gray-400">
+              <div className="p-16 text-center text-secondary-400">
                 <FileText className="w-12 h-12 mx-auto mb-3 opacity-20" />
                 <p>No quizzes found</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm">
-                  <thead className="bg-gray-50 text-gray-500 uppercase text-xs">
+                  <thead className="bg-secondary-50 border-b border-secondary-200">
                     <tr>
-                      <th className="px-6 py-4 font-medium">Title</th>
-                      <th className="px-6 py-4 font-medium">Department</th>
-                      <th className="px-6 py-4 font-medium">Info</th>
-                      <th className="px-6 py-4 font-medium">Status</th>
-                      <th className="px-6 py-4 font-medium text-right">
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-secondary-500 uppercase tracking-wider">Title & Subject</th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-secondary-500 uppercase tracking-wider">Department</th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-secondary-500 uppercase tracking-wider">Info</th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-secondary-500 uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-4 text-right text-xs font-semibold text-secondary-500 uppercase tracking-wider">
                         Actions
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100">
+                  <tbody className="divide-y divide-secondary-100 bg-white">
                     {quizzes.map((quiz) => (
                       <tr
                         key={quiz._id}
-                        className="hover:bg-gray-50/80 transition-colors"
+                        className="hover:bg-secondary-50/80 transition-colors"
                       >
                         <td className="px-6 py-4">
-                          <div className="font-semibold text-gray-900">
+                          <div className="font-semibold text-secondary-900">
                             {quiz.title}
                           </div>
-                          <div className="text-xs text-gray-500">
+                          <div className="text-xs text-secondary-500">
                             {quiz.subject}
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-gray-600">
+                        <td className="px-6 py-4 text-secondary-600">
                           {quiz.department}
                         </td>
                         <td className="px-6 py-4">
-                          <div className="flex items-center gap-4 text-xs text-gray-500">
+                          <div className="flex items-center gap-4 text-xs text-secondary-500">
                             <span className="flex items-center gap-1">
                               <Clock className="w-3 h-3" /> {quiz.duration}m
                             </span>
@@ -842,20 +839,18 @@ const AdminQuizzes = () => {
                         <td className="px-6 py-4">
                           <div className="flex gap-2">
                             <span
-                              className={`px-2 py-0.5 rounded-full text-xs font-medium border ${
-                                quiz.isActive
-                                  ? "bg-green-50 text-green-700 border-green-100"
-                                  : "bg-red-50 text-red-700 border-red-100"
-                              }`}
+                              className={`px-2 py-0.5 rounded-full text-xs font-medium border ${quiz.isActive
+                                  ? "bg-success-50 text-success-700 border-success-100"
+                                  : "bg-danger-50 text-danger-700 border-danger-100"
+                                }`}
                             >
                               {quiz.isActive ? "Active" : "Inactive"}
                             </span>
                             <span
-                              className={`px-2 py-0.5 rounded-full text-xs font-medium border ${
-                                quiz.isPublished
-                                  ? "bg-blue-50 text-blue-700 border-blue-100"
-                                  : "bg-amber-50 text-amber-700 border-amber-100"
-                              }`}
+                              className={`px-2 py-0.5 rounded-full text-xs font-medium border ${quiz.isPublished
+                                  ? "bg-brand-50 text-brand-700 border-brand-100"
+                                  : "bg-warning-50 text-warning-700 border-amber-100"
+                                }`}
                             >
                               {quiz.isPublished ? "Published" : "Draft"}
                             </span>
@@ -865,7 +860,7 @@ const AdminQuizzes = () => {
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => handleViewQuestions(quiz)}
-                              className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                              className="p-2 text-secondary-500 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors"
                               title="View Questions"
                             >
                               <Eye className="w-4 h-4" />
@@ -874,11 +869,10 @@ const AdminQuizzes = () => {
                               onClick={() =>
                                 toggleQuizActive(quiz._id, quiz.isActive)
                               }
-                              className={`p-2 rounded-lg transition-colors ${
-                                quiz.isActive
-                                  ? "text-amber-500 hover:bg-amber-50"
-                                  : "text-green-600 hover:bg-green-50"
-                              }`}
+                              className={`p-2 rounded-lg transition-colors ${quiz.isActive
+                                  ? "text-warning-500 hover:bg-warning-50"
+                                  : "text-success-600 hover:bg-success-50"
+                                }`}
                               title={quiz.isActive ? "Deactivate" : "Activate"}
                             >
                               <Power className="w-4 h-4" />
@@ -887,18 +881,17 @@ const AdminQuizzes = () => {
                               onClick={() =>
                                 toggleQuizPublish(quiz._id, quiz.isPublished)
                               }
-                              className={`p-2 rounded-lg transition-colors ${
-                                quiz.isPublished
-                                  ? "text-gray-400 hover:bg-gray-100"
-                                  : "text-blue-600 hover:bg-blue-50"
-                              }`}
+                              className={`p-2 rounded-lg transition-colors ${quiz.isPublished
+                                  ? "text-secondary-400 hover:bg-secondary-100"
+                                  : "text-brand-600 hover:bg-brand-50"
+                                }`}
                               title={quiz.isPublished ? "Unpublish" : "Publish"}
                             >
                               <Send className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => handleDeleteQuiz(quiz._id)}
-                              className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                              className="p-2 text-secondary-400 hover:text-danger-600 hover:bg-danger-50 rounded-lg transition-colors"
                               title="Delete"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -929,21 +922,21 @@ const AdminQuizzes = () => {
                   initial={{ opacity: 0, scale: 0.95, y: 20 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                  className="relative w-full max-w-3xl max-h-[85vh] bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col"
+                  className="relative w-full max-w-3xl max-h-[85vh] bg-white rounded-xl shadow-xl overflow-hidden flex flex-col"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+                  <div className="px-6 py-4 border-b border-secondary-100 flex items-center justify-between bg-secondary-50/50">
                     <div>
-                      <h3 className="text-lg font-bold text-gray-900">
+                      <h3 className="text-lg font-bold text-secondary-900">
                         {selectedQuiz.title}
                       </h3>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-secondary-500">
                         {quizQuestions.length} Questions
                       </p>
                     </div>
                     <button
                       onClick={closeQuestionsModal}
-                      className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                      className="p-2 text-secondary-400 hover:text-secondary-600 hover:bg-secondary-100 rounded-lg transition-colors"
                     >
                       <X className="w-5 h-5" />
                     </button>
@@ -952,94 +945,92 @@ const AdminQuizzes = () => {
                   <div className="flex-1 overflow-y-auto p-6 space-y-6">
                     {loadingQuestions ? (
                       <div className="text-center py-12">
-                        <div className="animate-spin h-8 w-8 border-2 border-blue-600 border-t-transparent rounded-full mx-auto" />
+                        <div className="animate-spin h-8 w-8 border-2 border-brand-600 border-t-transparent rounded-full mx-auto" />
                       </div>
                     ) : quizQuestions.length === 0 ? (
-                      <div className="text-center text-gray-400 py-12">
+                      <div className="text-center text-secondary-400 py-12">
                         No questions found
                       </div>
                     ) : (
                       quizQuestions.map((q, idx) => (
                         <div
                           key={idx}
-                          className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm"
+                          className="bg-white border border-secondary-200 rounded-xl p-5 shadow-card"
                         >
                           <div className="flex justify-between items-start mb-4">
-                            <span className="bg-blue-50 text-blue-700 text-xs font-bold px-2.5 py-1 rounded">
+                            <span className="bg-brand-50 text-brand-700 text-xs font-bold px-2.5 py-1 rounded">
                               Q{idx + 1}
                             </span>
-                            <span className="text-xs font-medium text-gray-500">
+                            <span className="text-xs font-medium text-secondary-500">
                               {q.marks} Marks
                             </span>
                           </div>
-                          <p className="text-gray-900 font-medium mb-4">
+                          <p className="text-secondary-900 font-medium mb-4">
                             {q.questionText}
                           </p>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             {Array.isArray(q.options)
                               ? // New format: array of {text, isCorrect}
-                                q.options.map((opt, optIdx) => {
-                                  const optionLabel = String.fromCharCode(
-                                    65 + optIdx,
-                                  ); // A, B, C, D
-                                  return (
-                                    <div
-                                      key={optIdx}
-                                      className={`px-4 py-3 rounded-lg border text-sm flex items-center justify-between ${
-                                        opt.isCorrect
-                                          ? "bg-green-50 border-green-200 text-green-900"
-                                          : "bg-gray-50 border-gray-100 text-gray-600"
+                              q.options.map((opt, optIdx) => {
+                                const optionLabel = String.fromCharCode(
+                                  65 + optIdx,
+                                ); // A, B, C, D
+                                return (
+                                  <div
+                                    key={optIdx}
+                                    className={`px-4 py-3 rounded-lg border text-sm flex items-center justify-between ${opt.isCorrect
+                                        ? "bg-success-50 border-success-200 text-success-900"
+                                        : "bg-secondary-50 border-secondary-100 text-secondary-600"
                                       }`}
-                                    >
-                                      <div className="flex items-center gap-3">
-                                        <span
-                                          className={`font-bold text-xs ${opt.isCorrect ? "text-green-700" : "text-gray-400"}`}
-                                        >
-                                          {optionLabel}
-                                        </span>
-                                        <span>{opt.text}</span>
-                                      </div>
-                                      {opt.isCorrect && (
-                                        <CheckCircle2 className="w-4 h-4 text-green-600" />
-                                      )}
+                                  >
+                                    <div className="flex items-center gap-3">
+                                      <span
+                                        className={`font-bold text-xs ${opt.isCorrect ? "text-success-700" : "text-secondary-400"}`}
+                                      >
+                                        {optionLabel}
+                                      </span>
+                                      <span>{opt.text}</span>
                                     </div>
-                                  );
-                                })
+                                    {opt.isCorrect && (
+                                      <CheckCircle2 className="w-4 h-4 text-success-600" />
+                                    )}
+                                  </div>
+                                );
+                              })
                               : // Old format: object {A: "text", B: "text"}
-                                Object.entries(q.options || {}).map(
-                                  ([key, val]) => (
-                                    <div
-                                      key={key}
-                                      className={`px-4 py-3 rounded-lg border text-sm flex items-center justify-between ${
-                                        q.correctAnswer === key
-                                          ? "bg-green-50 border-green-200 text-green-900"
-                                          : "bg-gray-50 border-gray-100 text-gray-600"
+                              Object.entries(q.options || {}).map(
+                                ([key, val]) => (
+                                  <div
+                                    key={key}
+                                    className={`px-4 py-3 rounded-lg border text-sm flex items-center justify-between ${q.correctAnswer === key
+                                        ? "bg-success-50 border-success-200 text-success-900"
+                                        : "bg-secondary-50 border-secondary-100 text-secondary-600"
                                       }`}
-                                    >
-                                      <div className="flex items-center gap-3">
-                                        <span
-                                          className={`font-bold text-xs ${q.correctAnswer === key ? "text-green-700" : "text-gray-400"}`}
-                                        >
-                                          {key}
-                                        </span>
-                                        <span>{val}</span>
-                                      </div>
-                                      {q.correctAnswer === key && (
-                                        <CheckCircle2 className="w-4 h-4 text-green-600" />
-                                      )}
+                                  >
+                                    <div className="flex items-center gap-3">
+                                      <span
+                                        className={`font-bold text-xs ${q.correctAnswer === key ? "text-success-700" : "text-secondary-400"}`}
+                                      >
+                                        {key}
+                                      </span>
+                                      <span>{val}</span>
                                     </div>
-                                  ),
-                                )}
+                                    {q.correctAnswer === key && (
+                                      <CheckCircle2 className="w-4 h-4 text-success-600" />
+                                    )}
+                                  </div>
+                                ),
+                              )}
                           </div>
                         </div>
                       ))
                     )}
                   </div>
 
-                  <div className="p-4 border-t border-gray-100 bg-gray-50/50 flex justify-end">
+                  <div className="p-4 border-t border-secondary-100 bg-secondary-50/50 flex justify-end">
                     <button
                       onClick={closeQuestionsModal}
-                      className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 shadow-sm"
+                      className="px-4 py-2 bg-white border border-secondary-300 rounded-lg text-sm font-medium text-secondary-700 hover:bg-secondary-50 shadow-card"
                     >
                       Close Viewer
                     </button>

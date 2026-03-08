@@ -10,7 +10,8 @@ import {
   BarChart3,
   ArrowRight,
   AlertCircle,
-  Calendar
+  Calendar,
+  Clock
 } from "lucide-react";
 import Layout from "../../components/Layout";
 import api from "../../api";
@@ -73,8 +74,8 @@ const StudentDashboard = () => {
       <Layout title="Dashboard">
         <div className="flex h-[80vh] items-center justify-center">
           <div className="flex flex-col items-center gap-4">
-            <div className="h-10 w-10 animate-spin rounded-full border-4 border-green-600 border-t-transparent"></div>
-            <p className="text-sm font-medium text-gray-500">Loading dashboard...</p>
+            <div className="h-10 w-10 animate-spin rounded-full border-4 border-brand-600 border-t-transparent"></div>
+            <p className="text-sm font-medium text-secondary-500">Loading dashboard...</p>
           </div>
         </div>
       </Layout>
@@ -87,25 +88,27 @@ const StudentDashboard = () => {
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0 }
+    hidden: { opacity: 0, y: 15 },
+    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
   };
 
   return (
-    <Layout title="Student Dashboard">
-      <motion.div 
+    <Layout title="Dashboard">
+      <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="space-y-8"
+        className="space-y-8 pb-12"
       >
         {/* Welcome Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Dashboard Overview</h1>
-            <p className="text-gray-500 mt-1">Track your quiz performance and progress</p>
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 bg-white p-6 sm:p-8 rounded-xl shadow-card border border-secondary-200 relative overflow-hidden">
+          <div className="absolute right-0 top-0 w-64 h-64 bg-gradient-to-br from-brand-100/50 to-primary-100/50 rounded-full blur-3xl -z-10 -mt-16 -mr-16"></div>
+          <div className="z-10">
+            <h1 className="text-3xl font-bold text-secondary-900 tracking-tight mb-2">Welcome back, {userProfile?.name?.split(' ')[0] || 'Student'}! 👋</h1>
+            <p className="text-sm font-medium text-secondary-500">Track your quiz performance, review results, and prepare for upcoming assignments.</p>
           </div>
-          <div className="text-sm text-gray-500 bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
+          <div className="text-xs font-semibold text-secondary-500 bg-white/80 backdrop-blur-sm px-3.5 py-2 rounded-lg border border-secondary-200/50 shadow-card flex items-center gap-2 z-10 w-fit">
+            <Calendar className="w-4 h-4 text-brand-500" />
             {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </div>
         </div>
@@ -115,25 +118,25 @@ const StudentDashboard = () => {
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
-            className="rounded-xl border border-yellow-200 bg-yellow-50 p-4"
+            className="rounded-xl border border-warning-200 bg-warning-50 p-5 shadow-card"
           >
             <div className="flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+              <AlertCircle className="w-5 h-5 text-warning-600 flex-shrink-0 mt-0.5" />
               <div className="flex-1">
-                <h3 className="text-sm font-semibold text-yellow-800 mb-2">
+                <h3 className="text-sm font-bold text-warning-900 mb-2">
                   No Quizzes Available
                 </h3>
-                <p className="text-sm text-yellow-700 mb-3">
-                  Quizzes are matched based on your profile details. Make sure your information is correct:
+                <p className="text-sm text-warning-800 font-medium mb-4">
+                  Quizzes are assigned based on your department and semester. Verify your profile information below:
                 </p>
-                <div className="bg-white/60 rounded-lg p-3 space-y-1.5 text-sm">
-                  <p className="text-gray-700"><strong>Department:</strong> {userProfile.department || "Not set"}</p>
-                  <p className="text-gray-700"><strong>Semester:</strong> {userProfile.semester || "Not set"}</p>
-                  <p className="text-gray-700"><strong>Batch:</strong> {userProfile.batch || "Not set"}</p>
-                  <p className="text-gray-700"><strong>Enrollment:</strong> {userProfile.enrollmentNumber || "Not set"}</p>
+                <div className="bg-white/80 border border-warning-100 rounded-xl p-4 grid grid-cols-2 gap-y-3 gap-x-6 text-sm">
+                  <div><span className="text-warning-600 font-semibold mb-1 block text-xs uppercase tracking-wider">Department</span> <span className="text-warning-900 font-medium">{userProfile.department || "Not set"}</span></div>
+                  <div><span className="text-warning-600 font-semibold mb-1 block text-xs uppercase tracking-wider">Semester</span> <span className="text-warning-900 font-medium">{userProfile.semester || "Not set"}</span></div>
+                  <div><span className="text-warning-600 font-semibold mb-1 block text-xs uppercase tracking-wider">Batch</span> <span className="text-warning-900 font-medium">{userProfile.batch || "Not set"}</span></div>
+                  <div><span className="text-warning-600 font-semibold mb-1 block text-xs uppercase tracking-wider">Enrollment</span> <span className="text-warning-900 font-medium">{userProfile.enrollmentNumber || "Not set"}</span></div>
                 </div>
-                <p className="mt-3 text-xs text-yellow-700">
-                  <strong>Note:</strong> Your profile details must <strong>exactly match</strong> the quiz settings. Contact your admin if issues persist.
+                <p className="mt-4 text-xs font-semibold text-warning-700">
+                  ⚠️ If the details above are incorrect, your quizzes won't appear. Please contact your administrator to update your profile.
                 </p>
               </div>
             </div>
@@ -141,142 +144,164 @@ const StudentDashboard = () => {
         )}
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <StatCard
-            title="Available Quizzes"
+            title="Available"
             value={stats.availableQuizzes}
             icon={FileText}
-            color="text-blue-600"
-            bg="bg-blue-50"
+            color="text-brand-600"
+            bg="bg-brand-50"
           />
           <StatCard
             title="Completed"
             value={stats.completedQuizzes}
             icon={CheckCircle2}
-            color="text-green-600"
-            bg="bg-green-50"
+            color="text-success-600"
+            bg="bg-success-50"
           />
           <StatCard
-            title="Average Score"
+            title="Avg. Score"
             value={`${stats.averageScore}%`}
             icon={Award}
-            color="text-amber-600"
-            bg="bg-amber-50"
+            color="text-warning-600"
+            bg="bg-warning-50"
           />
           <StatCard
             title="Pass Rate"
             value={`${stats.passRate}%`}
             icon={TrendingUp}
-            color="text-purple-600"
-            bg="bg-purple-50"
+            color="text-accent-600"
+            bg="bg-accent-50"
           />
         </div>
-        {/* Quick Actions */}
-        <motion.div variants={itemVariants}>
-          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Quick Actions</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <QuickActionCard
-              title="Start a Quiz"
-              description="View available quizzes"
-              icon={Play}
-              link="/student/quizzes"
-              color="text-blue-600"
-              bg="bg-blue-50"
-            />
-            <QuickActionCard
-              title="View Results"
-              description="Check your performance"
-              icon={BarChart3}
-              link="/student/results"
-              color="text-green-600"
-              bg="bg-green-50"
-            />
-          </div>
-        </motion.div>
 
-        {/* Recent Results */}
-        <motion.div variants={itemVariants} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="p-6 border-b border-gray-100">
-            <h2 className="text-lg font-bold text-gray-900">Recent Results</h2>
-          </div>
-          <div className="p-6">
-            {recentResults.length === 0 ? (
-              <div className="text-center py-12">
-                <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-sm font-semibold text-gray-900">No results yet</h3>
-                <p className="mt-1 text-sm text-gray-500 mb-6">
-                  Start taking quizzes to see your results here.
-                </p>
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          <div className="xl:col-span-2 space-y-8">
+            {/* Recent Results */}
+            <motion.div variants={itemVariants} className="bg-white rounded-xl shadow-card border border-secondary-200 overflow-hidden">
+              <div className="px-6 py-5 border-b border-secondary-100 flex justify-between items-center bg-white">
+                <div>
+                  <h2 className="text-lg font-bold text-secondary-900 tracking-tight">Recent Results</h2>
+                  <p className="text-xs text-secondary-500 mt-0.5">Your past quiz performance history.</p>
+                </div>
                 <Link
-                  to="/student/quizzes"
-                  className="inline-flex items-center gap-2 px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 shadow-sm transition-colors"
+                  to="/student/results"
+                  className="text-sm font-semibold text-brand-600 hover:text-brand-700 flex items-center gap-1.5 px-3 py-1.5 rounded-md hover:bg-brand-50 transition-colors"
                 >
-                  <Play className="w-4 h-4" />
-                  View Available Quizzes
+                  View History <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left">
-                  <thead className="text-xs text-gray-500 uppercase bg-gray-50 border-b border-gray-200">
-                    <tr>
-                      <th className="px-6 py-3 font-medium">Quiz</th>
-                      <th className="px-6 py-3 font-medium">Score</th>
-                      <th className="px-6 py-3 font-medium">Status</th>
-                      <th className="px-6 py-3 font-medium">Date</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    {recentResults.map((result) => (
-                      <tr key={result._id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-6 py-4 font-medium text-gray-900">
-                          {result.quizId?.title || "N/A"}
-                        </td>
-                        <td className="px-6 py-4 text-gray-600">
-                          {result.totalScore}/{result.quizId?.totalMarks || 0} (
-                          {result.percentage.toFixed(1)}%)
-                        </td>
-                        <td className="px-6 py-4">
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-                              result.isPassed
-                                ? "bg-green-50 text-green-700 border-green-200"
-                                : "bg-red-50 text-red-700 border-red-200"
-                            }`}
-                          >
-                            {result.isPassed ? "Passed" : "Failed"}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-gray-600 flex items-center gap-2">
-                          <Calendar className="w-4 h-4 text-gray-400" />
-                          {new Date(result.createdAt).toLocaleDateString()}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div>
+                {recentResults.length === 0 ? (
+                  <div className="text-center py-16 bg-secondary-50/30">
+                    <div className="w-16 h-16 bg-white shadow-card rounded-full flex items-center justify-center mx-auto mb-4 border border-secondary-100">
+                      <Award className="w-8 h-8 text-secondary-300" />
+                    </div>
+                    <h3 className="text-base font-bold text-secondary-900 mb-1">No results yet</h3>
+                    <p className="text-sm font-medium text-secondary-500 mb-6 max-w-sm mx-auto">
+                      Your completed quizzes and their results will appear here once you've finished them.
+                    </p>
+                    <Link
+                      to="/student/quizzes"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold rounded-lg shadow-card hover:shadow transition-all active:scale-[0.98]"
+                    >
+                      <Play className="w-4 h-4" />
+                      Start a Quiz
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm text-left">
+                      <thead className="bg-secondary-50/80 text-secondary-500 font-semibold text-xs uppercase tracking-wider border-b border-secondary-100">
+                        <tr>
+                          <th className="px-6 py-4 font-semibold">Quiz details</th>
+                          <th className="px-6 py-4 font-semibold">Score</th>
+                          <th className="px-6 py-4 font-semibold">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-secondary-100 bg-white">
+                        {recentResults.map((result) => (
+                          <tr key={result._id} className="hover:bg-secondary-50/50 transition-colors group cursor-default">
+                            <td className="px-6 py-4">
+                              <div className="font-semibold text-secondary-900 text-base mb-1">
+                                {result.quizId?.title || "N/A"}
+                              </div>
+                              <div className="flex items-center gap-2 text-xs font-semibold text-secondary-400">
+                                <Calendar className="w-3.5 h-3.5" />
+                                {new Date(result.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4">
+                              <div className="flex flex-col">
+                                <span className="font-bold text-secondary-900 text-base">{result.percentage.toFixed(1)}%</span>
+                                <span className="text-xs font-medium text-secondary-500">{result.totalScore}/{result.quizId?.totalMarks || 0} pts</span>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4">
+                              <span
+                                className={`inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider border ${result.isPassed
+                                    ? "bg-success-50 text-success-700 border-success-200"
+                                    : "bg-danger-50 text-danger-700 border-danger-200"
+                                  }`}
+                              >
+                                {result.isPassed ? "Passed" : "Failed"}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
-            )}
+            </motion.div>
           </div>
-        </motion.div>
+
+          <div className="space-y-8">
+            {/* Quick Actions */}
+            <motion.div variants={itemVariants} className="bg-white p-6 rounded-xl shadow-card border border-secondary-200">
+              <h3 className="text-xs font-bold text-secondary-400 uppercase tracking-wider mb-4">Quick Links</h3>
+              <div className="grid grid-cols-1 gap-3">
+                <QuickActionCard
+                  title="Start a Quiz"
+                  description="View available assignments"
+                  icon={Play}
+                  link="/student/quizzes"
+                  color="text-brand-600"
+                  bg="bg-brand-50"
+                />
+                <QuickActionCard
+                  title="Performance Analytics"
+                  description="Deep dive into your stats"
+                  icon={BarChart3}
+                  link="/student/analytics"
+                  color="text-accent-600"
+                  bg="bg-accent-50"
+                />
+              </div>
+            </motion.div>
+          </div>
+        </div>
+
       </motion.div>
     </Layout>
   );
 };
 
 const StatCard = ({ title, value, icon: Icon, color, bg }) => (
-  <motion.div 
-    variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
-    className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all h-full"
+  <motion.div
+    variants={{ hidden: { opacity: 0, y: 15 }, visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } } }}
+    className="bg-white p-5 rounded-xl border border-secondary-200 shadow-card hover:shadow-card-hover transition-all h-full relative overflow-hidden group"
   >
-    <div className="flex justify-between items-start mb-4">
-      <div className={`p-2.5 rounded-lg ${bg}`}>
-        <Icon className={`w-5 h-5 ${color}`} />
+    <div className="absolute -right-4 -top-4 w-24 h-24 bg-gradient-to-br from-white/0 to-secondary-50/50 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500 z-0"></div>
+    <div className="flex justify-between items-start mb-6 relative z-10">
+      <div className={`p-3 rounded-xl ${bg} ring-1 ring-inset ring-black/5`}>
+        <Icon className={`w-6 h-6 ${color}`} />
       </div>
     </div>
-    <div>
-      <h3 className="text-2xl font-bold text-gray-900">{value}</h3>
-      <p className="text-sm font-medium text-gray-500 mt-1">{title}</p>
+    <div className="relative z-10">
+      <h3 className="text-3xl sm:text-4xl font-bold text-secondary-900 tracking-tighter mb-1">{value}</h3>
+      <p className="text-sm font-semibold text-secondary-500">{title}</p>
     </div>
   </motion.div>
 );
@@ -284,18 +309,20 @@ const StatCard = ({ title, value, icon: Icon, color, bg }) => (
 const QuickActionCard = ({ title, description, icon: Icon, link, color, bg }) => (
   <Link to={link}>
     <motion.div
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      className="flex items-center p-5 bg-white border border-gray-200 rounded-xl transition-all hover:shadow-sm group"
+      whileHover={{ scale: 1.01 }}
+      whileTap={{ scale: 0.99 }}
+      className="flex items-center p-4 bg-white border border-secondary-200 rounded-xl transition-all hover:border-secondary-300 hover:shadow-card-hover group relative"
     >
-      <div className={`p-3 rounded-full ${bg}`}>
-        <Icon className={`w-6 h-6 ${color}`} />
+      <div className={`p-3 rounded-xl ${bg} ring-1 ring-inset ring-black/5`}>
+        <Icon className={`w-5 h-5 ${color}`} />
       </div>
       <div className="ml-4 flex-1">
-        <p className="font-semibold text-gray-900">{title}</p>
-        <p className="text-sm text-gray-600">{description}</p>
+        <p className="font-semibold text-sm text-secondary-900 group-hover:text-brand-600 transition-colors">{title}</p>
+        <p className="text-xs text-secondary-500 font-medium">{description}</p>
       </div>
-      <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-gray-600 group-hover:translate-x-1 transition-all" />
+      <div className="w-8 h-8 rounded-full bg-secondary-50 flex items-center justify-center group-hover:bg-brand-50 transition-colors">
+        <ArrowRight className="w-4 h-4 text-secondary-400 group-hover:text-brand-600 transition-colors" />
+      </div>
     </motion.div>
   </Link>
 );

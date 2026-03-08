@@ -95,26 +95,26 @@ const QuestionBank = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-secondary-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-6">
           <div>
             <button
               onClick={() => navigate(-1)}
-              className="flex items-center text-gray-600 hover:text-gray-900 mb-4 transition-colors"
+              className="flex items-center text-secondary-600 hover:text-secondary-900 mb-4 transition-colors"
             >
               <FiArrowLeft className="mr-2" />
               Back
             </button>
-            <h1 className="text-3xl font-bold text-gray-900 flex items-center">
-              <FiBook className="mr-3 text-blue-600" />
+            <h1 className="text-3xl font-bold text-secondary-900 flex items-center">
+              <FiBook className="mr-3 text-brand-600" />
               Question Bank
             </h1>
-            <p className="text-gray-600 mt-1">Manage reusable questions for your quizzes</p>
+            <p className="text-secondary-600 mt-1">Manage reusable questions for your quizzes</p>
           </div>
           <button
             onClick={() => setShowAddDialog(true)}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+            className="px-6 py-3 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors flex items-center"
           >
             <FiPlus className="mr-2" />
             Add Question
@@ -122,27 +122,27 @@ const QuestionBank = () => {
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+        <div className="bg-white rounded-lg shadow-card-hover p-4 mb-6">
           <div className="flex items-center space-x-4">
-            <FiFilter className="text-gray-500 text-xl" />
+            <FiFilter className="text-secondary-500 text-xl" />
             <input
               type="text"
               placeholder="Subject"
               value={filters.subject}
               onChange={(e) => setFilters({ ...filters, subject: e.target.value })}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="flex-1 px-4 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500"
             />
             <input
               type="text"
               placeholder="Topic"
               value={filters.topic}
               onChange={(e) => setFilters({ ...filters, topic: e.target.value })}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="flex-1 px-4 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500"
             />
             <select
               value={filters.difficulty}
               onChange={(e) => setFilters({ ...filters, difficulty: e.target.value })}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500"
             >
               <option value="">All Difficulties</option>
               <option value="easy">Easy</option>
@@ -155,16 +155,16 @@ const QuestionBank = () => {
         {/* Questions List */}
         {loading ? (
           <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading questions...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-600 mx-auto"></div>
+            <p className="mt-4 text-secondary-600">Loading questions...</p>
           </div>
         ) : questions.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-md p-12 text-center">
-            <FiBook className="mx-auto text-6xl text-gray-300 mb-4" />
-            <p className="text-gray-600">No questions in your bank yet</p>
+          <div className="bg-white rounded-lg shadow-card-hover p-12 text-center">
+            <FiBook className="mx-auto text-6xl text-secondary-300 mb-4" />
+            <p className="text-secondary-600">No questions in your bank yet</p>
             <button
               onClick={() => setShowAddDialog(true)}
-              className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="mt-4 px-6 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors"
             >
               Add Your First Question
             </button>
@@ -172,29 +172,29 @@ const QuestionBank = () => {
         ) : (
           <div className="space-y-4">
             {questions.map((question, index) => (
-              <div key={question._id} className="bg-white rounded-lg shadow-md p-6">
+              <div key={question._id} className="bg-white rounded-lg shadow-card-hover p-6">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <div className="flex items-start space-x-3 mb-3">
-                      <span className="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full">
+                      <span className="bg-brand-100 text-brand-800 text-sm font-semibold px-3 py-1 rounded-full">
                         {index + 1}
                       </span>
                       <div className="flex-1">
-                        <p className="text-lg text-gray-900 font-medium">{question.questionText}</p>
+                        <p className="text-lg text-secondary-900 font-medium">{question.questionText}</p>
                         <div className="flex items-center space-x-4 mt-2">
-                          <span className="text-sm text-gray-600">
+                          <span className="text-sm text-secondary-600">
                             <span className="font-semibold">Subject:</span> {question.subject}
                           </span>
-                          <span className="text-sm text-gray-600">
+                          <span className="text-sm text-secondary-600">
                             <span className="font-semibold">Topic:</span> {question.topic}
                           </span>
                           <span
                             className={`text-xs font-semibold px-2 py-1 rounded ${
                               question.difficulty === 'easy'
-                                ? 'bg-green-100 text-green-800'
+                                ? 'bg-success-100 text-success-800'
                                 : question.difficulty === 'medium'
-                                ? 'bg-yellow-100 text-yellow-800'
-                                : 'bg-red-100 text-red-800'
+                                ? 'bg-warning-100 text-warning-800'
+                                : 'bg-danger-100 text-danger-800'
                             }`}
                           >
                             {question.difficulty.toUpperCase()}
@@ -207,10 +207,10 @@ const QuestionBank = () => {
                       <div className="ml-12 mt-3 space-y-2">
                         {question.options.map((option, idx) => (
                           <div key={idx} className="flex items-center text-sm">
-                            <span className="font-semibold text-gray-700 mr-2">
+                            <span className="font-semibold text-secondary-700 mr-2">
                               {String.fromCharCode(65 + idx)}.
                             </span>
-                            <span className={option.isCorrect ? 'text-green-700 font-semibold' : 'text-gray-600'}>
+                            <span className={option.isCorrect ? 'text-success-700 font-semibold' : 'text-secondary-600'}>
                               {option.text}
                               {option.isCorrect && ' ✓'}
                             </span>
@@ -222,7 +222,7 @@ const QuestionBank = () => {
 
                   <button
                     onClick={() => setDeleteDialog({ isOpen: true, questionId: question._id })}
-                    className="text-red-600 hover:text-red-800 transition-colors ml-4"
+                    className="text-danger-600 hover:text-danger-800 transition-colors ml-4"
                   >
                     <FiTrash2 className="text-xl" />
                   </button>
@@ -237,15 +237,15 @@ const QuestionBank = () => {
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
             <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
               <div className="p-6">
-                <h3 className="text-2xl font-bold text-gray-900 mb-6">Add Question to Bank</h3>
+                <h3 className="text-2xl font-bold text-secondary-900 mb-6">Add Question to Bank</h3>
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Question Text *</label>
+                    <label className="block text-sm font-medium text-secondary-700 mb-2">Question Text *</label>
                     <textarea
                       value={newQuestion.questionText}
                       onChange={(e) => setNewQuestion({ ...newQuestion, questionText: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500"
                       rows="3"
                       placeholder="Enter question text"
                     />
@@ -253,22 +253,22 @@ const QuestionBank = () => {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Subject *</label>
+                      <label className="block text-sm font-medium text-secondary-700 mb-2">Subject *</label>
                       <input
                         type="text"
                         value={newQuestion.subject}
                         onChange={(e) => setNewQuestion({ ...newQuestion, subject: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500"
                         placeholder="e.g., Mathematics"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Topic *</label>
+                      <label className="block text-sm font-medium text-secondary-700 mb-2">Topic *</label>
                       <input
                         type="text"
                         value={newQuestion.topic}
                         onChange={(e) => setNewQuestion({ ...newQuestion, topic: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500"
                         placeholder="e.g., Algebra"
                       />
                     </div>
@@ -276,11 +276,11 @@ const QuestionBank = () => {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Question Type</label>
+                      <label className="block text-sm font-medium text-secondary-700 mb-2">Question Type</label>
                       <select
                         value={newQuestion.questionType}
                         onChange={(e) => setNewQuestion({ ...newQuestion, questionType: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500"
                       >
                         <option value="mcq">Multiple Choice</option>
                         <option value="true_false">True/False</option>
@@ -288,11 +288,11 @@ const QuestionBank = () => {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Difficulty</label>
+                      <label className="block text-sm font-medium text-secondary-700 mb-2">Difficulty</label>
                       <select
                         value={newQuestion.difficulty}
                         onChange={(e) => setNewQuestion({ ...newQuestion, difficulty: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500"
                       >
                         <option value="easy">Easy</option>
                         <option value="medium">Medium</option>
@@ -303,7 +303,7 @@ const QuestionBank = () => {
 
                   {newQuestion.questionType === 'mcq' && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Answer Options</label>
+                      <label className="block text-sm font-medium text-secondary-700 mb-2">Answer Options</label>
                       <div className="space-y-2">
                         {newQuestion.options.map((option, idx) => (
                           <div key={idx} className="flex items-center space-x-3">
@@ -312,7 +312,7 @@ const QuestionBank = () => {
                               name="correct-answer"
                               checked={newQuestion.correctAnswer === idx}
                               onChange={() => setNewQuestion({ ...newQuestion, correctAnswer: idx })}
-                              className="h-4 w-4 text-blue-600"
+                              className="h-4 w-4 text-brand-600"
                             />
                             <input
                               type="text"
@@ -322,7 +322,7 @@ const QuestionBank = () => {
                                 newOptions[idx] = e.target.value;
                                 setNewQuestion({ ...newQuestion, options: newOptions });
                               }}
-                              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                              className="flex-1 px-4 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500"
                               placeholder={`Option ${String.fromCharCode(65 + idx)}`}
                             />
                           </div>
@@ -335,13 +335,13 @@ const QuestionBank = () => {
                 <div className="mt-6 flex justify-end space-x-3">
                   <button
                     onClick={() => setShowAddDialog(false)}
-                    className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                    className="px-6 py-2 border border-secondary-300 text-secondary-700 rounded-lg hover:bg-secondary-50"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleAddQuestion}
-                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    className="px-6 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700"
                   >
                     Add to Bank
                   </button>

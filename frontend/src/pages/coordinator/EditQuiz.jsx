@@ -154,10 +154,10 @@ const EditQuiz = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-secondary-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading quiz...</p>
+          <div className="h-12 w-12 border-4 border-brand-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="mt-4 text-secondary-600">Loading quiz...</p>
         </div>
       </div>
     );
@@ -165,12 +165,12 @@ const EditQuiz = () => {
 
   if (!quiz) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-secondary-50 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-600">Quiz not found</p>
+          <p className="text-secondary-600">Quiz not found</p>
           <button
             onClick={() => navigate("/coordinator/quizzes")}
-            className="mt-4 text-blue-600 hover:underline"
+            className="mt-4 text-brand-600 hover:underline"
           >
             Go back to quizzes
           </button>
@@ -180,26 +180,26 @@ const EditQuiz = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-secondary-50 py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-6">
           <button
             onClick={() => navigate("/coordinator/quizzes")}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4"
+            className="flex items-center gap-2 text-secondary-600 hover:text-secondary-900 mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Quizzes
           </button>
           <div className="flex justify-between items-center">
-            <h1 className="text-3xl font-bold text-gray-900">Edit Quiz</h1>
+            <h1 className="text-3xl font-bold text-secondary-900">Edit Quiz</h1>
             <div className="flex gap-3">
               <button
                 onClick={toggleQuizStatus}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   quiz.isActive
-                    ? "bg-red-600 text-white hover:bg-red-700"
-                    : "bg-green-600 text-white hover:bg-green-700"
+                    ? "bg-danger-600 text-white hover:bg-danger-700"
+                    : "bg-success-600 text-white hover:bg-success-700"
                 }`}
               >
                 {quiz.isActive ? "Deactivate" : "Activate"}
@@ -207,7 +207,7 @@ const EditQuiz = () => {
               <button
                 onClick={handleUpdateQuiz}
                 disabled={saving}
-                className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+                className="flex items-center gap-2 bg-brand-600 text-white px-4 py-2 rounded-lg hover:bg-brand-700 disabled:bg-secondary-400"
               >
                 <Save className="w-4 h-4" />
                 {saving ? "Saving..." : "Save Changes"}
@@ -217,23 +217,23 @@ const EditQuiz = () => {
         </div>
 
         {/* Quiz Details Form */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Quiz Details</h2>
+        <div className="bg-white rounded-lg shadow-card-hover p-6 mb-6">
+          <h2 className="text-xl font-bold text-secondary-900 mb-4">Quiz Details</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-secondary-700 mb-1">
                 Title
               </label>
               <input
                 type="text"
                 value={quiz?.title || ""}
                 onChange={(e) => setQuiz({ ...quiz, title: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500"
                 placeholder="Enter quiz title"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-secondary-700 mb-1">
                 Description
               </label>
               <input
@@ -242,12 +242,12 @@ const EditQuiz = () => {
                 onChange={(e) =>
                   setQuiz({ ...quiz, description: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500"
                 placeholder="Enter quiz description"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-secondary-700 mb-1">
                 <Calendar className="w-4 h-4 inline mr-1" />
                 Start Time
               </label>
@@ -271,11 +271,11 @@ const EditQuiz = () => {
                       : null,
                   })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-secondary-700 mb-1">
                 <Calendar className="w-4 h-4 inline mr-1" />
                 End Time
               </label>
@@ -299,11 +299,11 @@ const EditQuiz = () => {
                       : null,
                   })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-secondary-700 mb-1">
                 <Clock className="w-4 h-4 inline mr-1" />
                 Duration (minutes)
               </label>
@@ -318,13 +318,13 @@ const EditQuiz = () => {
                       : 0,
                   })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500"
                 min="1"
                 placeholder="Enter duration"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-secondary-700 mb-1">
                 Total Marks
               </label>
               <input
@@ -336,13 +336,13 @@ const EditQuiz = () => {
                     totalMarks: e.target.value ? parseInt(e.target.value) : 0,
                   })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500"
                 min="1"
                 placeholder="Enter total marks"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-secondary-700 mb-1">
                 Passing Marks
               </label>
               <input
@@ -354,7 +354,7 @@ const EditQuiz = () => {
                     passingMarks: e.target.value ? parseInt(e.target.value) : 0,
                   })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500"
                 min="0"
                 placeholder="Enter passing marks"
               />
@@ -366,9 +366,9 @@ const EditQuiz = () => {
                 onChange={(e) =>
                   setQuiz({ ...quiz, isActive: e.target.checked })
                 }
-                className="h-4 w-4 text-blue-600 rounded mr-2"
+                className="h-4 w-4 text-brand-600 rounded mr-2"
               />
-              <label className="text-sm font-medium text-gray-700">
+              <label className="text-sm font-medium text-secondary-700">
                 Active
               </label>
             </div>
@@ -376,15 +376,15 @@ const EditQuiz = () => {
         </div>
 
         {/* Questions Section */}
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-card-hover p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-              <BookOpen className="w-6 h-6 text-blue-600" />
+            <h2 className="text-xl font-bold text-secondary-900 flex items-center gap-2">
+              <BookOpen className="w-6 h-6 text-brand-600" />
               Questions ({questions.length})
             </h2>
             <button
               onClick={() => setAddingQuestion(true)}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-success-600 text-white rounded-lg hover:bg-success-700 transition-colors flex items-center gap-2"
             >
               <Plus className="w-4 h-4" />
               Add Question
@@ -392,8 +392,8 @@ const EditQuiz = () => {
           </div>
 
           {addingQuestion && (
-            <div className="border-2 border-green-500 rounded-lg p-4 mb-4">
-              <h3 className="font-semibold text-gray-900 mb-3">
+            <div className="border-2 border-success-500 rounded-lg p-4 mb-4">
+              <h3 className="font-semibold text-secondary-900 mb-3">
                 Add New Question
               </h3>
               <QuestionEditForm
@@ -415,7 +415,7 @@ const EditQuiz = () => {
           )}
 
           {questions.length === 0 && !addingQuestion ? (
-            <p className="text-center text-gray-500 py-8">
+            <p className="text-center text-secondary-500 py-8">
               No questions added yet
             </p>
           ) : (
@@ -423,7 +423,7 @@ const EditQuiz = () => {
               {questions.map((question, index) => (
                 <div
                   key={question._id}
-                  className="border border-gray-200 rounded-lg p-4"
+                  className="border border-secondary-200 rounded-lg p-4"
                 >
                   {editingQuestion === question._id ? (
                     <QuestionEditForm
@@ -437,14 +437,14 @@ const EditQuiz = () => {
                     <div>
                       <div className="flex justify-between items-start mb-2">
                         <div className="flex-1">
-                          <div className="font-medium text-gray-900 mb-2">
+                          <div className="font-medium text-secondary-900 mb-2">
                             Q{index + 1}. {question.questionText}
                           </div>
                           <div className="flex gap-2 text-xs">
-                            <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                            <span className="px-2 py-1 bg-brand-100 text-brand-700 rounded">
                               {question.questionType}
                             </span>
-                            <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded">
+                            <span className="px-2 py-1 bg-accent-100 text-accent-700 rounded">
                               {question.marks} marks
                             </span>
                           </div>
@@ -452,13 +452,13 @@ const EditQuiz = () => {
                         <div className="flex gap-2">
                           <button
                             onClick={() => setEditingQuestion(question._id)}
-                            className="p-2 text-blue-600 hover:bg-blue-50 rounded"
+                            className="p-2 text-brand-600 hover:bg-brand-50 rounded"
                           >
                             <Edit2 className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleDeleteQuestion(question._id)}
-                            className="p-2 text-red-600 hover:bg-red-50 rounded"
+                            className="p-2 text-danger-600 hover:bg-danger-50 rounded"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -472,8 +472,8 @@ const EditQuiz = () => {
                               key={optIdx}
                               className={`pl-4 py-1 rounded ${
                                 opt.isCorrect
-                                  ? "text-green-700 bg-green-50 font-medium"
-                                  : "text-gray-700"
+                                  ? "text-success-700 bg-success-50 font-medium"
+                                  : "text-secondary-700"
                               }`}
                             >
                               {String.fromCharCode(65 + optIdx)}. {opt.text}
@@ -484,7 +484,7 @@ const EditQuiz = () => {
                       )}
 
                       {question.questionType === "short_answer" && (
-                        <div className="mt-2 text-sm bg-green-50 text-green-700 p-2 rounded">
+                        <div className="mt-2 text-sm bg-success-50 text-success-700 p-2 rounded">
                           <strong>Correct Answer:</strong>{" "}
                           {question.correctAnswer}
                         </div>
@@ -544,7 +544,7 @@ const QuestionEditForm = ({ question, onSave, onCancel }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-secondary-700 mb-1">
           Question Text
         </label>
         <textarea
@@ -552,7 +552,7 @@ const QuestionEditForm = ({ question, onSave, onCancel }) => {
           onChange={(e) =>
             setFormData({ ...formData, questionText: e.target.value })
           }
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500"
           rows="3"
           required
         />
@@ -560,7 +560,7 @@ const QuestionEditForm = ({ question, onSave, onCancel }) => {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-secondary-700 mb-1">
             Type
           </label>
           <select
@@ -568,7 +568,7 @@ const QuestionEditForm = ({ question, onSave, onCancel }) => {
             onChange={(e) =>
               setFormData({ ...formData, questionType: e.target.value })
             }
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500"
           >
             <option value="mcq">Multiple Choice (Single Answer)</option>
             <option value="mcq_multiple">Multiple Choice (Multi-Select)</option>
@@ -577,7 +577,7 @@ const QuestionEditForm = ({ question, onSave, onCancel }) => {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-secondary-700 mb-1">
             Marks
           </label>
           <input
@@ -586,7 +586,7 @@ const QuestionEditForm = ({ question, onSave, onCancel }) => {
             onChange={(e) =>
               setFormData({ ...formData, marks: parseInt(e.target.value) })
             }
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500"
             min="1"
             required
           />
@@ -596,7 +596,7 @@ const QuestionEditForm = ({ question, onSave, onCancel }) => {
       {formData.questionType !== "short_answer" && (
         <div>
           <div className="flex justify-between items-center mb-2">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-secondary-700">
               Options
             </label>
             <button
@@ -610,7 +610,7 @@ const QuestionEditForm = ({ question, onSave, onCancel }) => {
                   ],
                 })
               }
-              className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
+              className="text-sm text-brand-600 hover:text-brand-700 flex items-center gap-1"
             >
               <Plus className="w-4 h-4" />
               Add Option
@@ -626,7 +626,7 @@ const QuestionEditForm = ({ question, onSave, onCancel }) => {
                   newOptions[idx].text = e.target.value;
                   setFormData({ ...formData, options: newOptions });
                 }}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="flex-1 px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500"
                 placeholder={`Option ${idx + 1}`}
               />
               <label className="flex items-center gap-1">
@@ -649,9 +649,9 @@ const QuestionEditForm = ({ question, onSave, onCancel }) => {
                           }));
                     setFormData({ ...formData, options: newOptions });
                   }}
-                  className="h-4 w-4 text-blue-600 rounded"
+                  className="h-4 w-4 text-brand-600 rounded"
                 />
-                <span className="text-sm text-gray-600">Correct</span>
+                <span className="text-sm text-secondary-600">Correct</span>
               </label>
               {formData.options.length > 2 && (
                 <button
@@ -662,7 +662,7 @@ const QuestionEditForm = ({ question, onSave, onCancel }) => {
                     );
                     setFormData({ ...formData, options: newOptions });
                   }}
-                  className="p-2 text-red-600 hover:bg-red-50 rounded"
+                  className="p-2 text-danger-600 hover:bg-danger-50 rounded"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -674,7 +674,7 @@ const QuestionEditForm = ({ question, onSave, onCancel }) => {
 
       {formData.questionType === "short_answer" && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-secondary-700 mb-1">
             Correct Answer
           </label>
           <input
@@ -683,7 +683,7 @@ const QuestionEditForm = ({ question, onSave, onCancel }) => {
             onChange={(e) =>
               setFormData({ ...formData, correctAnswer: e.target.value })
             }
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500"
             required
           />
         </div>
@@ -692,14 +692,14 @@ const QuestionEditForm = ({ question, onSave, onCancel }) => {
       <div className="flex gap-2">
         <button
           type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700"
         >
           Save
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+          className="px-4 py-2 border border-secondary-300 text-secondary-700 rounded-lg hover:bg-secondary-50"
         >
           Cancel
         </button>

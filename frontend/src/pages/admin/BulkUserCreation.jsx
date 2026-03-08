@@ -238,23 +238,23 @@ const BulkUserCreation = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-secondary-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                <FiUsers className="text-blue-600" />
+              <h1 className="text-3xl font-bold text-secondary-900 flex items-center gap-3">
+                <FiUsers className="text-brand-600" />
                 User Management
               </h1>
-              <p className="text-gray-600 mt-2">
+              <p className="text-secondary-600 mt-2">
                 Create student and coordinator accounts
               </p>
             </div>
             <button
               onClick={() => navigate("/admin/users")}
-              className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+              className="inline-flex items-center px-4 py-2 border border-secondary-300 rounded-lg shadow-card bg-white text-sm font-medium text-secondary-700 hover:bg-secondary-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 transition-colors"
             >
               <FiArrowLeft className="mr-2 h-4 w-4" />
               Back to Users
@@ -264,14 +264,14 @@ const BulkUserCreation = () => {
 
         {/* Tab Navigation */}
         <div className="mb-6">
-          <div className="border-b border-gray-200">
+          <div className="border-b border-secondary-200">
             <nav className="-mb-px flex space-x-8">
               <button
                 onClick={() => setActiveTab("excel")}
                 className={`py-2 px-1 border-b-2 font-medium text-sm ${
                   activeTab === "excel"
-                    ? "border-blue-500 text-blue-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    ? "border-brand-500 text-brand-600"
+                    : "border-transparent text-secondary-500 hover:text-secondary-700 hover:border-secondary-300"
                 }`}
               >
                 <FiUpload className="inline mr-2" />
@@ -281,8 +281,8 @@ const BulkUserCreation = () => {
                 onClick={() => setActiveTab("manual")}
                 className={`py-2 px-1 border-b-2 font-medium text-sm ${
                   activeTab === "manual"
-                    ? "border-blue-500 text-blue-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    ? "border-brand-500 text-brand-600"
+                    : "border-transparent text-secondary-500 hover:text-secondary-700 hover:border-secondary-300"
                 }`}
               >
                 <FiUserPlus className="inline mr-2" />
@@ -296,11 +296,11 @@ const BulkUserCreation = () => {
         {activeTab === "excel" && (
           <div className="space-y-6">
             {/* Instructions */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-blue-900 mb-3">
+            <div className="bg-brand-50 border border-brand-200 rounded-lg p-6">
+              <h3 className="text-lg font-semibold text-brand-900 mb-3">
                 Excel Upload Instructions
               </h3>
-              <div className="text-sm text-blue-800 space-y-2">
+              <div className="text-sm text-brand-800 space-y-2">
                 <p>Follow these steps to bulk create user accounts:</p>
                 <ol className="list-decimal ml-5 space-y-1">
                   <li>Download the Excel template using the button below</li>
@@ -313,7 +313,7 @@ const BulkUserCreation = () => {
                   </li>
                   <li>
                     <strong>Password:</strong> If left blank, default password{" "}
-                    <code className="bg-blue-100 px-2 py-1 rounded text-blue-900 font-mono">
+                    <code className="bg-brand-100 px-2 py-1 rounded text-brand-900 font-mono">
                       Password@123
                     </code>{" "}
                     will be used
@@ -324,11 +324,11 @@ const BulkUserCreation = () => {
                   </li>
                   <li>Upload the completed file and click "Create Users"</li>
                 </ol>
-                <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded">
-                  <p className="text-yellow-800 text-xs">
+                <div className="mt-3 p-3 bg-warning-50 border border-warning-200 rounded">
+                  <p className="text-warning-800 text-xs">
                     <strong>💡 Tip:</strong> Inform students about the default
                     password{" "}
-                    <code className="bg-yellow-100 px-1 rounded">
+                    <code className="bg-warning-100 px-1 rounded">
                       Password@123
                     </code>{" "}
                     if you leave the password column empty.
@@ -339,12 +339,12 @@ const BulkUserCreation = () => {
 
             {/* Template Download */}
             <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              <h3 className="text-lg font-semibold text-secondary-900 mb-4">
                 Step 1: Download Template
               </h3>
               <button
                 onClick={handleDownloadTemplate}
-                className="flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors"
+                className="flex items-center gap-2 bg-success-600 text-white px-6 py-3 rounded-lg hover:bg-success-700 transition-colors"
               >
                 <FiDownload className="w-5 h-5" />
                 Download Excel Template
@@ -353,7 +353,7 @@ const BulkUserCreation = () => {
 
             {/* File Upload */}
             <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              <h3 className="text-lg font-semibold text-secondary-900 mb-4">
                 Step 2: Upload Completed File
               </h3>
 
@@ -367,7 +367,7 @@ const BulkUserCreation = () => {
                 />
                 <label
                   htmlFor="excel-upload"
-                  className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors cursor-pointer w-fit"
+                  className="flex items-center gap-2 bg-brand-600 text-white px-6 py-3 rounded-lg hover:bg-brand-700 transition-colors cursor-pointer w-fit"
                 >
                   <FiUpload className="w-4 h-4" />
                   Choose Excel File
@@ -375,8 +375,8 @@ const BulkUserCreation = () => {
               </div>
 
               {excelFile && (
-                <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                  <p className="text-sm text-gray-600">
+                <div className="mb-4 p-3 bg-secondary-50 rounded-lg">
+                  <p className="text-sm text-secondary-600">
                     Selected: {excelFile.name}
                   </p>
                 </div>
@@ -384,7 +384,7 @@ const BulkUserCreation = () => {
 
               {/* Group Selection */}
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-secondary-700 mb-2">
                   Group Assignment
                 </label>
 
@@ -400,16 +400,16 @@ const BulkUserCreation = () => {
                           setSelectedGroupId("");
                         }
                       }}
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mr-2"
+                      className="h-4 w-4 text-brand-600 focus:ring-brand-500 border-secondary-300 rounded mr-2"
                     />
-                    <span className="text-sm text-gray-700">
+                    <span className="text-sm text-secondary-700">
                       Create new group for these users
                     </span>
                   </label>
                 </div>
 
                 {createGroupWithBulk ? (
-                  <div className="space-y-3 p-3 bg-blue-50 rounded-lg">
+                  <div className="space-y-3 p-3 bg-brand-50 rounded-lg">
                     <div>
                       <input
                         type="text"
@@ -421,7 +421,7 @@ const BulkUserCreation = () => {
                             name: e.target.value,
                           }))
                         }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                       />
                     </div>
                     <div>
@@ -435,7 +435,7 @@ const BulkUserCreation = () => {
                           }))
                         }
                         rows={2}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                       />
                     </div>
                     <div>
@@ -447,7 +447,7 @@ const BulkUserCreation = () => {
                             groupType: e.target.value,
                           }))
                         }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                       >
                         <option value="batch">Batch</option>
                         <option value="department">Department</option>
@@ -461,7 +461,7 @@ const BulkUserCreation = () => {
                     <select
                       value={selectedGroupId}
                       onChange={(e) => setSelectedGroupId(e.target.value)}
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="flex-1 px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                     >
                       <option value="">No Group</option>
                       {groups.map((group) => (
@@ -473,7 +473,7 @@ const BulkUserCreation = () => {
                     <button
                       type="button"
                       onClick={() => setShowCreateGroupModal(true)}
-                      className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                      className="px-3 py-2 bg-success-600 text-white rounded-lg hover:bg-success-700 transition-colors"
                       title="Create new group"
                     >
                       <FiPlus className="h-4 w-4" />
@@ -481,7 +481,7 @@ const BulkUserCreation = () => {
                   </div>
                 )}
 
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-secondary-500 mt-1">
                   {createGroupWithBulk
                     ? "A new group will be created and all users will be added to it"
                     : "All users from the Excel file will be added to the selected group"}
@@ -491,7 +491,7 @@ const BulkUserCreation = () => {
               <button
                 onClick={handleExcelUpload}
                 disabled={!excelFile || uploading}
-                className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 bg-brand-600 text-white px-6 py-3 rounded-lg hover:bg-brand-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <FiUsers className="w-4 h-4" />
                 {uploading ? "Creating Users..." : "Create Users"}
@@ -501,17 +501,17 @@ const BulkUserCreation = () => {
             {/* Upload Result */}
             {uploadResult && (
               <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-lg font-semibold text-green-900 mb-4">
+                <h3 className="text-lg font-semibold text-success-900 mb-4">
                   ✅ Upload Successful!
                 </h3>
 
                 {/* Important Info about default password */}
                 {uploadResult.info && (
-                  <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <p className="text-sm text-yellow-800">
+                  <div className="mb-4 p-4 bg-warning-50 border border-warning-200 rounded-lg">
+                    <p className="text-sm text-warning-800">
                       <strong>📌 Important:</strong> {uploadResult.info}
                     </p>
-                    <p className="text-xs text-yellow-700 mt-2">
+                    <p className="text-xs text-warning-700 mt-2">
                       Students can use this password to login for the first
                       time, then they will be prompted to update their password
                       and complete their profile.
@@ -520,17 +520,17 @@ const BulkUserCreation = () => {
                 )}
 
                 <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div className="bg-green-50 p-3 rounded-lg">
-                    <p className="text-green-800 font-medium">Total Created</p>
-                    <p className="text-2xl font-bold text-green-900">
+                  <div className="bg-success-50 p-3 rounded-lg">
+                    <p className="text-success-800 font-medium">Total Created</p>
+                    <p className="text-2xl font-bold text-success-900">
                       {uploadResult.data.totalCreated}
                     </p>
                   </div>
-                  <div className="bg-blue-50 p-3 rounded-lg">
-                    <p className="text-blue-800 font-medium">
+                  <div className="bg-brand-50 p-3 rounded-lg">
+                    <p className="text-brand-800 font-medium">
                       Students: {uploadResult.data.summary.students}
                     </p>
-                    <p className="text-blue-800 font-medium">
+                    <p className="text-brand-800 font-medium">
                       Coordinators: {uploadResult.data.summary.coordinators}
                     </p>
                   </div>
@@ -543,7 +543,7 @@ const BulkUserCreation = () => {
         {/* Manual Creation Tab */}
         {activeTab === "manual" && (
           <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">
+            <h3 className="text-lg font-semibold text-secondary-900 mb-6">
               Create Single User Account
             </h3>
 
@@ -551,7 +551,7 @@ const BulkUserCreation = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Full Name */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-secondary-700 mb-2">
                     Full Name *
                   </label>
                   <input
@@ -560,14 +560,14 @@ const BulkUserCreation = () => {
                     value={formData.fullName}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                     placeholder="Enter full name"
                   />
                 </div>
 
                 {/* Email */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-secondary-700 mb-2">
                     Email *
                   </label>
                   <input
@@ -576,14 +576,14 @@ const BulkUserCreation = () => {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                     placeholder="Enter email address"
                   />
                 </div>
 
                 {/* Role */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-secondary-700 mb-2">
                     Role *
                   </label>
                   <select
@@ -591,7 +591,7 @@ const BulkUserCreation = () => {
                     value={formData.role}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                   >
                     <option value="student">Student</option>
                     <option value="coordinator">Coordinator</option>
@@ -600,7 +600,7 @@ const BulkUserCreation = () => {
 
                 {/* Department */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-secondary-700 mb-2">
                     Department
                   </label>
                   <input
@@ -608,7 +608,7 @@ const BulkUserCreation = () => {
                     name="department"
                     value={formData.department}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                     placeholder="Enter department"
                   />
                 </div>
@@ -617,7 +617,7 @@ const BulkUserCreation = () => {
                 {formData.role === "student" && (
                   <>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-secondary-700 mb-2">
                         Enrollment Number
                       </label>
                       <input
@@ -625,13 +625,13 @@ const BulkUserCreation = () => {
                         name="enrollmentNumber"
                         value={formData.enrollmentNumber}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-4 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                         placeholder="Enter enrollment number"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-secondary-700 mb-2">
                         Semester
                       </label>
                       <input
@@ -639,13 +639,13 @@ const BulkUserCreation = () => {
                         name="semester"
                         value={formData.semester}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-4 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                         placeholder="Enter semester"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-secondary-700 mb-2">
                         Batch
                       </label>
                       <input
@@ -653,7 +653,7 @@ const BulkUserCreation = () => {
                         name="batch"
                         value={formData.batch}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-4 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                         placeholder="Enter batch year"
                       />
                     </div>
@@ -662,7 +662,7 @@ const BulkUserCreation = () => {
 
                 {/* Phone Number */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-secondary-700 mb-2">
                     Phone Number
                   </label>
                   <input
@@ -670,7 +670,7 @@ const BulkUserCreation = () => {
                     name="phoneNumber"
                     value={formData.phoneNumber}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                     placeholder="Enter phone number"
                   />
                 </div>
@@ -678,7 +678,7 @@ const BulkUserCreation = () => {
 
               {/* Group Selection */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-secondary-700 mb-2">
                   Assign to Group (Optional)
                 </label>
                 <div className="flex gap-2">
@@ -686,7 +686,7 @@ const BulkUserCreation = () => {
                     name="groupId"
                     value={formData.groupId}
                     onChange={handleInputChange}
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="flex-1 px-4 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                   >
                     <option value="">No Group</option>
                     {groups.map((group) => (
@@ -698,7 +698,7 @@ const BulkUserCreation = () => {
                   <button
                     type="button"
                     onClick={() => setShowCreateGroupModal(true)}
-                    className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                    className="px-3 py-2 bg-success-600 text-white rounded-lg hover:bg-success-700 transition-colors"
                     title="Create new group"
                   >
                     <FiPlus className="h-4 w-4" />
@@ -708,7 +708,7 @@ const BulkUserCreation = () => {
 
               {/* Password Section */}
               <div className="border-t pt-6">
-                <h4 className="text-lg font-medium text-gray-900 mb-4">
+                <h4 className="text-lg font-medium text-secondary-900 mb-4">
                   Password Settings
                 </h4>
 
@@ -719,9 +719,9 @@ const BulkUserCreation = () => {
                       name="generatePassword"
                       checked={formData.generatePassword}
                       onChange={handleInputChange}
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      className="h-4 w-4 text-brand-600 focus:ring-brand-500 border-secondary-300 rounded"
                     />
-                    <span className="ml-2 text-sm text-gray-700">
+                    <span className="ml-2 text-sm text-secondary-700">
                       Auto-generate password
                     </span>
                   </label>
@@ -729,7 +729,7 @@ const BulkUserCreation = () => {
 
                 {!formData.generatePassword && (
                   <div className="relative">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-secondary-700 mb-2">
                       Password *
                     </label>
                     <input
@@ -739,7 +739,7 @@ const BulkUserCreation = () => {
                       onChange={handleInputChange}
                       required={!formData.generatePassword}
                       minLength={6}
-                      className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-4 py-2 pr-10 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                       placeholder="Enter password"
                     />
                     <button
@@ -748,20 +748,20 @@ const BulkUserCreation = () => {
                       className="absolute inset-y-0 right-0 top-6 pr-3 flex items-center"
                     >
                       {showPassword ? (
-                        <FiEyeOff className="h-5 w-5 text-gray-400" />
+                        <FiEyeOff className="h-5 w-5 text-secondary-400" />
                       ) : (
-                        <FiEye className="h-5 w-5 text-gray-400" />
+                        <FiEye className="h-5 w-5 text-secondary-400" />
                       )}
                     </button>
                   </div>
                 )}
 
                 {formData.generatePassword && formData.password && (
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                    <p className="text-sm text-yellow-800 mb-2">
+                  <div className="bg-warning-50 border border-warning-200 rounded-lg p-3">
+                    <p className="text-sm text-warning-800 mb-2">
                       Generated Password:
                     </p>
-                    <code className="bg-yellow-100 px-2 py-1 rounded text-sm font-mono">
+                    <code className="bg-warning-100 px-2 py-1 rounded text-sm font-mono">
                       {formData.password}
                     </code>
                   </div>
@@ -773,7 +773,7 @@ const BulkUserCreation = () => {
                 <button
                   type="submit"
                   disabled={creating}
-                  className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 bg-brand-600 text-white px-6 py-3 rounded-lg hover:bg-brand-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <FiUserPlus className="w-4 h-4" />
                   {creating ? "Creating User..." : "Create User"}
@@ -834,12 +834,12 @@ const CreateGroupModal = ({ onClose, onSuccess }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
         <div className="flex items-center justify-between p-6 border-b">
-          <h3 className="text-lg font-medium text-gray-900">
+          <h3 className="text-lg font-medium text-secondary-900">
             Create New Group
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-secondary-400 hover:text-secondary-600 transition-colors"
           >
             ×
           </button>
@@ -847,7 +847,7 @@ const CreateGroupModal = ({ onClose, onSuccess }) => {
 
         <form onSubmit={handleSubmit} className="p-6">
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-secondary-700 mb-1">
               Group Name *
             </label>
             <input
@@ -856,14 +856,14 @@ const CreateGroupModal = ({ onClose, onSuccess }) => {
               onChange={(e) =>
                 setGroupData((prev) => ({ ...prev, name: e.target.value }))
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
               placeholder="e.g., 2024 CE Batch"
               required
             />
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-secondary-700 mb-1">
               Group Type
             </label>
             <select
@@ -871,7 +871,7 @@ const CreateGroupModal = ({ onClose, onSuccess }) => {
               onChange={(e) =>
                 setGroupData((prev) => ({ ...prev, groupType: e.target.value }))
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
             >
               <option value="batch">Batch</option>
               <option value="department">Department</option>
@@ -881,7 +881,7 @@ const CreateGroupModal = ({ onClose, onSuccess }) => {
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-secondary-700 mb-1">
               Description (Optional)
             </label>
             <textarea
@@ -893,7 +893,7 @@ const CreateGroupModal = ({ onClose, onSuccess }) => {
                 }))
               }
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
               placeholder="Brief description of the group..."
             />
           </div>
@@ -902,14 +902,14 @@ const CreateGroupModal = ({ onClose, onSuccess }) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+              className="px-4 py-2 text-sm font-medium text-secondary-700 bg-white border border-secondary-300 rounded-lg hover:bg-secondary-50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 text-sm font-medium text-white bg-brand-600 border border-transparent rounded-lg hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Creating..." : "Create Group"}
             </button>

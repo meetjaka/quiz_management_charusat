@@ -54,13 +54,13 @@ const GroupForm = ({ group, onClose, onSuccess }) => {
         <form onSubmit={handleSubmit}>
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b">
-            <h3 className="text-lg font-medium text-gray-900">
+            <h3 className="text-lg font-medium text-secondary-900">
               {group ? 'Edit Group' : 'Create New Group'}
             </h3>
             <button
               type="button"
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="text-secondary-400 hover:text-secondary-600 transition-colors"
             >
               <FiX className="h-6 w-6" />
             </button>
@@ -70,7 +70,7 @@ const GroupForm = ({ group, onClose, onSuccess }) => {
           <div className="p-6 space-y-4">
             {/* Group Name */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="name" className="block text-sm font-medium text-secondary-700 mb-2">
                 Group Name *
               </label>
               <input
@@ -80,14 +80,14 @@ const GroupForm = ({ group, onClose, onSuccess }) => {
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="Enter group name"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                 required
               />
             </div>
 
             {/* Description */}
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="description" className="block text-sm font-medium text-secondary-700 mb-2">
                 Description (Optional)
               </label>
               <textarea
@@ -97,13 +97,13 @@ const GroupForm = ({ group, onClose, onSuccess }) => {
                 onChange={handleChange}
                 placeholder="Enter group description"
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
               />
             </div>
 
             {/* Group Type */}
             <div>
-              <label htmlFor="groupType" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="groupType" className="block text-sm font-medium text-secondary-700 mb-2">
                 Group Type
               </label>
               <select
@@ -111,14 +111,14 @@ const GroupForm = ({ group, onClose, onSuccess }) => {
                 name="groupType"
                 value={formData.groupType}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
               >
                 <option value="batch">Batch</option>
                 <option value="department">Department</option>
                 <option value="course">Course</option>
                 <option value="custom">Custom</option>
               </select>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-secondary-500 mt-1">
                 Choose the type that best describes this group
               </p>
             </div>
@@ -131,23 +131,23 @@ const GroupForm = ({ group, onClose, onSuccess }) => {
                 name="isActive"
                 checked={formData.isActive}
                 onChange={handleChange}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="h-4 w-4 text-brand-600 focus:ring-brand-500 border-secondary-300 rounded"
               />
-              <label htmlFor="isActive" className="ml-2 block text-sm text-gray-700">
+              <label htmlFor="isActive" className="ml-2 block text-sm text-secondary-700">
                 Active Group
               </label>
             </div>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-secondary-500">
               Inactive groups won't appear in selection lists
             </p>
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-end space-x-3 p-6 border-t bg-gray-50 rounded-b-lg">
+          <div className="flex items-center justify-end space-x-3 p-6 border-t bg-secondary-50 rounded-b-lg">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="px-4 py-2 text-sm font-medium text-secondary-700 bg-white border border-secondary-300 rounded-lg hover:bg-secondary-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500"
               disabled={loading}
             >
               Cancel
@@ -155,7 +155,7 @@ const GroupForm = ({ group, onClose, onSuccess }) => {
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 text-sm font-medium text-white bg-brand-600 border border-transparent rounded-lg hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Saving...' : (group ? 'Update Group' : 'Create Group')}
             </button>

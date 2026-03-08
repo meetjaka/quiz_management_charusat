@@ -426,8 +426,8 @@ const AdminUsers = () => {
       <Layout title="User Management">
         <div className="flex h-[80vh] items-center justify-center">
           <div className="flex flex-col items-center gap-4">
-            <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
-            <p className="text-sm font-medium text-gray-500">
+            <div className="h-10 w-10 animate-spin rounded-full border-4 border-brand-600 border-t-transparent"></div>
+            <p className="text-sm font-medium text-secondary-500">
               Loading users...
             </p>
           </div>
@@ -446,17 +446,17 @@ const AdminUsers = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+            <h1 className="text-2xl font-bold text-secondary-900 tracking-tight mb-1">
               User Management
             </h1>
-            <p className="text-gray-500 mt-1">
+            <p className="text-secondary-500 mt-1">
               Manage students, coordinators, and administrators
             </p>
           </div>
           <div className="flex items-center gap-3">
             <Link
               to="/admin/bulk-users"
-              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm bg-green-600 text-white hover:bg-green-700 shadow-green-200"
+              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-card bg-success-600 text-white hover:bg-success-700 shadow-green-200"
             >
               <Users className="w-4 h-4" /> Bulk Create Users
             </Link>
@@ -464,11 +464,10 @@ const AdminUsers = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setShowAddForm(!showAddForm)}
-              className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm ${
-                showAddForm
-                  ? "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
-                  : "bg-blue-600 text-white hover:bg-blue-700 shadow-blue-200"
-              }`}
+              className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-card ${showAddForm
+                  ? "bg-white border border-secondary-300 text-secondary-700 hover:bg-secondary-50"
+                  : "bg-brand-600 text-white hover:bg-brand-700 shadow-blue-200"
+                }`}
             >
               {showAddForm ? (
                 <>
@@ -489,7 +488,7 @@ const AdminUsers = () => {
                 fetchStats();
                 showToast.success("Data refreshed");
               }}
-              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-card bg-white border border-secondary-300 text-secondary-700 hover:bg-secondary-50"
               title="Refresh data"
             >
               <svg
@@ -516,19 +515,18 @@ const AdminUsers = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className={`rounded-xl p-4 flex items-center gap-3 ${
-              error
-                ? "bg-red-50 border border-red-200"
-                : "bg-green-50 border border-green-200"
-            }`}
+            className={`rounded-xl p-4 flex items-center gap-3 ${error
+                ? "bg-danger-50 border border-danger-200"
+                : "bg-success-50 border border-success-200"
+              }`}
           >
             {error ? (
-              <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+              <AlertCircle className="w-5 h-5 text-danger-500 flex-shrink-0" />
             ) : (
-              <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+              <Check className="w-5 h-5 text-success-500 flex-shrink-0" />
             )}
             <span
-              className={`text-sm font-medium ${error ? "text-red-800" : "text-green-800"}`}
+              className={`text-sm font-medium ${error ? "text-danger-800" : "text-success-800"}`}
             >
               {error || success}
             </span>
@@ -541,20 +539,20 @@ const AdminUsers = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+            className="bg-white rounded-xl shadow-card border border-secondary-200 p-6"
           >
-            <h2 className="text-lg font-bold text-gray-900 mb-6">
+            <h2 className="text-lg font-bold text-secondary-900 mb-6">
               Add New User
             </h2>
-            <p className="text-sm text-gray-600 mb-6">
+            <p className="text-sm text-secondary-600 mb-6">
               Users will complete their profile details on their first login.
             </p>
             <form onSubmit={handleAddUser} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Email */}
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address <span className="text-red-500">*</span>
+                  <label className="block text-sm font-medium text-secondary-700 mb-2">
+                    Email Address <span className="text-danger-500">*</span>
                   </label>
                   <input
                     type="email"
@@ -562,15 +560,15 @@ const AdminUsers = () => {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
+                    className="w-full px-4 py-2.5 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-secondary-50"
                     placeholder="user@example.com"
                   />
                 </div>
 
                 {/* Password */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Temporary Password <span className="text-red-500">*</span>
+                  <label className="block text-sm font-medium text-secondary-700 mb-2">
+                    Temporary Password <span className="text-danger-500">*</span>
                   </label>
                   <input
                     type="password"
@@ -579,22 +577,22 @@ const AdminUsers = () => {
                     onChange={handleInputChange}
                     required
                     minLength="6"
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
+                    className="w-full px-4 py-2.5 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-secondary-50"
                     placeholder="Min. 6 characters"
                   />
                 </div>
 
                 {/* Role */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Role <span className="text-red-500">*</span>
+                  <label className="block text-sm font-medium text-secondary-700 mb-2">
+                    Role <span className="text-danger-500">*</span>
                   </label>
                   <select
                     name="role"
                     value={formData.role}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
+                    className="w-full px-4 py-2.5 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-secondary-50"
                   >
                     <option value="student">Student</option>
                     <option value="coordinator">Coordinator</option>
@@ -604,18 +602,18 @@ const AdminUsers = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-secondary-200">
                 <button
                   type="button"
                   onClick={() => setShowAddForm(false)}
-                  className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                  className="px-4 py-2 text-secondary-700 bg-white border border-secondary-300 rounded-lg font-medium hover:bg-secondary-50 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={formLoading}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  className="px-4 py-2 bg-brand-600 text-white rounded-lg font-medium hover:bg-brand-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
                   {formLoading ? (
                     <>
@@ -640,8 +638,8 @@ const AdminUsers = () => {
             title="Students"
             value={stats.students}
             icon={GraduationCap}
-            color="text-blue-600"
-            bgColor="bg-blue-50"
+            color="text-brand-600"
+            bgColor="bg-brand-50"
             active={roleFilter === "student"}
             onClick={() => handleRoleChange("student")}
           />
@@ -649,8 +647,8 @@ const AdminUsers = () => {
             title="Coordinators"
             value={stats.coordinators}
             icon={UserCog}
-            color="text-purple-600"
-            bgColor="bg-purple-50"
+            color="text-accent-600"
+            bgColor="bg-accent-50"
             active={roleFilter === "coordinator"}
             onClick={() => handleRoleChange("coordinator")}
           />
@@ -658,30 +656,30 @@ const AdminUsers = () => {
             title="Administrators"
             value={stats.admins}
             icon={Users}
-            color="text-emerald-600"
-            bgColor="bg-emerald-50"
+            color="text-success-600"
+            bgColor="bg-success-50"
             active={roleFilter === "admin"}
             onClick={() => handleRoleChange("admin")}
           />
         </div>
 
         {/* Search and Filter */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+        <div className="bg-white rounded-xl shadow-card border border-secondary-200 p-4">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-secondary-400" />
               <input
                 type="text"
                 placeholder="Search by name, email, or enrollment number..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full pl-10 pr-4 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
               />
             </div>
             <select
               value={roleFilter}
               onChange={(e) => handleRoleChange(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="px-4 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
             >
               <option value="all">All Roles</option>
               <option value="student">Students</option>
@@ -696,16 +694,16 @@ const AdminUsers = () => {
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-center justify-between"
+            className="bg-brand-50 border border-brand-200 rounded-lg p-4 flex items-center justify-between"
           >
             <div className="flex items-center space-x-4">
-              <span className="text-blue-800 font-medium">
+              <span className="text-brand-800 font-medium">
                 {selectedUsers.length} user
                 {selectedUsers.length !== 1 ? "s" : ""} selected
               </span>
               <button
                 onClick={clearSelection}
-                className="text-blue-600 hover:text-blue-800 text-sm"
+                className="text-brand-600 hover:text-brand-800 text-sm"
               >
                 Clear selection
               </button>
@@ -713,14 +711,14 @@ const AdminUsers = () => {
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => setShowMoveToGroupModal(true)}
-                className="inline-flex items-center px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                className="inline-flex items-center px-3 py-2 text-sm bg-brand-600 text-white rounded-lg hover:bg-brand-700"
               >
                 <ArrowRight className="w-4 h-4 mr-1" />
                 Move to Group
               </button>
               <button
                 onClick={() => setShowDeleteConfirm(true)}
-                className="inline-flex items-center px-3 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700"
+                className="inline-flex items-center px-3 py-2 text-sm bg-danger-600 text-white rounded-lg hover:bg-danger-700"
               >
                 <UserX className="w-4 h-4 mr-1" />
                 Delete Users
@@ -733,13 +731,13 @@ const AdminUsers = () => {
         <div className="flex justify-end space-x-2">
           <button
             onClick={expandAllGroups}
-            className="text-sm text-blue-600 hover:text-blue-800"
+            className="text-sm text-brand-600 hover:text-brand-800"
           >
             Expand All
           </button>
           <button
             onClick={collapseAllGroups}
-            className="text-sm text-gray-600 hover:text-gray-800"
+            className="text-sm text-secondary-600 hover:text-secondary-800"
           >
             Collapse All
           </button>
@@ -751,26 +749,26 @@ const AdminUsers = () => {
             ([groupId, { groupInfo, users: groupUsers }]) => (
               <div
                 key={groupId}
-                className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
+                className="bg-white rounded-xl shadow-card border border-secondary-200 overflow-hidden"
               >
                 {/* Group Header */}
                 <div
-                  className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors cursor-pointer"
+                  className="w-full px-6 py-4 flex items-center justify-between hover:bg-secondary-50 transition-colors cursor-pointer"
                   onClick={() => toggleGroupExpansion(groupId)}
                 >
                   <div className="flex items-center space-x-3">
                     <div
-                      className={`p-2 rounded-lg ${groupId === "no-group" ? "bg-gray-100" : "bg-blue-100"}`}
+                      className={`p-2 rounded-lg ${groupId === "no-group" ? "bg-secondary-100" : "bg-brand-100"}`}
                     >
                       <Users
-                        className={`w-5 h-5 ${groupId === "no-group" ? "text-gray-600" : "text-blue-600"}`}
+                        className={`w-5 h-5 ${groupId === "no-group" ? "text-secondary-600" : "text-brand-600"}`}
                       />
                     </div>
                     <div className="text-left">
-                      <h3 className="text-lg font-semibold text-gray-900">
+                      <h3 className="text-lg font-semibold text-secondary-900">
                         {groupInfo?.name || "Unknown Group"}
                       </h3>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-secondary-600">
                         {groupUsers.length}{" "}
                         {groupUsers.length === 1 ? "user" : "users"}
                         {groupInfo?.groupType &&
@@ -791,7 +789,7 @@ const AdminUsers = () => {
                             groupUsers.length,
                           )
                         }
-                        className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-2 text-danger-500 hover:text-danger-700 hover:bg-danger-50 rounded-lg transition-colors"
                         title="Delete Group"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -799,7 +797,7 @@ const AdminUsers = () => {
                     )}
                     {expandedGroups[groupId] ? (
                       <svg
-                        className="w-5 h-5 text-gray-400"
+                        className="w-5 h-5 text-secondary-400"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -813,7 +811,7 @@ const AdminUsers = () => {
                       </svg>
                     ) : (
                       <svg
-                        className="w-5 h-5 text-gray-400"
+                        className="w-5 h-5 text-secondary-400"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -831,12 +829,12 @@ const AdminUsers = () => {
 
                 {/* Group Users - Expanded View */}
                 {expandedGroups[groupId] && (
-                  <div className="border-t border-gray-200">
+                  <div className="border-t border-secondary-200">
                     <div className="overflow-x-auto">
-                      <table className="w-full text-sm">
-                        <thead className="bg-gray-50 border-b border-gray-200">
+                      <table className="w-full text-sm text-left whitespace-nowrap">
+                        <thead className="bg-secondary-50/80 border-b border-secondary-200">
                           <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            <th className="px-6 py-4 text-xs font-semibold text-secondary-500 uppercase tracking-wider w-12">
                               <input
                                 type="checkbox"
                                 onChange={(e) => {
@@ -859,82 +857,87 @@ const AdminUsers = () => {
                                 checked={groupUsers.every((u) =>
                                   selectedUsers.includes(u._id),
                                 )}
-                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                className="h-4 w-4 text-brand-600 focus:ring-brand-500 border-secondary-300 rounded"
                               />
                             </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                              Name
+                            <th className="px-6 py-4 text-xs font-semibold text-secondary-500 uppercase tracking-wider">
+                              User Details
                             </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            <th className="px-6 py-4 text-xs font-semibold text-secondary-500 uppercase tracking-wider">
                               Email
                             </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            <th className="px-6 py-4 text-xs font-semibold text-secondary-500 uppercase tracking-wider">
                               Role
                             </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            <th className="px-6 py-4 text-xs font-semibold text-secondary-500 uppercase tracking-wider">
                               Department
                             </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            <th className="px-6 py-4 text-xs font-semibold text-secondary-500 uppercase tracking-wider">
                               Status
                             </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            <th className="px-6 py-4 text-xs font-semibold text-secondary-500 uppercase tracking-wider text-right">
                               Actions
                             </th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100">
+                        <tbody className="divide-y divide-secondary-100 bg-white">
                           {groupUsers.map((user) => (
                             <tr
                               key={user._id}
-                              className="hover:bg-gray-50 transition-colors"
+                              className="hover:bg-secondary-50/50 transition-colors group"
                             >
                               <td className="px-6 py-4">
                                 <input
                                   type="checkbox"
                                   checked={selectedUsers.includes(user._id)}
                                   onChange={() => toggleUserSelection(user._id)}
-                                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                  className="h-4 w-4 text-brand-600 focus:ring-brand-500 border-secondary-300 rounded"
                                 />
                               </td>
                               <td className="px-6 py-4">
-                                <div>
-                                  <div className="font-medium text-gray-900">
-                                    {user.role === "student" ? (
-                                      <Link
-                                        to={`/admin/students/${user._id}`}
-                                        className="text-blue-600 hover:underline"
-                                      >
-                                        {user.name}
-                                      </Link>
-                                    ) : (
-                                      user.name
+                                <div className="flex items-center gap-3">
+                                  <div className="w-8 h-8 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-xs ring-2 ring-white">
+                                    {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+                                  </div>
+                                  <div className="flex flex-col">
+                                    <div className="font-semibold text-secondary-900 group-hover:text-brand-600 transition-colors">
+                                      {user.role === "student" ? (
+                                        <Link
+                                          to={`/admin/students/${user._id}`}
+                                          className="hover:underline"
+                                        >
+                                          {user.name}
+                                        </Link>
+                                      ) : (
+                                        user.name
+                                      )}
+                                    </div>
+                                    {user.enrollmentNumber && (
+                                      <div className="text-xs font-medium text-secondary-500">
+                                        {user.enrollmentNumber}
+                                      </div>
                                     )}
                                   </div>
-                                  {user.enrollmentNumber && (
-                                    <div className="text-xs text-gray-500">
-                                      {user.enrollmentNumber}
-                                    </div>
-                                  )}
                                 </div>
                               </td>
-                              <td className="px-6 py-4 text-gray-600">
+                              <td className="px-6 py-4 text-secondary-600 font-medium">
                                 {user.email}
                               </td>
                               <td className="px-6 py-4">
                                 <RoleBadge role={user.role} />
                               </td>
-                              <td className="px-6 py-4 text-gray-600">
-                                {user.department || "-"}
-                                {user.semester && ` (Sem ${user.semester})`}
+                              <td className="px-6 py-4">
+                                <div className="text-secondary-900 font-medium">{user.department || "-"}</div>
+                                {user.semester && <div className="text-xs text-secondary-500">Sem {user.semester}</div>}
                               </td>
                               <td className="px-6 py-4">
                                 <StatusBadge active={user.isActive} />
                               </td>
-                              <td className="px-6 py-4">
-                                <div className="flex items-center gap-2">
+                              <td className="px-6 py-4 text-right">
+                                <div className="flex items-center justify-end gap-2 outline-none">
                                   <button
                                     onClick={() => handleEditUser(user)}
-                                    className="p-1 text-blue-600 hover:text-blue-800 transition-colors"
+                                    className="p-1.5 text-secondary-400 hover:text-brand-600 hover:bg-brand-50 rounded-md transition-all outline-none"
                                     title="Edit user"
                                   >
                                     <Edit className="w-4 h-4" />
@@ -943,7 +946,7 @@ const AdminUsers = () => {
                                     onClick={() =>
                                       handleDeleteUser(user._id, user.name)
                                     }
-                                    className="p-1 text-red-600 hover:text-red-800 transition-colors"
+                                    className="p-1.5 text-secondary-400 hover:text-danger-600 hover:bg-danger-50 rounded-md transition-all outline-none"
                                     title="Delete user"
                                   >
                                     <Trash2 className="w-4 h-4" />
@@ -962,12 +965,12 @@ const AdminUsers = () => {
           )}
 
           {Object.keys(groupedUsers).length === 0 && (
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-              <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <div className="bg-white rounded-xl shadow-card border border-secondary-200 p-12 text-center">
+              <Users className="w-12 h-12 text-secondary-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-secondary-900 mb-2">
                 No users found
               </h3>
-              <p className="text-gray-600">
+              <p className="text-secondary-600">
                 Try adjusting your search or filters
               </p>
             </div>
@@ -979,19 +982,19 @@ const AdminUsers = () => {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
               <div className="flex items-center justify-between p-6 border-b">
-                <h3 className="text-lg font-medium text-gray-900">
+                <h3 className="text-lg font-medium text-secondary-900">
                   Move Users to Group
                 </h3>
                 <button
                   onClick={() => setShowMoveToGroupModal(false)}
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                  className="text-secondary-400 hover:text-secondary-600 transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
               <div className="p-6">
-                <p className="text-gray-600 mb-4">
+                <p className="text-secondary-600 mb-4">
                   Move {selectedUsers.length} selected user
                   {selectedUsers.length !== 1 ? "s" : ""} to a group:
                 </p>
@@ -999,7 +1002,7 @@ const AdminUsers = () => {
                 <select
                   value={selectedGroupForMove}
                   onChange={(e) => setSelectedGroupForMove(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-6"
+                  className="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent mb-6"
                 >
                   <option value="">Select a group</option>
                   {groups.map((group) => (
@@ -1012,14 +1015,14 @@ const AdminUsers = () => {
                 <div className="flex items-center justify-end space-x-3">
                   <button
                     onClick={() => setShowMoveToGroupModal(false)}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+                    className="px-4 py-2 text-sm font-medium text-secondary-700 bg-white border border-secondary-300 rounded-lg hover:bg-secondary-50"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleMoveToGroup}
                     disabled={!selectedGroupForMove}
-                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 text-sm font-medium text-white bg-brand-600 border border-transparent rounded-lg hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Move Users
                   </button>
@@ -1037,7 +1040,7 @@ const AdminUsers = () => {
           title="Delete Users"
           message={`Are you sure you want to delete ${selectedUsers.length} user${selectedUsers.length !== 1 ? "s" : ""}? This action cannot be undone.`}
           confirmText="Delete Users"
-          confirmButtonClass="bg-red-600 hover:bg-red-700"
+          confirmButtonClass="bg-danger-600 hover:bg-danger-700"
         />
 
         {/* Delete Group Dialog */}
@@ -1049,7 +1052,7 @@ const AdminUsers = () => {
                 aria-hidden="true"
               >
                 <div
-                  className="absolute inset-0 bg-gray-500 opacity-75"
+                  className="absolute inset-0 bg-secondary-500 opacity-75"
                   onClick={() =>
                     setDeleteGroupDialog({
                       show: false,
@@ -1067,15 +1070,15 @@ const AdminUsers = () => {
               </span>
               <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
                 <div className="sm:flex sm:items-start">
-                  <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                    <Trash2 className="h-6 w-6 text-red-600" />
+                  <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-danger-100 sm:mx-0 sm:h-10 sm:w-10">
+                    <Trash2 className="h-6 w-6 text-danger-600" />
                   </div>
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
+                    <h3 className="text-lg leading-6 font-medium text-secondary-900">
                       Delete Group: {deleteGroupDialog.group?.name}
                     </h3>
                     <div className="mt-2">
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-secondary-500">
                         This group has{" "}
                         <strong>
                           {deleteGroupDialog.group?.memberCount || 0} member(s)
@@ -1095,13 +1098,13 @@ const AdminUsers = () => {
                               deleteUsers: false,
                             }))
                           }
-                          className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500"
+                          className="mt-1 h-4 w-4 text-brand-600 focus:ring-brand-500"
                         />
                         <div>
-                          <span className="text-sm font-medium text-gray-900">
+                          <span className="text-sm font-medium text-secondary-900">
                             Delete group only
                           </span>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-secondary-500">
                             The group will be removed but users will remain in
                             the system
                           </p>
@@ -1118,13 +1121,13 @@ const AdminUsers = () => {
                               deleteUsers: true,
                             }))
                           }
-                          className="mt-1 h-4 w-4 text-red-600 focus:ring-red-500"
+                          className="mt-1 h-4 w-4 text-danger-600 focus:ring-red-500"
                         />
                         <div>
-                          <span className="text-sm font-medium text-red-600">
+                          <span className="text-sm font-medium text-danger-600">
                             Delete group and all users
                           </span>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-secondary-500">
                             The group and all{" "}
                             {deleteGroupDialog.group?.memberCount || 0}{" "}
                             member(s) will be permanently deleted
@@ -1133,8 +1136,8 @@ const AdminUsers = () => {
                       </label>
                     </div>
                     {deleteGroupDialog.deleteUsers && (
-                      <div className="mt-3 p-3 bg-red-50 rounded-md">
-                        <p className="text-sm text-red-700 font-medium">
+                      <div className="mt-3 p-3 bg-danger-50 rounded-md">
+                        <p className="text-sm text-danger-700 font-medium">
                           ⚠️ Warning: This action cannot be undone. All user
                           data including quiz attempts and results will be
                           permanently deleted.
@@ -1147,11 +1150,10 @@ const AdminUsers = () => {
                   <button
                     type="button"
                     onClick={confirmDeleteGroup}
-                    className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
-                      deleteGroupDialog.deleteUsers
-                        ? "bg-red-600 hover:bg-red-700 focus:ring-red-500"
-                        : "bg-orange-600 hover:bg-orange-700 focus:ring-orange-500"
-                    }`}
+                    className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-card px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${deleteGroupDialog.deleteUsers
+                        ? "bg-danger-600 hover:bg-danger-700 focus:ring-red-500"
+                        : "bg-warning-600 hover:bg-warning-700 focus:ring-orange-500"
+                      }`}
                   >
                     {deleteGroupDialog.deleteUsers
                       ? "Delete Group & Users"
@@ -1166,7 +1168,7 @@ const AdminUsers = () => {
                         deleteUsers: false,
                       })
                     }
-                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:w-auto sm:text-sm"
+                    className="mt-3 w-full inline-flex justify-center rounded-md border border-secondary-300 shadow-card px-4 py-2 bg-white text-base font-medium text-secondary-700 hover:bg-secondary-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 sm:mt-0 sm:w-auto sm:text-sm"
                   >
                     Cancel
                   </button>
@@ -1193,15 +1195,14 @@ const StatCard = ({
     onClick={onClick}
     whileHover={{ scale: 1.02 }}
     whileTap={{ scale: 0.98 }}
-    className={`bg-white p-6 rounded-xl border-2 shadow-sm hover:shadow-md transition-all text-left w-full ${
-      active ? "border-blue-500 ring-2 ring-blue-100" : "border-gray-200"
-    }`}
+    className={`bg-white p-6 rounded-xl border-2 shadow-card hover:shadow-card-hover transition-all text-left w-full ${active ? "border-brand-500 ring-2 ring-brand-100" : "border-secondary-200"
+      }`}
   >
     <div className="flex items-start justify-between">
       <div>
-        <p className="text-sm font-medium text-gray-500">{title}</p>
+        <p className="text-sm font-medium text-secondary-500">{title}</p>
         <div className="mt-2 flex items-baseline gap-2">
-          <span className="text-2xl font-bold text-gray-900">{value}</span>
+          <span className="text-2xl font-bold text-secondary-900">{value}</span>
         </div>
       </div>
       <div className={`p-3 rounded-lg ${bgColor}`}>
@@ -1213,14 +1214,14 @@ const StatCard = ({
 
 const RoleBadge = ({ role }) => {
   const styles = {
-    admin: "bg-red-50 text-red-700 border-red-200",
-    coordinator: "bg-purple-50 text-purple-700 border-purple-200",
-    student: "bg-blue-50 text-blue-700 border-blue-200",
+    admin: "bg-danger-50 text-danger-700 border-danger-200",
+    coordinator: "bg-accent-50 text-accent-700 border-purple-200",
+    student: "bg-brand-50 text-brand-700 border-brand-200",
   };
 
   return (
     <span
-      className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${styles[role] || "bg-gray-50 text-gray-700 border-gray-200"} capitalize`}
+      className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${styles[role] || "bg-secondary-50 text-secondary-700 border-secondary-200"} capitalize`}
     >
       {role}
     </span>
@@ -1229,11 +1230,10 @@ const RoleBadge = ({ role }) => {
 
 const StatusBadge = ({ active }) => (
   <span
-    className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-      active
-        ? "bg-green-50 text-green-700 border-green-200"
-        : "bg-gray-50 text-gray-700 border-gray-200"
-    }`}
+    className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border ${active
+        ? "bg-success-50 text-success-700 border-success-200"
+        : "bg-secondary-50 text-secondary-700 border-secondary-200"
+      }`}
   >
     {active ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
     {active ? "Active" : "Inactive"}

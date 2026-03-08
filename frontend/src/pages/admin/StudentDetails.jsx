@@ -42,7 +42,7 @@ const StudentDetails = ({ id: propId, forceId }) => {
   }, [id, subjectFilter]);
 
   if (loading) return <div>Loading...</div>;
-  if (error) return <div className="text-red-500">{error}</div>;
+  if (error) return <div className="text-danger-500">{error}</div>;
   if (!student) return <div>No student found.</div>;
 
   const openEditModal = (quiz) => {
@@ -100,26 +100,26 @@ const StudentDetails = ({ id: propId, forceId }) => {
 
   return (
     <div className="p-0 md:p-6">
-      <div className="bg-white rounded-xl shadow-lg border border-blue-100 p-6 mb-6 flex flex-col md:flex-row items-center gap-6">
+      <div className="bg-white rounded-xl shadow-card-hover border border-brand-100 p-6 mb-6 flex flex-col md:flex-row items-center gap-6">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white text-2xl font-bold shadow-card-hover">
             {student.fullName?.charAt(0)?.toUpperCase() ||
               student.email?.charAt(0)?.toUpperCase()}
           </div>
           <div>
-            <div className="text-xl md:text-2xl font-bold text-gray-900">
+            <div className="text-xl md:text-2xl font-bold text-secondary-900">
               {student.fullName || (
-                <span className="italic text-gray-400">No Name</span>
+                <span className="italic text-secondary-400">No Name</span>
               )}
             </div>
-            <div className="text-gray-500 text-sm md:text-base">
+            <div className="text-secondary-500 text-sm md:text-base">
               {student.email}
             </div>
           </div>
         </div>
         <div className="flex-1 flex justify-end">
           <div className="flex items-center gap-2">
-            <label className="text-gray-600 font-medium">
+            <label className="text-secondary-600 font-medium">
               Filter by Subject:
             </label>
             <input
@@ -127,68 +127,68 @@ const StudentDetails = ({ id: propId, forceId }) => {
               value={subjectFilter}
               onChange={(e) => setSubjectFilter(e.target.value)}
               placeholder="Enter subject name"
-              className="border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none"
+              className="border px-3 py-2 rounded-lg focus:ring-2 focus:ring-brand-400 focus:border-brand-400 outline-none"
             />
           </div>
         </div>
       </div>
-      <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
-        <h3 className="text-xl font-semibold mb-4 text-blue-800">
+      <div className="bg-white rounded-xl shadow-card-hover border border-secondary-100 p-6">
+        <h3 className="text-xl font-semibold mb-4 text-brand-800">
           Quiz Attempts
         </h3>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 text-sm">
-            <thead className="bg-blue-50">
+          <table className="min-w-full divide-y divide-secondary-200 text-sm">
+            <thead className="bg-brand-50">
               <tr>
-                <th className="px-6 py-3 text-left font-semibold text-gray-700 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left font-semibold text-secondary-700 uppercase tracking-wider">
                   Quiz Title
                 </th>
-                <th className="px-6 py-3 text-left font-semibold text-gray-700 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left font-semibold text-secondary-700 uppercase tracking-wider">
                   Subject
                 </th>
-                <th className="px-6 py-3 text-left font-semibold text-gray-700 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left font-semibold text-secondary-700 uppercase tracking-wider">
                   Marks
                 </th>
-                <th className="px-6 py-3 text-left font-semibold text-gray-700 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left font-semibold text-secondary-700 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left font-semibold text-gray-700 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left font-semibold text-secondary-700 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-100">
+            <tbody className="bg-white divide-y divide-secondary-100">
               {quizzes.map((quiz) => (
                 <tr
                   key={quiz.quizId}
-                  className="hover:bg-blue-50 transition-colors"
+                  className="hover:bg-brand-50 transition-colors"
                 >
-                  <td className="px-6 py-3 font-medium text-gray-900">
+                  <td className="px-6 py-3 font-medium text-secondary-900">
                     {quiz.title}
                   </td>
-                  <td className="px-6 py-3 text-gray-700">
+                  <td className="px-6 py-3 text-secondary-700">
                     {quiz.subject || (
-                      <span className="italic text-gray-400">-</span>
+                      <span className="italic text-secondary-400">-</span>
                     )}
                   </td>
-                  <td className="px-6 py-3 text-gray-700">
+                  <td className="px-6 py-3 text-secondary-700">
                     {quiz.marks !== undefined ? (
                       quiz.marks
                     ) : (
-                      <span className="italic text-gray-400">Not given</span>
+                      <span className="italic text-secondary-400">Not given</span>
                     )}
                   </td>
                   <td className="px-6 py-3">
                     {quiz.status === "Attempted" ? (
-                      <span className="inline-block px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
+                      <span className="inline-block px-3 py-1 rounded-full bg-success-100 text-success-700 text-xs font-semibold">
                         Attempted
                       </span>
                     ) : quiz.status === "Not given" ? (
-                      <span className="inline-block px-3 py-1 rounded-full bg-gray-100 text-gray-500 text-xs font-semibold">
+                      <span className="inline-block px-3 py-1 rounded-full bg-secondary-100 text-secondary-500 text-xs font-semibold">
                         Not given
                       </span>
                     ) : (
-                      <span className="inline-block px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-semibold">
+                      <span className="inline-block px-3 py-1 rounded-full bg-warning-100 text-warning-700 text-xs font-semibold">
                         {quiz.status}
                       </span>
                     )}
@@ -196,13 +196,13 @@ const StudentDetails = ({ id: propId, forceId }) => {
                   <td className="px-6 py-3">
                     {quiz.attemptId ? (
                       <button
-                        className="text-blue-600 hover:underline font-medium"
+                        className="text-brand-600 hover:underline font-medium"
                         onClick={() => openEditModal(quiz)}
                       >
                         Edit Marks
                       </button>
                     ) : (
-                      <span className="text-gray-400">-</span>
+                      <span className="text-secondary-400">-</span>
                     )}
                   </td>
                 </tr>
@@ -215,7 +215,7 @@ const StudentDetails = ({ id: propId, forceId }) => {
       {/* Edit Marks Modal */}
       {editModal.open && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 min-w-[300px]">
+          <div className="bg-white rounded-lg shadow-card-hover p-6 min-w-[300px]">
             <h4 className="text-lg font-bold mb-2">
               Edit Marks for {editModal.quiz.title}
             </h4>
@@ -232,14 +232,14 @@ const StudentDetails = ({ id: propId, forceId }) => {
               <div className="flex gap-2">
                 <button
                   type="submit"
-                  className="bg-blue-600 text-white px-4 py-1 rounded disabled:opacity-50"
+                  className="bg-brand-600 text-white px-4 py-1 rounded disabled:opacity-50"
                   disabled={markLoading}
                 >
                   {markLoading ? "Saving..." : "Save"}
                 </button>
                 <button
                   type="button"
-                  className="bg-gray-300 px-4 py-1 rounded"
+                  className="bg-secondary-300 px-4 py-1 rounded"
                   onClick={closeEditModal}
                   disabled={markLoading}
                 >
@@ -247,10 +247,10 @@ const StudentDetails = ({ id: propId, forceId }) => {
                 </button>
               </div>
               {markError && (
-                <div className="text-red-500 text-sm">{markError}</div>
+                <div className="text-danger-500 text-sm">{markError}</div>
               )}
               {markSuccess && (
-                <div className="text-green-600 text-sm">{markSuccess}</div>
+                <div className="text-success-600 text-sm">{markSuccess}</div>
               )}
             </form>
           </div>

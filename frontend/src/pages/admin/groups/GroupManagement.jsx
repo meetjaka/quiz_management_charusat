@@ -105,13 +105,13 @@ const GroupManagement = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen bg-secondary-50 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
+            <div className="h-8 bg-secondary-200 rounded w-1/4 mb-6"></div>
             <div className="space-y-4">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-20 bg-gray-200 rounded"></div>
+                <div key={i} className="h-20 bg-secondary-200 rounded"></div>
               ))}
             </div>
           </div>
@@ -121,23 +121,23 @@ const GroupManagement = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-secondary-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                <FiUsers className="text-blue-600" />
+              <h1 className="text-3xl font-bold text-secondary-900 flex items-center gap-3">
+                <FiUsers className="text-brand-600" />
                 Group Management
               </h1>
-              <p className="text-gray-600 mt-2">
+              <p className="text-secondary-600 mt-2">
                 Organize users into groups and batches
               </p>
             </div>
             <button
               onClick={handleCreateGroup}
-              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+              className="inline-flex items-center px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 transition-colors"
             >
               <FiPlus className="mr-2 h-4 w-4" />
               Create Group
@@ -150,13 +150,13 @@ const GroupManagement = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Search */}
             <div className="relative">
-              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-secondary-400 h-4 w-4" />
               <input
                 type="text"
                 placeholder="Search groups..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="pl-10 pr-4 py-2 w-full border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
               />
             </div>
 
@@ -166,7 +166,7 @@ const GroupManagement = () => {
               onChange={(e) =>
                 setFilters((prev) => ({ ...prev, groupType: e.target.value }))
               }
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
             >
               <option value="">All Types</option>
               <option value="batch">Batch</option>
@@ -181,7 +181,7 @@ const GroupManagement = () => {
               onChange={(e) =>
                 setFilters((prev) => ({ ...prev, isActive: e.target.value }))
               }
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
             >
               <option value="">All Status</option>
               <option value="true">Active</option>
@@ -195,23 +195,23 @@ const GroupManagement = () => {
           {filteredGroups.map((group) => (
             <div
               key={group._id}
-              className="bg-white rounded-lg shadow hover:shadow-md transition-shadow"
+              className="bg-white rounded-lg shadow hover:shadow-card-hover transition-shadow"
             >
               <div className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
+                    <h3 className="text-lg font-semibold text-secondary-900">
                       {group.name}
                     </h3>
-                    <p className="text-sm text-gray-600 capitalize">
+                    <p className="text-sm text-secondary-600 capitalize">
                       {group.groupType}
                     </p>
                   </div>
                   <span
                     className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                       group.isActive
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
+                        ? "bg-success-100 text-success-800"
+                        : "bg-danger-100 text-danger-800"
                     }`}
                   >
                     {group.isActive ? "Active" : "Inactive"}
@@ -219,12 +219,12 @@ const GroupManagement = () => {
                 </div>
 
                 {group.description && (
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                  <p className="text-secondary-600 text-sm mb-4 line-clamp-2">
                     {group.description}
                   </p>
                 )}
 
-                <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+                <div className="flex items-center justify-between text-sm text-secondary-500 mb-4">
                   <span className="flex items-center">
                     <FiUsers className="mr-1 h-4 w-4" />
                     {group.memberCount} members
@@ -235,21 +235,21 @@ const GroupManagement = () => {
                 <div className="flex items-center justify-between">
                   <button
                     onClick={() => handleViewGroup(group)}
-                    className="text-blue-600 hover:text-blue-800 font-medium text-sm"
+                    className="text-brand-600 hover:text-brand-800 font-medium text-sm"
                   >
                     View Details
                   </button>
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => handleEditGroup(group)}
-                      className="p-1 text-gray-400 hover:text-gray-600"
+                      className="p-1 text-secondary-400 hover:text-secondary-600"
                       title="Edit Group"
                     >
                       <FiEdit2 className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => handleDeleteGroup(group)}
-                      className="p-1 text-red-400 hover:text-red-600"
+                      className="p-1 text-danger-400 hover:text-danger-600"
                       title="Delete Group"
                     >
                       <FiTrash2 className="h-4 w-4" />
@@ -263,11 +263,11 @@ const GroupManagement = () => {
 
         {filteredGroups.length === 0 && (
           <div className="text-center py-12">
-            <FiUsers className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <FiUsers className="mx-auto h-12 w-12 text-secondary-400 mb-4" />
+            <h3 className="text-lg font-medium text-secondary-900 mb-2">
               No groups found
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className="text-secondary-600 mb-4">
               {searchTerm
                 ? "Try adjusting your search criteria."
                 : "Create your first group to get started."}
@@ -275,7 +275,7 @@ const GroupManagement = () => {
             {!searchTerm && (
               <button
                 onClick={handleCreateGroup}
-                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                className="inline-flex items-center px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700"
               >
                 <FiPlus className="mr-2 h-4 w-4" />
                 Create Group
@@ -314,7 +314,7 @@ const GroupManagement = () => {
                 aria-hidden="true"
               >
                 <div
-                  className="absolute inset-0 bg-gray-500 opacity-75"
+                  className="absolute inset-0 bg-secondary-500 opacity-75"
                   onClick={() =>
                     setDeleteDialog({
                       show: false,
@@ -332,15 +332,15 @@ const GroupManagement = () => {
               </span>
               <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
                 <div className="sm:flex sm:items-start">
-                  <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                    <FiTrash2 className="h-6 w-6 text-red-600" />
+                  <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-danger-100 sm:mx-0 sm:h-10 sm:w-10">
+                    <FiTrash2 className="h-6 w-6 text-danger-600" />
                   </div>
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
+                    <h3 className="text-lg leading-6 font-medium text-secondary-900">
                       Delete Group: {deleteDialog.group?.name}
                     </h3>
                     <div className="mt-2">
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-secondary-500">
                         This group has{" "}
                         <strong>
                           {deleteDialog.group?.memberCount || 0} member(s)
@@ -360,13 +360,13 @@ const GroupManagement = () => {
                               deleteUsers: false,
                             }))
                           }
-                          className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500"
+                          className="mt-1 h-4 w-4 text-brand-600 focus:ring-brand-500"
                         />
                         <div>
-                          <span className="text-sm font-medium text-gray-900">
+                          <span className="text-sm font-medium text-secondary-900">
                             Delete group only
                           </span>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-secondary-500">
                             The group will be removed but users will remain in
                             the system
                           </p>
@@ -383,13 +383,13 @@ const GroupManagement = () => {
                               deleteUsers: true,
                             }))
                           }
-                          className="mt-1 h-4 w-4 text-red-600 focus:ring-red-500"
+                          className="mt-1 h-4 w-4 text-danger-600 focus:ring-red-500"
                         />
                         <div>
-                          <span className="text-sm font-medium text-red-600">
+                          <span className="text-sm font-medium text-danger-600">
                             Delete group and all users
                           </span>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-secondary-500">
                             The group and all{" "}
                             {deleteDialog.group?.memberCount || 0} member(s)
                             will be permanently deleted
@@ -398,8 +398,8 @@ const GroupManagement = () => {
                       </label>
                     </div>
                     {deleteDialog.deleteUsers && (
-                      <div className="mt-3 p-3 bg-red-50 rounded-md">
-                        <p className="text-sm text-red-700 font-medium">
+                      <div className="mt-3 p-3 bg-danger-50 rounded-md">
+                        <p className="text-sm text-danger-700 font-medium">
                           ⚠️ Warning: This action cannot be undone. All user
                           data including quiz attempts and results will be
                           permanently deleted.
@@ -412,10 +412,10 @@ const GroupManagement = () => {
                   <button
                     type="button"
                     onClick={confirmDelete}
-                    className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
+                    className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-card px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
                       deleteDialog.deleteUsers
-                        ? "bg-red-600 hover:bg-red-700 focus:ring-red-500"
-                        : "bg-orange-600 hover:bg-orange-700 focus:ring-orange-500"
+                        ? "bg-danger-600 hover:bg-danger-700 focus:ring-red-500"
+                        : "bg-warning-600 hover:bg-warning-700 focus:ring-orange-500"
                     }`}
                   >
                     {deleteDialog.deleteUsers
@@ -431,7 +431,7 @@ const GroupManagement = () => {
                         deleteUsers: false,
                       })
                     }
-                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:w-auto sm:text-sm"
+                    className="mt-3 w-full inline-flex justify-center rounded-md border border-secondary-300 shadow-card px-4 py-2 bg-white text-base font-medium text-secondary-700 hover:bg-secondary-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 sm:mt-0 sm:w-auto sm:text-sm"
                   >
                     Cancel
                   </button>

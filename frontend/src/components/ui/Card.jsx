@@ -1,16 +1,10 @@
 import React from 'react';
-import { theme, cn } from '../../constants/theme';
+import { cn } from '../../constants/theme';
 
 /**
  * Card Component
  * High-performance card container with multiple variants
  * GPU-accelerated hover effects using transform
- * 
- * @param {string} variant - default | flat | elevated | interactive | gradient
- * @param {string} className - Additional custom classes
- * @param {function} onClick - Click handler (for interactive cards)
- * @param {node} children - Card content
- * @param {boolean} hover - Enable hover effect
  */
 const Card = ({
   variant = 'default',
@@ -22,21 +16,20 @@ const Card = ({
 }) => {
   // Variant styles
   const variantStyles = {
-    default: 'bg-white rounded-xl shadow-sm border border-gray-200 p-6',
-    flat: 'bg-white rounded-lg border border-gray-200 p-6',
-    elevated: 'bg-white rounded-xl shadow-lg border border-gray-100 p-6',
-    interactive: 'bg-white rounded-xl shadow-sm border border-gray-200 p-6 cursor-pointer',
-    gradient: 'bg-gradient-to-br rounded-xl p-6 text-white shadow-md',
+    default: 'bg-white rounded-xl shadow-card border border-secondary-200',
+    flat: 'bg-white rounded-xl border border-secondary-200',
+    elevated: 'bg-white rounded-xl shadow-card-hover border border-secondary-100',
+    interactive: 'bg-white rounded-xl shadow-card border border-secondary-200 cursor-pointer',
+    gradient: 'bg-gradient-to-br from-brand-600 to-primary-700 rounded-xl text-white shadow-card',
   };
 
-  // Hover effects (GPU-accelerated)
-  const hoverStyles = hover
-    ? variant === 'interactive'
-      ? 'hover:shadow-md hover:border-blue-300 hover:scale-[1.02] transition-all duration-200'
-      : 'hover:shadow-md transition-shadow duration-200'
-    : '';
+  // Hover effects
+  const hoverStyles = hover && variant === 'interactive'
+    ? 'hover:shadow-card-hover hover:border-brand-300 hover:-translate-y-0.5 transition-all duration-300'
+    : hover && variant !== 'gradient'
+      ? 'hover:shadow-card-hover transition-shadow duration-300'
+      : '';
 
-  // Combine all styles
   const cardClasses = cn(variantStyles[variant], hoverStyles, className);
 
   return (

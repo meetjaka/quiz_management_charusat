@@ -37,12 +37,12 @@ const StudentAnalytics = () => {
     return (
       <Layout title="My Performance">
         <div className="flex h-[80vh] items-center justify-center">
-          <div className="flex flex-col items-center gap-4 p-8 bg-white rounded-2xl shadow-sm border border-gray-200">
+          <div className="flex flex-col items-center gap-4 p-8 bg-white rounded-xl shadow-card border border-secondary-200">
             <div className="relative">
-              <div className="h-12 w-12 rounded-full border-4 border-gray-100"></div>
-              <div className="absolute top-0 left-0 h-12 w-12 animate-spin rounded-full border-4 border-green-600 border-t-transparent"></div>
+              <div className="h-12 w-12 rounded-full border-4 border-secondary-100"></div>
+              <div className="absolute top-0 left-0 h-12 w-12 animate-spin rounded-full border-4 border-success-600 border-t-transparent"></div>
             </div>
-            <p className="text-sm font-medium text-gray-500 animate-pulse">Loading your performance...</p>
+            <p className="text-sm font-medium text-secondary-500 animate-pulse">Loading your performance...</p>
           </div>
         </div>
       </Layout>
@@ -60,13 +60,13 @@ const StudentAnalytics = () => {
           className="flex flex-col md:flex-row md:items-center justify-between gap-4"
         >
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 tracking-tight flex items-center gap-3">
-              <div className="p-2.5 bg-gradient-to-br from-green-600 to-green-700 rounded-xl shadow-lg shadow-green-200">
+            <h1 className="text-2xl font-bold text-secondary-900 tracking-tight flex items-center gap-3">
+              <div className="p-2.5 bg-gradient-to-br from-green-600 to-green-700 rounded-xl shadow-card-hover shadow-green-200">
                 <TrendingUp className="w-6 h-6 text-white" />
               </div>
               My Performance
             </h1>
-            <p className="text-gray-500 mt-2 text-sm">
+            <p className="text-secondary-500 mt-2 text-sm">
               Track your quiz performance, progress, and achievement insights
             </p>
           </div>
@@ -75,9 +75,9 @@ const StudentAnalytics = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={fetchData}
-            className="group flex items-center justify-center gap-2 px-5 py-2.5 bg-white text-gray-700 border border-gray-200 rounded-xl font-medium hover:bg-gray-50 hover:border-gray-300 hover:text-green-600 transition-all shadow-sm"
+            className="group flex items-center justify-center gap-2 px-5 py-2.5 bg-white text-secondary-700 border border-secondary-200 rounded-xl font-medium hover:bg-secondary-50 hover:border-secondary-300 hover:text-success-600 transition-all shadow-card"
           >
-            <RefreshCw className="w-4 h-4 text-gray-400 group-hover:text-green-600 group-hover:rotate-180 transition-all duration-500" />
+            <RefreshCw className="w-4 h-4 text-secondary-400 group-hover:text-success-600 group-hover:rotate-180 transition-all duration-500" />
             Refresh
           </motion.button>
         </motion.div>
@@ -93,12 +93,12 @@ const StudentAnalytics = () => {
               <StudentAnalyticsCharts analytics={analytics} recentResults={recentResults} />
             </div>
           ) : (
-            <div className="rounded-xl border border-gray-200 bg-white p-12 text-center shadow-sm">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-50 mb-4">
-                <AlertCircle className="h-8 w-8 text-gray-400" />
+            <div className="rounded-xl border border-secondary-200 bg-white p-12 text-center shadow-card">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-secondary-50 mb-4">
+                <AlertCircle className="h-8 w-8 text-secondary-400" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900">No Performance Data Available</h3>
-              <p className="mt-2 text-sm text-gray-500 max-w-sm mx-auto">
+              <h3 className="text-lg font-bold text-secondary-900">No Performance Data Available</h3>
+              <p className="mt-2 text-sm text-secondary-500 max-w-sm mx-auto">
                 Take your first quiz to start tracking your performance and progress.
               </p>
             </div>
