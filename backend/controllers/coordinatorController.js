@@ -1038,8 +1038,9 @@ exports.getAllStudents = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const students = await User.find(query)
-      .select("fullName email studentId department")
-      .sort({ fullName: 1 })
+      .select("fullName email studentId enrollmentNumber department semester batch primaryGroup")
+      .populate("primaryGroup", "name")
+      .sort({ email: 1 })
       .limit(parseInt(limit))
       .skip(skip);
 
