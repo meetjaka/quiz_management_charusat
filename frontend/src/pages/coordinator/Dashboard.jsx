@@ -180,7 +180,7 @@ const CoordinatorDashboard = () => {
                               </div>
                               <div className="flex items-center gap-1.5">
                                 <Users className="w-3.5 h-3.5" />
-                                <span>{quiz.totalAttempts || 0} attempts</span>
+                                <span>{quiz.stats?.totalAttempts ?? 0} attempts</span>
                               </div>
                             </div>
                           </div>

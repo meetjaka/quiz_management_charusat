@@ -13,15 +13,28 @@ import {
   UserPlus,
   X,
   Search,
+  Download,
 } from "lucide-react";
+import * as XLSX from "xlsx";
 import Layout from "../../components/Layout";
 import apiClient from "../../api";
 
-// Helper to derive batch/group from studentId (e.g. "23it001" -> "23IT")
+// Helper to derive batch/group from studentId (e.g. "23it001" -> "23IT") — used for email-based sort only
 const getBatchFromStudentId = (studentId) => {
   if (!studentId) return null;
   const match = String(studentId).match(/^\d{2}[A-Za-z]+/);
   return match ? match[0].toUpperCase() : null;
+};
+
+// Get a human-readable batch/group label from the student object.
+// Priority: student.batch field → primaryGroup.name → semester/dept combo → studentId prefix
+const getBatchLabel = (student) => {
+  if (student.batch && student.batch.trim()) return student.batch.trim();
+  if (student.primaryGroup?.name) return student.primaryGroup.name;
+  if (student.semester && student.department)
+    return `${student.department}-Sem${student.semester}`;
+  if (student.department) return student.department;
+  return getBatchFromStudentId(student.studentId || student.enrollmentNumber);
 };
 
 const CoordinatorQuizzes = () => {
@@ -85,6 +98,54 @@ const CoordinatorQuizzes = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Download results as Excel sheet
+  const downloadResultsExcel = (resultsData, quiz) => {
+    // Sort by Student ID ascending (alphanumeric)
+    const sorted = [...resultsData].sort((a, b) => {
+      const idA = (
+        a.studentId?.studentId ||
+        a.studentId?.enrollmentNumber ||
+        ""
+      ).toUpperCase();
+      const idB = (
+        b.studentId?.studentId ||
+        b.studentId?.enrollmentNumber ||
+        ""
+      ).toUpperCase();
+      return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: "base" });
+    });
+
+    // Build rows: Sr No. | Student ID | Student Name | Obtained Marks
+    const rows = sorted.map((result, index) => ({
+      "Sr No.": index + 1,
+      "Student ID":
+        result.studentId?.studentId ||
+        result.studentId?.enrollmentNumber ||
+        "N/A",
+      "Student Name": result.studentId?.fullName || "N/A",
+      "Obtained Marks": result.totalScore ?? 0,
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Results");
+
+    // Column widths for readability
+    worksheet["!cols"] = [
+      { wch: 8 },  // Sr No.
+      { wch: 15 }, // Student ID
+      { wch: 35 }, // Student Name
+      { wch: 16 }, // Obtained Marks
+    ];
+
+    // Sanitise quiz title for a valid filename (remove / \ ? * : | " < >)
+    const safeTitle = (quiz.title || "Quiz_Results").replace(
+      /[/\\?%*:|"<>]/g,
+      "_"
+    );
+    XLSX.writeFile(workbook, `${safeTitle}.xlsx`);
   };
 
   const fetchResults = async (quizId) => {
@@ -224,8 +285,7 @@ const CoordinatorQuizzes = () => {
       .filter((s) => !assignedIds.includes(s._id))
       .filter((s) => {
         if (batchFilter === "all") return true;
-        const batch = getBatchFromStudentId(s.studentId);
-        return batch === batchFilter;
+        return getBatchLabel(s) === batchFilter;
       });
 
     if (selectedStudents.length === availableStudents.length) {
@@ -425,28 +485,40 @@ const CoordinatorQuizzes = () => {
                   <h2 className="text-xl font-bold text-secondary-900">
                     Results: {selectedQuiz.title}
                   </h2>
-                  <button
-                    onClick={() => {
-                      setShowResults(false);
-                      setSelectedQuiz(null);
-                      setResults([]);
-                    }}
-                    className="text-secondary-500 hover:text-secondary-700"
-                  >
-                    <svg
-                      className="w-6 h-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+                  <div className="flex items-center gap-3">
+                    {results.length > 0 && (
+                      <button
+                        onClick={() => downloadResultsExcel(results, selectedQuiz)}
+                        className="flex items-center gap-2 px-4 py-2 bg-success-600 hover:bg-success-700 text-white text-sm font-medium rounded-lg transition-colors"
+                        title="Download results as Excel"
+                      >
+                        <Download className="w-4 h-4" />
+                        Download Excel
+                      </button>
+                    )}
+                    <button
+                      onClick={() => {
+                        setShowResults(false);
+                        setSelectedQuiz(null);
+                        setResults([]);
+                      }}
+                      className="text-secondary-500 hover:text-secondary-700"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
+                      <svg
+                        className="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               </div>
               <div className="p-6">
@@ -527,8 +599,8 @@ const CoordinatorQuizzes = () => {
                                 <td className="px-4 py-3 whitespace-nowrap">
                                   <span
                                     className={`px-2 py-1 text-xs rounded-full ${isPassed
-                                        ? "bg-success-100 text-success-800"
-                                        : "bg-danger-100 text-danger-800"
+                                      ? "bg-success-100 text-success-800"
+                                      : "bg-danger-100 text-danger-800"
                                       }`}
                                   >
                                     {isPassed ? "Passed" : "Failed"}
@@ -718,8 +790,7 @@ const CoordinatorQuizzes = () => {
                         .filter((s) => !assignedIds.includes(s._id))
                         .filter((s) => {
                           if (batchFilter === "all") return true;
-                          const batch = getBatchFromStudentId(s.studentId);
-                          return batch === batchFilter;
+                          return getBatchLabel(s) === batchFilter;
                         }).length;
                     })()}{" "}
                     available)
@@ -736,7 +807,7 @@ const CoordinatorQuizzes = () => {
                     {Array.from(
                       new Set(
                         allStudents
-                          .map((s) => getBatchFromStudentId(s.studentId))
+                          .map((s) => getBatchLabel(s))
                           .filter(Boolean),
                       ),
                     )
@@ -760,53 +831,60 @@ const CoordinatorQuizzes = () => {
                   </div>
                 ) : (
                   <div className="space-y-2">
-                    {allStudents.map((student) => {
-                      const batch = getBatchFromStudentId(student.studentId);
-                      if (batchFilter !== "all" && batch !== batchFilter) {
-                        return null;
-                      }
-                      const isAssigned = assignedStudents.some(
-                        (a) => a.studentId?._id === student._id,
-                      );
-                      const isSelected = selectedStudents.includes(student._id);
+                    {[...allStudents]
+                      .sort((a, b) =>
+                        (a.email || "").localeCompare(b.email || "", undefined, {
+                          numeric: true,
+                          sensitivity: "base",
+                        })
+                      )
+                      .map((student) => {
+                        const batchLabel = getBatchLabel(student);
+                        if (batchFilter !== "all" && batchLabel !== batchFilter) {
+                          return null;
+                        }
+                        const isAssigned = assignedStudents.some(
+                          (a) => a.studentId?._id === student._id,
+                        );
+                        const isSelected = selectedStudents.includes(student._id);
 
-                      return (
-                        <div
-                          key={student._id}
-                          className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${isAssigned
+                        return (
+                          <div
+                            key={student._id}
+                            className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${isAssigned
                               ? "bg-secondary-100 border-secondary-200 opacity-60"
                               : isSelected
                                 ? "bg-brand-50 border-brand-300"
                                 : "bg-white border-secondary-200 hover:bg-secondary-50"
-                            }`}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={isSelected}
-                            disabled={isAssigned}
-                            onChange={() => toggleStudentSelection(student._id)}
-                            className="w-4 h-4 text-brand-600 rounded"
-                          />
-                          <div className="flex-1">
-                            <p className="font-medium text-secondary-900">
-                              {student.fullName}
-                            </p>
-                            <p className="text-sm text-secondary-500">
-                              {student.email} | {student.studentId}
-                            </p>
-                            <p className="text-xs text-secondary-400">
-                              {student.department}
-                              {batch && ` • ${batch} batch`}
-                            </p>
+                              }`}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              disabled={isAssigned}
+                              onChange={() => toggleStudentSelection(student._id)}
+                              className="w-4 h-4 text-brand-600 rounded"
+                            />
+                            <div className="flex-1">
+                              <p className="font-medium text-secondary-900">
+                                {student.fullName}
+                              </p>
+                              <p className="text-sm text-secondary-500">
+                                {student.email} | {student.studentId}
+                              </p>
+                              <p className="text-xs text-secondary-400">
+                                {student.department}
+                                {batchLabel && ` • ${batchLabel}`}
+                              </p>
+                            </div>
+                            {isAssigned && (
+                              <span className="px-2 py-1 text-xs bg-success-100 text-success-700 rounded">
+                                Already Assigned
+                              </span>
+                            )}
                           </div>
-                          {isAssigned && (
-                            <span className="px-2 py-1 text-xs bg-success-100 text-success-700 rounded">
-                              Already Assigned
-                            </span>
-                          )}
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
                   </div>
                 )}
               </div>
@@ -826,8 +904,8 @@ const CoordinatorQuizzes = () => {
                   onClick={handleAssignStudents}
                   disabled={selectedStudents.length === 0 || assigningStudents}
                   className={`flex-1 px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-2 ${selectedStudents.length === 0 || assigningStudents
-                      ? "bg-secondary-300 text-secondary-500 cursor-not-allowed"
-                      : "bg-brand-600 text-white hover:bg-brand-700"
+                    ? "bg-secondary-300 text-secondary-500 cursor-not-allowed"
+                    : "bg-brand-600 text-white hover:bg-brand-700"
                     }`}
                 >
                   {assigningStudents ? (
@@ -910,10 +988,10 @@ const CoordinatorQuizzes = () => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="text-sm text-secondary-900">
-                              {quiz.totalQuestions} questions
+                              {quiz.stats?.totalQuestions ?? 0} questions
                             </div>
                             <div className="text-sm text-secondary-500">
-                              {quiz.totalAttempts || 0} attempts
+                              {quiz.stats?.totalAttempts ?? 0} attempts
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
@@ -1004,8 +1082,8 @@ const CoordinatorQuizzes = () => {
                                             handleQuickActivate(quiz);
                                           }}
                                           className={`px-3 py-1 rounded text-sm font-medium ${quiz.isActive
-                                              ? "bg-danger-100 text-danger-700 hover:bg-danger-200"
-                                              : "bg-success-100 text-success-700 hover:bg-success-200"
+                                            ? "bg-danger-100 text-danger-700 hover:bg-danger-200"
+                                            : "bg-success-100 text-success-700 hover:bg-success-200"
                                             }`}
                                         >
                                           {quiz.isActive
