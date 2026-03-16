@@ -55,8 +55,21 @@ exports.getMyQuizzes = async (req, res) => {
           quizId: quiz._id,
         });
 
+        // Compute average score percentage for this quiz
+        const scoreStats = await QuizAttempt.aggregate([
+          { $match: { quizId: quiz._id, status: "submitted" } },
+          {
+            $group: {
+              _id: null,
+              avgPercentage: { $avg: "$percentage" },
+            },
+          },
+        ]);
+
         return {
           ...quiz.toObject(),
+          totalAttempts: attemptCount,
+          averageScore: scoreStats[0]?.avgPercentage || 0,
           stats: {
             assignedTo: assignmentCount,
             totalAttempts: attemptCount,
@@ -862,15 +875,51 @@ exports.getMyAnalytics = async (req, res) => {
       status: "draft",
     });
 
-    // Get all quiz IDs
-    const quizIds = await Quiz.find({ coordinatorId }).select("_id");
-    const quizIdArray = quizIds.map((q) => q._id);
+    // Get all quiz IDs and quiz details (for pass/fail calculation)
+    const quizzes = await Quiz.find({ coordinatorId }).select("_id passingMarks");
+    const quizIdArray = quizzes.map((q) => q._id);
 
     const totalAssignments = await QuizAssignment.countDocuments({
       quizId: { $in: quizIdArray },
     });
     const totalAttempts = await QuizAttempt.countDocuments({
       quizId: { $in: quizIdArray },
+    });
+
+    // Score statistics across all submitted attempts
+    const scoreStats = await QuizAttempt.aggregate([
+      { $match: { quizId: { $in: quizIdArray }, status: "submitted" } },
+      {
+        $group: {
+          _id: null,
+          avgScore: { $avg: "$totalScore" },
+          maxScore: { $max: "$totalScore" },
+          minScore: { $min: "$totalScore" },
+          avgPercentage: { $avg: "$percentage" },
+        },
+      },
+    ]);
+
+    // Pass/fail count - need to check each attempt against its quiz's passingMarks
+    const passingMarksMap = {};
+    quizzes.forEach((q) => {
+      passingMarksMap[q._id.toString()] = q.passingMarks || 0;
+    });
+
+    const submittedAttempts = await QuizAttempt.find({
+      quizId: { $in: quizIdArray },
+      status: "submitted",
+    }).select("quizId totalScore");
+
+    let passCount = 0;
+    let failCount = 0;
+    submittedAttempts.forEach((attempt) => {
+      const passingMarks = passingMarksMap[attempt.quizId.toString()] || 0;
+      if (attempt.totalScore >= passingMarks) {
+        passCount++;
+      } else {
+        failCount++;
+      }
     });
 
     res.status(200).json({
@@ -886,6 +935,14 @@ exports.getMyAnalytics = async (req, res) => {
         },
         attempts: {
           total: totalAttempts,
+          passed: passCount,
+          failed: failCount,
+        },
+        scores: scoreStats[0] || {
+          avgScore: 0,
+          maxScore: 0,
+          minScore: 0,
+          avgPercentage: 0,
         },
       },
     });
