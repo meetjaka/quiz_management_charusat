@@ -19,8 +19,6 @@ const apiLimiter = rateLimit({
   legacyHeaders: false,
   // Skip rate limit for health checks
   skip: (req) => req.path === "/api/health",
-  // Use trust proxy for accurate IP in production
-  trustProxy: isProd ? true : false,
   // Store: Consider using Redis in production for distributed rate limiting
   // store: new RedisStore({ client: redisClient })
 });
@@ -35,7 +33,6 @@ const authLimiter = rateLimit({
   legacyHeaders: false,
   skipSuccessfulRequests: true, // Don't count successful logins
   skipFailedRequests: false, // Count failed attempts
-  trustProxy: isProd ? true : false,
 });
 
 // ========== QUIZ ATTEMPT LIMITER ==========
@@ -46,7 +43,6 @@ const quizAttemptLimiter = rateLimit({
   message: "Too many quiz attempts, please try again later.",
   standardHeaders: true,
   legacyHeaders: false,
-  trustProxy: isProd ? true : false,
   // Allow bursts by using sliding window
   keyGenerator: (req) => {
     // Key by quiz + student for better granularity
@@ -63,7 +59,6 @@ const submissionLimiter = rateLimit({
   message: "Too many submissions, please wait before submitting again.",
   standardHeaders: true,
   legacyHeaders: false,
-  trustProxy: isProd ? true : false,
   // Per-student limit, not per-IP
   keyGenerator: (req) => {
     return req.user?._id?.toString() || req.ip;
@@ -80,7 +75,6 @@ const answerSaveLimiter = rateLimit({
   message: "Saving too frequently, please wait.",
   standardHeaders: false, // Don't include headers
   legacyHeaders: false,
-  trustProxy: isProd ? true : false,
   keyGenerator: (req) => {
     return `${req.user?._id?.toString() || req.ip}:save`;
   },
@@ -99,7 +93,6 @@ const adminLimiter = rateLimit({
   message: "Too many admin operations, please try again later.",
   standardHeaders: true,
   legacyHeaders: false,
-  trustProxy: isProd ? true : false,
 });
 
 // ========== BULK UPLOAD LIMITER ==========
@@ -110,7 +103,6 @@ const bulkUploadLimiter = rateLimit({
   message: "Too many bulk uploads, please try again later.",
   standardHeaders: true,
   legacyHeaders: false,
-  trustProxy: isProd ? true : false,
 });
 
 module.exports = {

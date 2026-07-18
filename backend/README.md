@@ -14,7 +14,7 @@ npm install
 
 Update the `.env` file with your configuration:
 
-- `MONGODB_URI`: Your MongoDB connection string
+- `MONGO_URI` or `MONGODB_URI`: Your MongoDB connection string
 - `PORT`: Server port (default: 5000)
 - `JWT_SECRET`: Secret key for JWT tokens
 - `FRONTEND_URL`: Frontend application URL
@@ -57,7 +57,7 @@ backend/
 ## Environment Variables
 
 ```
-MONGODB_URI=mongodb://localhost:27017/quiz_management
+MONGO_URI=mongodb://localhost:27017/quiz_management
 PORT=5000
 NODE_ENV=development
 JWT_SECRET=your_jwt_secret_key

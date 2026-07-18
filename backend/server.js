@@ -13,10 +13,18 @@ const User = require("./models/User");
 // Load environment variables
 dotenv.config();
 
+if (!process.env.JWT_SECRET) {
+  console.error("❌ Missing required environment variable: JWT_SECRET");
+  process.exit(1);
+}
+
 // Connect to MongoDB
 connectDB();
 
 const app = express();
+
+// Ensure request IPs are resolved correctly behind load balancers/proxies.
+app.set("trust proxy", 1);
 
 // ============================================
 // GLOBAL MIDDLEWARE
@@ -60,8 +68,15 @@ app.get("/favicon.ico", (req, res) => res.status(204).end());
     if (adminCount === 0) {
       const defaultAdminEmail =
         process.env.DEFAULT_ADMIN_EMAIL || "admin@charusat.edu.in";
-      const defaultAdminPassword =
-        process.env.DEFAULT_ADMIN_PASSWORD || "Admin@123";
+      const defaultAdminPassword = process.env.DEFAULT_ADMIN_PASSWORD;
+
+      if (!defaultAdminPassword) {
+        console.warn(
+          "⚠️ Skipping admin seed: DEFAULT_ADMIN_PASSWORD is not configured",
+        );
+        return;
+      }
+
       const adminExists = await User.findOne({ email: defaultAdminEmail });
       if (!adminExists) {
         await User.create({
@@ -73,7 +88,6 @@ app.get("/favicon.ico", (req, res) => res.status(204).end());
           isFirstLogin: false,
         });
         console.log(`✅ Seeded admin user: ${defaultAdminEmail}`);
-        console.log(`   Password: ${defaultAdminPassword}`);
       }
     }
   } catch (err) {

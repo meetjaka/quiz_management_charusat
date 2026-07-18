@@ -5,12 +5,13 @@ A full-stack Quiz Management System built with MongoDB, Express.js, React, and N
 ## 📚 Documentation
 
 - 📖 **[Design Improvement Guide](DESIGN_IMPROVEMENT_GUIDE.md)** - Comprehensive UI/UX design documentation
-- 🚀 **[Deployment Guide](DEPLOYMENT_GUIDE.md)** - Production deployment instructions  
+- 🚀 **[Deployment Guide](DEPLOYMENT_GUIDE.md)** - Production deployment instructions
 - 📡 **[API Documentation](API_DOCUMENTATION.md)** - Complete API reference
 
 ## ✅ Project Status: 100% Complete
 
 All features implemented including:
+
 - ✅ Advanced analytics with charts (Admin, Coordinator, Student)
 - ✅ Email notifications (assignment, reminders, results)
 - ✅ Bulk CSV upload with validation
@@ -72,7 +73,7 @@ npm install
 3. Configure `.env` file with your MongoDB URI and other settings:
 
 ```
-MONGODB_URI=mongodb://localhost:27017/quiz_management_charusat
+MONGO_URI=mongodb://localhost:27017/quiz_management_charusat
 PORT=5001
 JWT_SECRET=your_secret_key_here
 NODE_ENV=development
@@ -184,7 +185,7 @@ npm start
 ### Backend (.env)
 
 ```
-MONGODB_URI=mongodb://localhost:27017/quiz_management
+MONGO_URI=mongodb://localhost:27017/quiz_management
 PORT=5000
 NODE_ENV=development
 JWT_SECRET=your_jwt_secret_key_here
@@ -228,7 +229,7 @@ If running MongoDB locally:
 For MongoDB Atlas (Cloud):
 
 ```
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/quiz_management?retryWrites=true&w=majority
+MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/quiz_management?retryWrites=true&w=majority
 ```
 
 ## Project Next Steps
