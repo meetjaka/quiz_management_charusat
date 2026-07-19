@@ -4,6 +4,10 @@ const adminController = require("../controllers/adminController");
 const { protect, authorize } = require("../middleware/auth");
 const { upload } = require("../utils/bulkUpload");
 
+// All routes require admin authentication
+router.use(protect);
+router.use(authorize("admin"));
+
 // ============================================
 // STUDENT QUIZ DETAILS & MARKS
 // ============================================
@@ -16,7 +20,7 @@ router.put(
   adminController.updateStudentQuizMarks,
 );
 
-// Test endpoint without auth
+// Test endpoint (admin only)
 router.get("/test-template", async (req, res) => {
   try {
     const xlsx = require("xlsx");
@@ -46,10 +50,6 @@ router.get("/test-template", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-// All routes require admin authentication
-router.use(protect);
-router.use(authorize("admin"));
 
 // ============================================
 // USER MANAGEMENT
