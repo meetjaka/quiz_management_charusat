@@ -6,6 +6,22 @@ const User = require("../models/User");
 const { sendQuizResultEmail } = require("../utils/emailService");
 
 // ============================================
+// HELPERS
+// ============================================
+const sanitizeQuestionsForStudent = (questions) => {
+  return questions.map((q) => {
+    const questionObj = q.toObject ? q.toObject() : q;
+    if (questionObj.options && Array.isArray(questionObj.options)) {
+      questionObj.options = questionObj.options.map((opt) => {
+        const { isCorrect, ...restOpt } = opt;
+        return restOpt;
+      });
+    }
+    return questionObj;
+  });
+};
+
+// ============================================
 // ASSIGNED QUIZZES
 // ============================================
 
@@ -225,6 +241,8 @@ exports.startQuizAttempt = async (req, res) => {
         .select("-correctAnswer")
         .sort({ orderNumber: 1 });
 
+      const sanitizedQuestions = sanitizeQuestionsForStudent(questions);
+
       return res.status(200).json({
         success: true,
         message: "Resuming existing attempt",
@@ -241,8 +259,8 @@ exports.startQuizAttempt = async (req, res) => {
             shuffleOptions: quiz.shuffleOptions,
           },
           questions: quiz.shuffleQuestions
-            ? shuffleArray(questions)
-            : questions,
+            ? shuffleArray(sanitizedQuestions)
+            : sanitizedQuestions,
         },
       });
     }
@@ -262,6 +280,9 @@ exports.startQuizAttempt = async (req, res) => {
       .select("-correctAnswer")
       .sort({ orderNumber: 1 });
 
+    // Sanitize questions to remove isCorrect from options
+    questions = sanitizeQuestionsForStudent(questions);
+
     // Shuffle if needed
     if (quiz.shuffleQuestions) {
       questions = shuffleArray(questions);
@@ -269,7 +290,7 @@ exports.startQuizAttempt = async (req, res) => {
 
     if (quiz.shuffleOptions) {
       questions = questions.map((q) => ({
-        ...q.toObject(),
+        ...q,
         options: shuffleArray(q.options),
       }));
     }
