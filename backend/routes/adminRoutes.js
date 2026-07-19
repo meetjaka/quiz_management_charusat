@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const adminController = require("../controllers/adminController");
 const { protect, authorize } = require("../middleware/auth");
-const { upload } = require("../utils/bulkUpload");
+const { upload, validateMagicBytes } = require("../utils/bulkUpload");
 
 // All routes require admin authentication
 router.use(protect);
@@ -60,6 +60,7 @@ router.get("/users/download-template", adminController.downloadUserTemplate);
 router.post(
   "/users/bulk-create",
   upload.single("file"),
+  validateMagicBytes,
   adminController.bulkCreateUsers,
 );
 router.delete("/users/bulk", adminController.bulkDeleteUsers);
@@ -77,6 +78,7 @@ router.post("/quizzes", adminController.createQuiz);
 router.post(
   "/quizzes/upload-excel",
   upload.single("file"),
+  validateMagicBytes,
   adminController.uploadQuizExcel,
 );
 router.post("/quizzes/add-question", adminController.addQuestionToQuiz);

@@ -37,6 +37,76 @@ const upload = multer({
   }
 });
 
+// Validate magic bytes to prevent spoofed file extensions
+const validateMagicBytes = async (req, res, next) => {
+  if (!req.file) {
+    return next();
+  }
+
+  try {
+    const { fileTypeFromFile } = await import('file-type');
+    const meta = await fileTypeFromFile(req.file.path);
+    const ext = path.extname(req.file.originalname).toLowerCase();
+
+    // file-type handles binary formats like .xlsx and .xls
+    if (ext === '.xlsx' || ext === '.xls') {
+      if (!meta || !['xlsx', 'xls', 'zip', 'cfb'].includes(meta.ext)) {
+        throw new Error('Invalid file signature for Excel file');
+      }
+    } else if (ext === '.csv') {
+      const buffer = fs.readFileSync(req.file.path);
+      
+      // 1. Null-byte detection (rejects compiled binaries)
+      if (buffer.includes(0x00)) {
+        throw new Error('Invalid CSV: binary data detected');
+      }
+      
+      // 2. UTF-8 decoding validation
+      const text = buffer.toString('utf8');
+      if (text.includes('\uFFFD')) {
+        throw new Error('Invalid CSV: file must be valid UTF-8 encoding');
+      }
+      
+      // 3. Parser validation (utilizing the existing csv-parser)
+      await new Promise((resolve, reject) => {
+        let isResolved = false;
+        const stream = fs.createReadStream(req.file.path).pipe(csv());
+        
+        stream.on('data', () => {
+          // As soon as one row parses successfully, we know the structure is generally valid
+          if (!isResolved) {
+            isResolved = true;
+            stream.destroy();
+            resolve();
+          }
+        });
+        stream.on('error', (err) => {
+          if (!isResolved) {
+            isResolved = true;
+            reject(new Error('Invalid CSV structure: ' + err.message));
+          }
+        });
+        stream.on('end', () => {
+          if (!isResolved) {
+            isResolved = true;
+            resolve(); // Allow empty CSVs
+          }
+        });
+      });
+    }
+    
+    next();
+  } catch (error) {
+    if (fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
+    return res.status(400).json({
+      success: false,
+      message: 'Invalid file format detected: ' + error.message,
+    });
+  }
+};
+
 // Parse CSV file for questions
 const parseQuestionsCSV = (filePath) => {
   return new Promise((resolve, reject) => {
@@ -147,6 +217,7 @@ const generateQuestionTemplate = () => {
 
 module.exports = {
   upload,
+  validateMagicBytes,
   parseQuestionsCSV,
   generateQuestionTemplate,
 };

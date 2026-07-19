@@ -3,7 +3,7 @@ const router = express.Router();
 const coordinatorController = require('../controllers/coordinatorController');
 const { protect, authorize } = require('../middleware/auth');
 const { checkQuizOwnership } = require('../middleware/quizOwnership');
-const { upload } = require('../utils/bulkUpload');
+const { upload, validateMagicBytes } = require('../utils/bulkUpload');
 
 // All routes require coordinator authentication
 router.use(protect);
@@ -16,7 +16,7 @@ router.get('/quizzes', coordinatorController.getMyQuizzes);
 router.post('/quizzes', coordinatorController.createQuiz);
 
 // Excel upload route for creating quiz from Excel file
-router.post('/quizzes/upload-excel', upload.single('file'), coordinatorController.uploadQuizExcel);
+router.post('/quizzes/upload-excel', upload.single('file'), validateMagicBytes, coordinatorController.uploadQuizExcel);
 
 // Routes that require quiz ownership validation
 router.get('/quizzes/:id', checkQuizOwnership, coordinatorController.getMyQuizById);
@@ -33,7 +33,7 @@ router.put('/quizzes/:id/questions/:questionId', checkQuizOwnership, coordinator
 router.delete('/quizzes/:id/questions/:questionId', checkQuizOwnership, coordinatorController.deleteQuestion);
 
 // Bulk upload questions
-router.post('/questions/bulk-upload', upload.single('file'), coordinatorController.bulkUploadQuestions);
+router.post('/questions/bulk-upload', upload.single('file'), validateMagicBytes, coordinatorController.bulkUploadQuestions);
 router.get('/questions/download-template', coordinatorController.downloadQuestionTemplate);
 
 // ============================================
